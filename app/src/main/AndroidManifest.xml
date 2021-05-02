@@ -2,23 +2,102 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.smartapp.depc_ice">
 
-    <application
-        android:allowBackup="true"
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+
+    <application xmlns:tools="http://schemasr.android.com/tools"
+        android:name=".DepcApplication"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.DEPCICE">
+        android:largeHeap="true"
+        android:supportsRtl="false"
+        android:requestLegacyExternalStorage="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
+        tools:replace="allowBackup,supportsRtl">
+
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.Splash.SplahsActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.DEPCICE.NoActionBar">
+            android:logo="@drawable/back"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".Activities.Login.LoginActivity"
+            android:configChanges="screenSize|orientation"
+            android:icon="@drawable/back"
+            android:label="Inicio Sesión"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Activities.Home.MainActivity"
+            android:configChanges="screenSize|orientation"
+            android:icon="@drawable/back"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Activities.AcercaDe.AcercaDeActivity"
+            android:configChanges="screenSize|orientation"
+            android:icon="@drawable/back"
+            android:label="Acerca de"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Activities.VerDatos.VerDatosActivity"
+            android:configChanges="screenSize|orientation"
+            android:icon="@drawable/back"
+            android:label="Datos Usuario"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Activities.Novedades.NovedadesActivity"
+            android:configChanges="screenSize|orientation"
+            android:icon="@drawable/back"
+            android:label="Novedades"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Activities.CrearClientes.CrearClientesActivity"
+            android:configChanges="screenSize|orientation"
+            android:icon="@drawable/back"
+            android:label="Crear Cliente"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Activities.Agenda.AgendaActivity"
+            android:configChanges="screenSize|orientation"
+            android:icon="@drawable/back"
+            android:label="Crear Cliente"
+            android:screenOrientation="portrait" />
+
+
     </application>
 
 </manifest>

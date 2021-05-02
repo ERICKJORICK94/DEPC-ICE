@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="@color/White"
+    android:padding="15dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Black"
+        android:textSize="15sp"
+        android:text="Sincronizar a la Nube"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Black"
+        android:layout_marginTop="10dp"
+        android:textSize="15sp"
+        android:text="ÚLTIMA SINCRONIZACION"/>
+
+    <TextView
+        android:id="@+id/lbl_fecha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginTop="2dp"
+        android:textSize="13sp"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/lbl_sincronizaciones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/DarkRed"
+        android:textSize="14sp"
+        android:text="0 Actualizaciones pendientes" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Black"
+        android:layout_marginTop="10dp"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:text="Este proceso puede tardar varios minutos por favor presione Descargar/sincronizar si desea continuar." />
+
+    <Button
+        android:id="@+id/desc"
+        android:layout_width="200dp"
+        android:layout_height="35dp"
+        android:background="@color/RoyalBlue"
+        android:textColor="@color/White"
+        android:text="DESCARGAR"
+        android:textSize="12sp"
+        android:elevation="4sp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="10dp"/>
+    <Button
+        android:id="@+id/sync"
+        android:layout_width="200dp"
+        android:layout_height="35dp"
+        android:background="@color/RoyalBlue"
+        android:textColor="@color/White"
+        android:text="SINCRONIZAR"
+        android:textSize="12sp"
+        android:elevation="4sp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="10dp"/>
+
+
+</LinearLayout>

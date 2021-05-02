@@ -1,0 +1,34 @@
+<resources>
+    <array name="menu_array">
+        <item>
+            <code>1</code>
+            <name>Clientes</name>
+            <image>@drawable/ic_baseline_person_24</image>
+            <activity></activity>
+        </item>
+        <item>
+            <code>2</code>
+            <name>Ubicación&#160;Clientes</name>
+            <image>@drawable/ic_baseline_place_24</image>
+            <activity></activity>
+        </item>
+        <item>
+            <code>3</code>
+            <name>Crear&#160;Cliente</name>
+            <image>@drawable/ic_baseline_fiber_new_24</image>
+            <activity>com.smartapp.depc_ice.Activities.CrearClientes.CrearClientesActivity</activity>
+        </item>
+        <item>
+            <code>4</code>
+            <name>Productos</name>
+            <image>@drawable/ic_baseline_shopping_basket_24</image>
+            <activity></activity>
+        </item>
+        <item>
+            <code>5</code>
+            <name>Agenda</name>
+            <image>@drawable/ic_baseline_perm_contact_calendar_24</image>
+            <activity>com.smartapp.depc_ice.Activities.Agenda.AgendaActivity</activity>
+        </item>
+    </array>
+</resources>

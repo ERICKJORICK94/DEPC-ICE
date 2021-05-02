@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:background="@color/color_fondo">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="15dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="10dp"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="15dp"
+                android:text="COMPLETE EL FORMULARIO DE REGISTRO"/>
+            <LinearLayout
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/DarkGray"
+                    android:text="NACIONALIDAD"
+                    android:layout_marginRight="10dp"/>
+                <RadioGroup
+                    android:id="@+id/nacionalidad"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <RadioButton
+                        android:id="@+id/nacional"
+                        android:layout_width="wrap_content"
+                        android:checked="true"
+                        android:layout_marginRight="5dp"
+                        android:layout_height="wrap_content"
+                        android:text="Ecuatoriana"/>
+                    <RadioButton
+                        android:id="@+id/extranjero"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Extranjera"/>
+                </RadioGroup>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="@color/DarkGray"
+                android:text="IDENTIFICACIÓN"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_baseline_credit_card_24"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/custom_border"/>
+
+                <EditText
+                    android:id="@+id/cedula"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:hint="Cédula/Ruc"
+                    android:paddingLeft="8dp"
+                    android:nextFocusDown="@id/direccion"
+                    android:paddingRight="8dp"
+                    android:textSize="15sp"
+                    android:maxLength="13"
+                    android:inputType="number"
+                    android:background="@drawable/custom_border"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:layout_marginTop="15dp"
+                android:textColor="@color/DarkGray"
+                android:text="DIRECCIÓN"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_baseline_location_on_24"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/custom_border"/>
+
+                <EditText
+                    android:id="@+id/direccion"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:nextFocusDown="@id/nombre"
+                    android:hint="Dirección"
+                    android:maxLength="200"
+                    android:inputType="textCapWords"
+                    android:digits="0,1,2,3,4,5,6,7,8,9,*,qwe=.@#?()+%:!/\  rtzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,_,-"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:textSize="15sp"
+                    android:background="@drawable/custom_border"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:layout_marginTop="15dp"
+                android:textColor="@color/DarkGray"
+                android:text="NOMBRE"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_baseline_person_24"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/custom_border"/>
+
+                <EditText
+                    android:id="@+id/nombre"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:hint="Nombre"
+                    android:maxLength="50"
+                    android:digits="0,1,2,3,4,5,6,7,8,9,*,qwe=.@#?()+%:!/\  rtzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,_,-"
+                    android:nextFocusDown="@id/apellido"
+                    android:inputType="textCapWords"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:textSize="15sp"
+                    android:background="@drawable/custom_border"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:layout_marginTop="15dp"
+                android:textColor="@color/DarkGray"
+                android:text="APELLIDO"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_baseline_person_outline_24"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/custom_border"/>
+
+                <EditText
+                    android:id="@+id/apellido"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:digits="0,1,2,3,4,5,6,7,8,9,*,qwe=.@#?()+%:!/\  rtzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,_,-"
+                    android:hint="Apellido"
+                    android:nextFocusDown="@id/razon_social"
+                    android:maxLength="50"
+                    android:inputType="textCapWords"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:textSize="15sp"
+                    android:background="@drawable/custom_border"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:layout_marginTop="15dp"
+                android:textColor="@color/DarkGray"
+                android:text="RAZÓN SOCIAL"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_baseline_card_membership_24"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/custom_border"/>
+
+                <EditText
+                    android:id="@+id/razon_social"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:hint="Razón Social"
+                    android:nextFocusDown="@id/telefono"
+                    android:digits="0,1,2,3,4,5,6,7,8,9,*,qwe=.@#?()+%:!/\  rtzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,_,-"
+                    android:maxLength="80"
+                    android:inputType="textPersonName"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:textSize="15sp"
+                    android:background="@drawable/custom_border"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:layout_marginTop="15dp"
+                android:textColor="@color/DarkGray"
+                android:text="TELÉFONO"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_baseline_phone_24"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/custom_border"/>
+
+                <EditText
+                    android:id="@+id/telefono"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:hint="Télefono"
+                    android:nextFocusDown="@id/celular"
+                    android:maxLength="10"
+                    android:paddingLeft="8dp"
+                    android:inputType="phone"
+                    android:paddingRight="8dp"
+                    android:textSize="15sp"
+                    android:background="@drawable/custom_border"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:layout_marginTop="15dp"
+                android:textColor="@color/DarkGray"
+                android:text="CELULAR"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/custom_border"
+                    android:padding="10dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_baseline_phone_android_24" />
+
+                <EditText
+                    android:id="@+id/celular"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:hint="Celular"
+                    android:nextFocusDown="@id/correo"
+                    android:maxLength="10"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:inputType="phone"
+                    android:textSize="15sp"
+                    android:background="@drawable/custom_border"/>
+
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:layout_marginTop="15dp"
+                android:textColor="@color/DarkGray"
+                android:text="CORREO"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/custom_border"
+                    android:padding="10dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_baseline_email_24" />
+
+                <EditText
+                    android:id="@+id/correo"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:hint="Correo"
+                    android:digits="0,1,2,3,4,5,6,7,8,9,*,qwe=.@#?()+%:!/\  rtzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,_,-"
+                    android:maxLength="50"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:inputType="textEmailAddress"
+                    android:textSize="15sp"
+                    android:background="@drawable/custom_border"/>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/registrar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="REGISTRAR"
+                android:textColor="@color/White"
+                android:background="@color/colorPrimary"
+                android:elevation="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"/>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+</LinearLayout>

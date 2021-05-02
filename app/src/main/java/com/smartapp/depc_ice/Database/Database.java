@@ -1,0 +1,68 @@
+package com.smartapp.depc_ice.Database;
+
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
+import com.smartapp.depc_ice.Entities.Usuario;
+import com.smartapp.depc_ice.Utils.Const;
+import java.sql.SQLException;
+
+public class Database extends OrmLiteSqliteOpenHelper {
+
+    private static final String DATABASE_NAME = Const.DATABASE_NAME_;
+    private static final int DATABASE_VERSION = 1;
+    private SQLiteDatabase db;
+
+    public Database(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db, ConnectionSource connectionSource) {
+        try {
+            this.db = db;
+
+            Log.i(Database.class.getName(), "onCreate");
+            TableUtils.createTable(connectionSource, Usuario.class);
+
+
+        } catch (SQLException e) {
+            Log.e(Database.class.getName(), "ERROR AL CREAR LA BASE DE DATOS", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion) {
+        try {
+
+            this.db = db;
+
+            TableUtils.dropTable(connectionSource, Usuario.class, true);
+            onCreate(db, connectionSource);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void close() {
+        super.close();
+    }
+
+    public void BeginTransaction() {
+        db.beginTransaction();
+    }
+
+    public void EndTransactionSuccess() {
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+    public void EndTransaction() {
+        db.endTransaction();
+    }
+}

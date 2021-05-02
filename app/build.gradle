@@ -11,8 +11,8 @@ android {
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0"
-
+        versionName "1.0.0"
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -26,6 +26,26 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/LGPL2.1'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/notice.txt'
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -35,6 +55,34 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.navigation:navigation-fragment:2.3.4'
     implementation 'androidx.navigation:navigation-ui:2.3.4'
+
+
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    implementation 'com.squareup.retrofit2:retrofit:2.1.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
+    implementation 'com.squareup.okhttp:okhttp:2.4.0'
+    implementation 'com.google.code.gson:gson:2.6.2'
+    implementation 'cz.msebera.android:httpclient:4.4.1.2'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation 'in.srain.cube:grid-view-with-header-footer:1.0.12'
+    implementation 'com.layer-net:step-indicator:1.1.0'
+    implementation 'com.akexorcist:RoundCornerProgressBar:2.0.3'
+    implementation 'com.google.android.gms:play-services-maps:16.1.0'
+
+    implementation files('libs/commons-io-2.2.jar')
+    implementation files('libs/commons-net-3.1.jar')
+    implementation files('libs/commons-validator-1.4.0.jar')
+    implementation files('libs/httpcore-4.3.1.jar')
+    implementation files('libs/httpmime-4.3.2.jar')
+    implementation files('libs/jackson-annotations-2.2.3.jar')
+    implementation files('libs/jackson-core-2.2.3.jar')
+    implementation files('libs/jackson-databind-2.2.3.jar')
+    implementation files('libs/opencsv-2.2.jar')
+    implementation files('libs/snmp6_1.jar')
+    implementation files('libs/ormlite-core-4.48.jar')
+    implementation files('libs/ormlite-android-4.48.jar')
+    implementation files('libs/ZSDK_ANDROID_API.jar')
+
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
