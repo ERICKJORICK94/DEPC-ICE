@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--537d8d -->
-    <color name="colorPrimary">#0546AD</color>¿
-    <color name="colorPrimaryDark">#0546AD</color>
+    <color name="colorPrimary">#0b5e7b</color>¿
+    <color name="colorPrimaryDark">#0b5e7b</color>
     <color name="colorAccent">#0546AD</color>
     <color name="colorSecundary">#1F94F1</color>
     <color name="colorNaranja">#E64A19</color>
@@ -155,7 +155,7 @@
     <color name="Black">#000000</color>
     <color name="transparent">#00000000</color>
     <color name="slogan">#f70503</color>
-    <color name="white_transparent">#88FFFFFF</color>
+    <color name="white_transparent">#66FFFFFF</color>
     <color name="noSelect">#666666</color>
     <color name="select">#F8F8F8</color>
     <color name="not_select">#F0F8FF</color>

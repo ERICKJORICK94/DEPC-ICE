@@ -36,6 +36,7 @@ import com.smartapp.depc_ice.Activities.Novedades.NovedadesActivity;
 import com.smartapp.depc_ice.Activities.VerDatos.VerDatosActivity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
+import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Utils;
 
@@ -60,6 +61,7 @@ public class MainActivity extends BaseActitity implements BaseActitity.BaseActiv
     private RoundCornerProgressBar progress_ventas;
     int cont=0;
     private LinearLayout linear_ver_datos;
+    private Usuario user;
 
     public void validaSincroPendientes(){
 
@@ -145,18 +147,22 @@ public class MainActivity extends BaseActitity implements BaseActitity.BaseActiv
 
         TextView vendedor = (TextView) header.findViewById(R.id.vendedor);
 
-        /*try {
-            vendedor.setText(""+DataBaseHelper.getUsuario(San32Application.getApplication().getUsuarioDao()).get(0).getVendedorNombre().toUpperCase());
-            if (DataBaseHelper.getUsuario(San32Application.getApplication().getUsuarioDao()).get(0).getAceptaDecimalesEnCantidad() != null){
-                String isAcepta = DataBaseHelper.getUsuario(San32Application.getApplication().getUsuarioDao()).get(0).getAceptaDecimalesEnCantidad();
-                if (isAcepta.equals("S")){
-                    San32Application.getApplication().isDecimalCantidad = true;
+        vendedor.setText("");
+        try {
+             List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
+            if (usuarios != null){
+                if (usuarios.size() > 0) {
+                    user = usuarios.get(0);
+                    if (user.getNombrescompletos() != null){
+                        vendedor.setText(""+user.getNombrescompletos());
+                    }
                 }
+
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }*/
+        }
 
         ((LinearLayout) header.findViewById(R.id.close)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,7 +177,9 @@ public class MainActivity extends BaseActitity implements BaseActitity.BaseActiv
 
                                 try {
                                     DataBaseHelper.deleteUUsuario(DepcApplication.getApplication().getUsuarioDao());
-
+                                    DataBaseHelper.deleteClientes(DepcApplication.getApplication().getClientesDao());
+                                    DataBaseHelper.deleteBodega(DepcApplication.getApplication().getBodegaDao());
+                                    DataBaseHelper.deleteProducto(DepcApplication.getApplication().getProductosDao());
                                 } catch (SQLException e) {
                                     e.printStackTrace();
                                 }

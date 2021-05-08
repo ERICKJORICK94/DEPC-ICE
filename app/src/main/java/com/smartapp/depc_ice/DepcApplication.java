@@ -4,6 +4,9 @@ import android.app.Application;
 import android.os.StrictMode;
 import com.j256.ormlite.dao.Dao;
 import com.smartapp.depc_ice.Database.Database;
+import com.smartapp.depc_ice.Entities.Bodega;
+import com.smartapp.depc_ice.Entities.Clientes;
+import com.smartapp.depc_ice.Entities.Productos;
 import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Utils.Const;
 import java.sql.SQLException;
@@ -18,6 +21,9 @@ public class DepcApplication extends Application {
     private Retrofit mRestAdapter;
     private Database databaseHelper = null;
     private Dao<Usuario, Integer> usuario = null;
+    private Dao<Clientes, Integer> clientes = null;
+    private Dao<Bodega, Integer> bodegas = null;
+    private Dao<Productos, Integer> productos = null;
     private static String latitud = "";
     private static String longitud = "";
 
@@ -54,6 +60,27 @@ public class DepcApplication extends Application {
             usuario = databaseHelper.getDao(Usuario.class);
         }
         return usuario;
+    }
+
+    public Dao<Clientes, Integer> getClientesDao() throws SQLException {
+        if (clientes == null) {
+            clientes = databaseHelper.getDao(Clientes.class);
+        }
+        return clientes;
+    }
+
+    public Dao<Bodega, Integer> getBodegaDao() throws SQLException {
+        if (bodegas == null) {
+            bodegas = databaseHelper.getDao(Bodega.class);
+        }
+        return bodegas;
+    }
+
+    public Dao<Productos, Integer> getProductosDao() throws SQLException {
+        if (productos == null) {
+            productos = databaseHelper.getDao(Productos.class);
+        }
+        return productos;
     }
 
     public void setLatitud(String latitud){

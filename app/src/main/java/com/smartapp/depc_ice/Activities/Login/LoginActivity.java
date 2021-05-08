@@ -19,10 +19,14 @@ import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
 import com.smartapp.depc_ice.Activities.AcercaDe.AcercaDeActivity;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
+import com.smartapp.depc_ice.Activities.Home.MainActivity;
+import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Interface.IUsuario;
+import com.smartapp.depc_ice.Models.LoginModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Const;
 import com.smartapp.depc_ice.Utils.Utils;
@@ -31,6 +35,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -113,10 +119,20 @@ public class LoginActivity extends BaseActitity implements BaseActitity.BaseActi
 
         showProgressWait();
 
+        LoginModel model = new LoginModel();
+        model.setUsuario(""+edt_user.getText().toString().trim());
+        model.setPassword(""+edt_pass.getText().toString().trim());
+        model.setMetodo("Login");
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
         try {
 
             IUsuario request = DepcApplication.getApplication().getRestAdapter().create(IUsuario.class);
-            callUsuario = request.getLogin(""+edt_user.getText().toString(),""+edt_pass.getText().toString());
+            callUsuario = request.getLogin(body);
             callUsuario.enqueue(new Callback<IUsuario.dataUsuario>() {
                 @Override
                 public void onResponse(Call<IUsuario.dataUsuario> call, Response<IUsuario.dataUsuario> response) {
@@ -130,11 +146,20 @@ public class LoginActivity extends BaseActitity implements BaseActitity.BaseActi
                             String mensajeError = Const.ERROR_DEFAULT;
 
                             if (dataUsuario != null) {
-                                if (dataUsuario.getCodigoError().equals(Const.COD_ERROR_SUCCESS)) {
+                                if (dataUsuario.getStatus() == Const.COD_ERROR_SUCCESS) {
+
+                                    if (dataUsuario.getData() != null){
+                                        DataBaseHelper.deleteUUsuario(DepcApplication.getApplication().getUsuarioDao());
+                                        DataBaseHelper.saveUsuario(dataUsuario.getData(),DepcApplication.getApplication().getUsuarioDao());
+                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                        return;
+                                    }
 
                                 }else{
-                                    if (dataUsuario.getMensajeError() != null){
-                                        mensajeError = dataUsuario.getMensajeError();
+                                    if (dataUsuario.getStatus_message() != null){
+                                        mensajeError = dataUsuario.getStatus_message();
                                     }
                                 }
                             }

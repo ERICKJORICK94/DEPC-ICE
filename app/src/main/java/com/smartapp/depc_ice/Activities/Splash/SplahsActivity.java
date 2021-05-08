@@ -34,8 +34,7 @@ public class SplahsActivity extends BaseActitity implements BaseActitity.BaseAct
                 }
             }
 
-            //Intent intent = new Intent(SplahsActivity.this, LoginActivity.class);
-            Intent intent = new Intent(SplahsActivity.this, MainActivity.class);
+            Intent intent = new Intent(SplahsActivity.this, LoginActivity.class);
             startActivity(intent);
 
         } catch (SQLException e) {

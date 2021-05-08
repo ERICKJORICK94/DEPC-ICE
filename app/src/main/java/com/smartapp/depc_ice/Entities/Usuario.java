@@ -10,9 +10,17 @@ public class Usuario {
     @DatabaseField(generatedId = true)
     private int id;
     @DatabaseField
-    private String Codigo;
+    private String usuario;
     @DatabaseField
-    private String Nombre;
+    private String login;
+    @DatabaseField
+    private String nombrescompletos;
+    @DatabaseField
+    private String direccion;
+    @DatabaseField
+    private String telefono;
+    @DatabaseField
+    private String fechanacimiento;
 
     public int getId() {
         return id;
@@ -22,19 +30,51 @@ public class Usuario {
         this.id = id;
     }
 
-    public String getCodigo() {
-        return Codigo;
+    public String getUsuario() {
+        return usuario;
     }
 
-    public void setCodigo(String codigo) {
-        Codigo = codigo;
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
-    public String getNombre() {
-        return Nombre;
+    public String getLogin() {
+        return login;
     }
 
-    public void setNombre(String nombre) {
-        Nombre = nombre;
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getNombrescompletos() {
+        return nombrescompletos;
+    }
+
+    public void setNombrescompletos(String nombrescompletos) {
+        this.nombrescompletos = nombrescompletos;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getFechanacimiento() {
+        return fechanacimiento;
+    }
+
+    public void setFechanacimiento(String fechanacimiento) {
+        this.fechanacimiento = fechanacimiento;
     }
 }

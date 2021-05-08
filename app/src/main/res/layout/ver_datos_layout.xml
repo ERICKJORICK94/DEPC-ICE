@@ -37,7 +37,8 @@
                 android:textStyle="bold"
                 android:textSize="17sp"
                 android:textColor="@color/Black"
-                android:text="EFECTIVIDAD CLIENTE"/>
+                android:text="EFECTIVIDAD USUARIO
+"/>
 
         </LinearLayout>
 

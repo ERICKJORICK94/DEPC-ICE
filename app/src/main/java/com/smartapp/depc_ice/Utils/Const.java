@@ -2,9 +2,8 @@ package com.smartapp.depc_ice.Utils;
 
 public class Const {
 
-    public static final String BASE_URL = "http://181.39.128.194:8092/"; //LUBRISA
-
-    public static final String COD_ERROR_SUCCESS = "00";
+    public static final String BASE_URL = "https://webserver.depconsa.com/";
+    public static final int COD_ERROR_SUCCESS = 200;
 
     //PREFERENCE
     public static final String SHARED_PREFERENCES_NAME = "SHARED_PREFERENCES_NAME";
@@ -12,17 +11,22 @@ public class Const {
     public static final String IS_IMEI = "is_imei";
 
 
-    public static final int LIMIT_REQUEST = 20;
+    public static final int PARAM_MAX_ROW  = 50;
     public static final String APPLICATION_JSON = "application/json; charset=utf-8";
     public static final int PERMISSIONS_REQUEST_READ_PHONE_STATE = 999;
 
     //DATA BASE
     public static final String DATABASE_NAME_ = "DEPC-ICE";
     public static final String TABLE_USUARIO = "Usuario";
+    public static final String TABLE_CLIENTES = "Clientes";
+    public static final String TABLE_BODEGAS = "Bodegas";
+    public static final String TABLE_PRODUCTOS = "Productos";
     public static final String ERROR_DEFAULT = "Ha ocurrido un error intente nuevamente";
     public static final String IS_SIN_IMPRESORA = "is_sin_impresora";
     public static final String IS_SELECCT = "is_select";
     public static final String IS_ZEBRA = "is_zebra";
+    public static final String ERROR_NO_RESULT = "NO SE ENCONTRARON COINCIDENCIAS";
+    public static final String PRODUCT_DETAIL= "product_detail";
 
     //FORMA DE PAGO
     public static final String FORMA_EF = "EF";

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_fondo">
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:orientation="vertical">
+
+       <TextView
+           android:id="@+id/num_rutas"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:background="@color/RoyalBlue"
+           android:gravity="center"
+           android:padding="5dp"
+           android:text="0 rutas encontradas"
+           android:textColor="@color/White"
+           android:textSize="14sp"
+           android:textStyle="bold" />
+
+
+      <androidx.cardview.widget.CardView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          app:cardElevation="6dp"
+          android:layout_margin="10dp">
+
+          <LinearLayout
+
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:padding="12dp">
+
+
+              <LinearLayout
+                  android:id="@+id/linear_fecha_inicial"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:layout_marginBottom="3dp"
+                  android:orientation="vertical">
+
+                  <TextView
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:textSize="13sp"
+                      android:textColor="@color/Black"
+                      android:textStyle="bold"
+                      android:text="DESDE"/>
+
+                  <LinearLayout
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+
+                      <ImageView
+                          android:layout_width="45dp"
+                          android:layout_height="45dp"
+                          android:padding="10dp"
+                          android:src="@drawable/ic_baseline_date_range_24"
+                          android:scaleType="centerCrop"
+                          android:background="@drawable/custom_border"/>
+
+                      <TextView
+                          android:id="@+id/fecha_inicial"
+                          android:layout_width="0dp"
+                          android:layout_height="45dp"
+                          android:layout_weight="1"
+                          android:hint="23/08/2019"
+                          android:gravity="center_vertical"
+                          android:paddingLeft="8dp"
+                          android:paddingRight="8dp"
+                          android:textColor="@color/Black"
+                          android:textSize="14sp"
+                          android:drawableEnd="@drawable/ic_baseline_arrow_drop_down_24"
+                          android:inputType="number"
+                          android:background="@drawable/custom_border"/>
+
+
+                  </LinearLayout>
+
+
+
+              </LinearLayout>
+
+
+              <LinearLayout
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:id="@+id/linear_fecha_final"
+                  android:layout_marginStart="8dp"
+                  android:orientation="vertical">
+
+                  <TextView
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:textSize="13sp"
+                      android:textStyle="bold"
+                      android:textColor="@color/Black"
+                      android:text="HASTA"/>
+
+                  <LinearLayout
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+
+                      <ImageView
+                          android:layout_width="45dp"
+                          android:layout_height="45dp"
+                          android:padding="10dp"
+                          android:src="@drawable/ic_baseline_date_range_24"
+                          android:scaleType="centerCrop"
+                          android:background="@drawable/custom_border"/>
+
+                      <TextView
+                          android:id="@+id/fecha_final"
+                          android:layout_width="0dp"
+                          android:layout_height="45dp"
+                          android:layout_weight="1"
+                          android:hint="23/08/2019"
+                          android:focusableInTouchMode="false"
+                          android:paddingLeft="8dp"
+                          android:gravity="center_vertical"
+                          android:textColor="@color/Black"
+                          android:drawableEnd="@drawable/ic_baseline_arrow_drop_down_24"
+                          android:paddingRight="8dp"
+                          android:textSize="14sp"
+                          android:inputType="number"
+                          android:background="@drawable/custom_border"/>
+
+
+                  </LinearLayout>
+
+
+
+              </LinearLayout>
+
+
+
+          </LinearLayout>
+
+      </androidx.cardview.widget.CardView>
+
+       <ListView
+           android:id="@+id/lista"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content" />
+
+   </LinearLayout>
+
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/material_design_android_floating_action_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="-1dp"
+        android:layout_marginTop="-3dp"
+        android:elevation="4dp"
+        fab:menu_animationDelayPerItem="55"
+        fab:menu_backgroundColor="@color/white_transparent"
+        fab:menu_buttonSpacing="0dp"
+        fab:menu_colorNormal="#da3c2f"
+        fab:menu_colorPressed="#dc4b3f"
+        fab:menu_colorRipple="#99d4d4d4"
+        fab:menu_fab_label="Cerrar"
+        fab:menu_fab_size="normal"
+        fab:menu_icon="@drawable/fab_add"
+        fab:menu_labels_colorNormal="#333"
+        fab:menu_labels_colorPressed="#444"
+        fab:menu_labels_colorRipple="#66efecec"
+        fab:menu_labels_cornerRadius="3dp"
+        fab:menu_labels_ellipsize="none"
+        fab:menu_labels_hideAnimation="@anim/fab_slide_out_to_right"
+        fab:menu_labels_margin="0dp"
+        fab:menu_labels_maxLines="-1"
+        fab:menu_labels_padding="8dp"
+        fab:menu_labels_position="left"
+        fab:menu_labels_showAnimation="@anim/fab_slide_in_from_right"
+        fab:menu_labels_showShadow="true"
+        fab:menu_labels_singleLine="false"
+        fab:menu_labels_textColor="#f2f1f1"
+        fab:menu_labels_textSize="15sp"
+        fab:menu_openDirection="up"
+        fab:menu_shadowColor="@color/White"
+        fab:menu_shadowRadius="4dp"
+        fab:menu_shadowXOffset="1dp"
+        fab:menu_shadowYOffset="4dp"
+        fab:menu_showShadow="true">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/material_design_floating_action_menu_item3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_add_location_alt_24"
+            android:tint="@color/White"
+            fab:fab_label="Crear Ruta"
+            fab:fab_size="mini" />
+
+
+    </com.github.clans.fab.FloatingActionMenu>
+
+
+</RelativeLayout>

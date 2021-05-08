@@ -6,6 +6,9 @@ import android.util.Log;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.smartapp.depc_ice.Entities.Bodega;
+import com.smartapp.depc_ice.Entities.Clientes;
+import com.smartapp.depc_ice.Entities.Productos;
 import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Utils.Const;
 import java.sql.SQLException;
@@ -27,6 +30,9 @@ public class Database extends OrmLiteSqliteOpenHelper {
 
             Log.i(Database.class.getName(), "onCreate");
             TableUtils.createTable(connectionSource, Usuario.class);
+            TableUtils.createTable(connectionSource, Clientes.class);
+            TableUtils.createTable(connectionSource, Bodega.class);
+            TableUtils.createTable(connectionSource, Productos.class);
 
 
         } catch (SQLException e) {
@@ -42,6 +48,9 @@ public class Database extends OrmLiteSqliteOpenHelper {
             this.db = db;
 
             TableUtils.dropTable(connectionSource, Usuario.class, true);
+            TableUtils.dropTable(connectionSource, Clientes.class, true);
+            TableUtils.dropTable(connectionSource, Bodega.class, true);
+            TableUtils.dropTable(connectionSource, Productos.class, true);
             onCreate(db, connectionSource);
 
         } catch (SQLException e) {

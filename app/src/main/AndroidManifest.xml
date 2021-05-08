@@ -25,7 +25,7 @@
         android:name=".DepcApplication"
         android:allowBackup="false"
         android:fullBackupContent="false"
-        android:hardwareAccelerated="false"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -95,6 +95,34 @@
             android:configChanges="screenSize|orientation"
             android:icon="@drawable/back"
             android:label="Crear Cliente"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Activities.Despachos.DespachosActivity"
+            android:configChanges="screenSize|orientation"
+            android:icon="@drawable/back"
+            android:label="Despachos"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Activities.Clientes.ClientesActivity"
+            android:configChanges="screenSize|orientation"
+            android:icon="@drawable/back"
+            android:label="Clientes"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Activities.Productos.ProductosActivity"
+            android:configChanges="screenSize|orientation"
+            android:icon="@drawable/back"
+            android:label="Productos"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Activities.Productos.Detalle.DetalleProductoActivity"
+            android:configChanges="screenSize|orientation"
+            android:icon="@drawable/back"
+            android:label="Detalle"
             android:screenOrientation="portrait" />
 
 
