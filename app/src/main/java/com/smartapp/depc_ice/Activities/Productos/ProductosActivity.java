@@ -152,6 +152,8 @@ public class ProductosActivity extends BaseActitity implements BaseActitity.Base
         View detailProduct = layoutInflater.inflate(R.layout.catalogo_search_layout, null);
         final AlertDialog alert = new AlertDialog.Builder(this).create();
         alert.setView(detailProduct);
+        alert.setCancelable(false);
+        alert.setCanceledOnTouchOutside(false);
 
         ImageView back = (ImageView) detailProduct.findViewById(R.id.back);
         EditText search = (EditText) detailProduct.findViewById(R.id.search);
@@ -164,6 +166,7 @@ public class ProductosActivity extends BaseActitity implements BaseActitity.Base
 
                 buscarBodega = v.getText().toString().trim();
                 //condition(v.getText().toString().trim());
+                isSearch = true;
                 showList();
                 alert.dismiss();
 
@@ -341,6 +344,7 @@ public class ProductosActivity extends BaseActitity implements BaseActitity.Base
                 catalogoList = DataBaseHelper.getBodega(DepcApplication.getApplication().getBodegaDao());
             }
 
+            isSearch = false;
             if (catalogoList != null) {
                 if (catalogoList.size() > 0) {
                     showCatalogo(catalogoList);
