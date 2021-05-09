@@ -8,6 +8,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.smartapp.depc_ice.Entities.Bodega;
 import com.smartapp.depc_ice.Entities.Clientes;
+import com.smartapp.depc_ice.Entities.Direcciones;
 import com.smartapp.depc_ice.Entities.Productos;
 import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Entities.Zonas;
@@ -35,6 +36,7 @@ public class Database extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Bodega.class);
             TableUtils.createTable(connectionSource, Productos.class);
             TableUtils.createTable(connectionSource, Zonas.class);
+            TableUtils.createTable(connectionSource, Direcciones.class);
 
 
         } catch (SQLException e) {
@@ -54,6 +56,7 @@ public class Database extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, Bodega.class, true);
             TableUtils.dropTable(connectionSource, Productos.class, true);
             TableUtils.dropTable(connectionSource, Zonas.class, true);
+            TableUtils.dropTable(connectionSource, Direcciones.class, true);
             onCreate(db, connectionSource);
 
         } catch (SQLException e) {

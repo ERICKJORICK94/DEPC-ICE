@@ -237,8 +237,23 @@ public class EditarClientesActivity extends BaseActitity implements BaseActitity
 
 
         String[] itemsFormaPago = new String[]{"CONTADO", "CRÉDITO"};
+
+        int index = 0;
+        if (cliente != null){
+            if (cliente.getForma_pago() != null){
+                if (cliente.getForma_pago().equals("4")){
+                    index = 0;
+                }else if (cliente.getForma_pago().equals("5")){
+                    index = 1;
+                }
+            }
+        }
+
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, itemsFormaPago);
         forma_pago.setAdapter(adapter);
+        forma_pago.setSelection(index);
+        indexFormaPago = index;
         forma_pago.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -252,8 +267,24 @@ public class EditarClientesActivity extends BaseActitity implements BaseActitity
         });
 
         String[] itemsContribuyente = new String[]{"NO", "SÍ"};
+
+
+        int indexCon = 0;
+        if (cliente != null){
+            if (cliente.getContribuyente_especial() != null){
+                if (cliente.getContribuyente_especial().equals("0")){
+                    indexCon = 0;
+                }else if (cliente.getContribuyente_especial().equals("1")){
+                    indexCon = 1;
+                }
+            }
+        }
+
+
         ArrayAdapter<String> adapterContribuyente = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, itemsContribuyente);
         contribuyente.setAdapter(adapterContribuyente);
+        contribuyente.setSelection(indexCon);
+        indexContribuyente = indexCon;
         contribuyente.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -268,8 +299,21 @@ public class EditarClientesActivity extends BaseActitity implements BaseActitity
 
 
         String[] itemsTipoCliente = new String[]{"PRECONTADO", "CONTADO"};
+
+        int indexpre = 0;
+        if (cliente != null){
+            if (cliente.getTipo_cliente() != null){
+                if (cliente.getTipo_cliente().equals("0")){
+                    indexpre = 0;
+                }else if (cliente.getTipo_cliente().equals("1")){
+                    indexpre = 1;
+                }
+            }
+        }
         ArrayAdapter<String> adapterTipoCliente= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, itemsTipoCliente);
         tipo_cliente.setAdapter(adapterTipoCliente);
+        tipo_cliente.setSelection(indexpre);
+        indexTipoCliente = indexpre;
         tipo_cliente.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -382,13 +426,25 @@ public class EditarClientesActivity extends BaseActitity implements BaseActitity
             if (zonas != null) {
                 if (zonas.size() > 0) {
 
+                    int index = 0;
+                    int contador = 0;
                    List<String> items= new ArrayList<String>();
                     for (Zonas z : zonas){
                         items.add(z.getDescripcion());
+                        if (z.getZona_id() != null){
+                            if (cliente.getZona_id() != null){
+                                if (cliente.getZona_id().equals(""+z.getZona_id())){
+                                    index = contador;
+                                }
+                            }
+                        }
+                        contador++;
                     }
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
                     zona.setAdapter(adapter);
+                    zona.setSelection(index);
+                    indexZonas = index;
                     zona.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

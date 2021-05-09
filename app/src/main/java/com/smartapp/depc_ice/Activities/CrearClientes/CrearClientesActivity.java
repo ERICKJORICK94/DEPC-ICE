@@ -112,9 +112,10 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
         ci.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
+                if(isChecked) {
                     cedula.setHint("Cédula");
                     tipo_id_tercero = "CI";
+                }
 
             }
         });
@@ -122,9 +123,10 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
         ruc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
+                if(isChecked) {
                     cedula.setHint("Ruc");
-                     tipo_id_tercero = "RUC";
+                    tipo_id_tercero = "RUC";
+                }
 
             }
         });
@@ -132,9 +134,10 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
         pas.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
+                if(isChecked) {
                     cedula.setHint("Pasaporte");
-                tipo_id_tercero = "PAS";
+                    tipo_id_tercero = "PAS";
+                }
 
             }
         });
@@ -246,7 +249,7 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
                     return;
                 }
 
-                if(indexZonas > 0 ){
+                if(indexZonas < 0 ){
                     Toast.makeText(CrearClientesActivity.this, "Seleccione una zona", Toast.LENGTH_LONG).show();
                     return;
                 }

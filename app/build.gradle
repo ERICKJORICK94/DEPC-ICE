@@ -6,6 +6,15 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
+    signingConfigs {
+        release {
+            storeFile file('/Users/carsegs.a/Documents/GitHub/DEPCICE/depc_oce.jks')
+            storePassword 'depc_oce'
+            keyAlias 'depc_oce'
+            keyPassword 'depc_oce'
+        }
+    }
+
     defaultConfig {
         applicationId "com.smartapp.depc_ice"
         minSdkVersion 23
@@ -20,6 +29,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -70,6 +80,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
     implementation 'com.github.clans:fab:1.6.2'
     implementation 'com.astuetz:pagerslidingtabstrip:1.0.1'
+    implementation 'com.github.quentin7b:android-location-tracker:3.2'
+    implementation 'com.github.quentin7b:android-location-tracker:3.2'
 
     implementation files('libs/commons-io-2.2.jar')
     implementation files('libs/commons-net-3.1.jar')

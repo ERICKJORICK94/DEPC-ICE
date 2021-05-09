@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="15dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="10dp"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="15dp"
+                    android:text="COMPLETE EL FORMULARIO DE REGISTRO"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textColor="@color/DarkGray"
+                    android:text="Cliente"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/custom_border"
+                    android:focusableInTouchMode="true"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_baseline_perm_contact_calendar_24"
+                        android:scaleType="centerCrop"
+                        android:background="@drawable/custom_border"/>
+
+                    <LinearLayout
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginBottom="3dp"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/tv_cliente"
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:text="Nueva"
+                            android:textSize="15sp"/>
+
+                        <TextView
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:hint=" - "
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:textSize="15sp"/>
+
+                        <TextView
+                            android:id="@+id/tv_nombre"
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:hint="nombre cliente"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:textSize="15sp"
+                            />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/DarkGray"
+                    android:text="DIRECCIÓN"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusableInTouchMode="true"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="45dp"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_baseline_location_on_24"
+                        android:scaleType="centerInside"
+                        android:background="@drawable/custom_border"/>
+
+                    <LinearLayout
+                        android:layout_gravity="center_vertical"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:background="@drawable/custom_border"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:visibility="gone"
+                            android:id="@+id/tv_secuencia"
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:text=""
+                            android:textSize="15sp"
+                            />
+
+
+                        <EditText
+                            android:id="@+id/et_direccion"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nextFocusDown="@id/nombre"
+                            android:hint="Dirección"
+                            android:minHeight="45dp"
+                            android:inputType="textCapWords"
+                            android:digits="0,1,2,3,4,5,6,7,8,9,*,qwe=.@#?()+%:!/\  rtzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,_,-"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:textSize="15sp"
+                            android:background="@drawable/custom_border"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/DarkGray"
+                    android:text="CIUDAD"/>
+
+                <LinearLayout
+                    android:id="@+id/ll_ruta_ciudad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/custom_border"
+                    android:focusableInTouchMode="true"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:src="@drawable/ic_baseline_location_city_24"
+                        android:scaleType="centerCrop"
+                        android:padding="3dp"
+                        android:background="@drawable/custom_border" />
+
+                    <LinearLayout
+                        android:layout_gravity="center_vertical"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:visibility="gone"
+                            android:id="@+id/tv_ruta"
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:text="ruta"
+                            android:textSize="15sp"/>
+
+                        <Spinner
+                            android:id="@+id/sp_ciudad"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:hint="Latitud: "
+                            android:spinnerMode="dialog"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/DarkGray"
+                    android:text="Posicionamiento GPS"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusableInTouchMode="true"
+                    android:background="@drawable/custom_border"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_baseline_location_on_24"
+                        android:scaleType="centerCrop"
+                        android:layout_gravity="center_vertical"
+                       />
+                    <LinearLayout
+                        android:id="@+id/ll_lat_lon"
+                        android:layout_gravity="center_vertical"
+                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:background="@drawable/custom_border"
+                        android:orientation="vertical"
+                        android:layout_weight="7">
+                        <LinearLayout
+                            android:layout_marginBottom="3dp"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_gravity="center_vertical"
+                                android:layout_width="0dp"
+                                android:layout_weight="5"
+                                android:layout_height="wrap_content"
+                                android:hint="Latitud:"
+                                android:textStyle="bold"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:textSize="13sp"/>
+                            <TextView
+                                android:id="@+id/tv_lat"
+                                android:layout_gravity="center_vertical"
+                                android:layout_width="0dp"
+                                android:layout_weight="5"
+                                android:layout_height="wrap_content"
+                                android:hint=""
+                                android:maxLines="1"
+                                android:ellipsize="end"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:textSize="13sp"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_marginTop="1dp"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_gravity="center_vertical"
+                                android:layout_width="0dp"
+                                android:layout_weight="5"
+                                android:layout_height="wrap_content"
+                                android:hint="Longitud:"
+                                android:textStyle="bold"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:textSize="13sp"/>
+                            <TextView
+                                android:id="@+id/tv_lon"
+                                android:layout_gravity="center_vertical"
+                                android:layout_width="0dp"
+                                android:layout_weight="5"
+                                android:maxLines="1"
+                                android:ellipsize="end"
+                                android:layout_height="wrap_content"
+                                android:hint=""
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:textSize="13sp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:visibility="gone"
+                        android:id="@+id/ll_no_lat_lon"
+                        android:layout_gravity="center_vertical"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:orientation="vertical"
+                        android:layout_weight="7">
+                        <TextView
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:hint="No tiene sensada la dirección: "
+                            android:textStyle="bold"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:textSize="15sp"/>
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/ib_ver_mapa"
+                        android:layout_gravity="center_vertical"
+                        android:background="@color/CadetBlue"
+                        android:drawableStart="@drawable/ic_map"
+                        android:layout_width="wrap_content"
+                        android:text="VER MAPA"
+                        android:gravity="center"
+                        android:textColor="@color/White"
+                        android:paddingEnd="10dp"
+                        android:textSize="12sp"
+                        android:layout_marginRight="3dp"
+                        android:layout_height="45dp">
+                    </TextView>
+                    <ImageButton
+                        android:id="@+id/ib_tomar_gps"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="3dp"
+                        android:background="@color/CadetBlue"
+                        android:src="@drawable/ic_gps_fixed_black_24dp"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp">
+                    </ImageButton>
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/bt_actualizar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="GUARDAR"
+                    android:textColor="@color/White"
+                    android:background="@color/RoyalBlue"
+                    android:layout_marginEnd="8dp"/>
+
+
+                    <LinearLayout
+                        android:id="@+id/btn_whatsapp"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:background="@color/Whatsapp_color"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:layout_width="25sp"
+                            android:layout_height="25sp"
+                            android:src="@drawable/whatsapp"
+                            android:scaleType="centerInside"
+                            android:layout_marginEnd="5dp"/>
+
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="COMPARTR"
+                        android:textSize="12sp"
+                        android:textColor="@color/White" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </ScrollView>
+</LinearLayout>

@@ -182,6 +182,7 @@ public class MainActivity extends BaseActitity implements BaseActitity.BaseActiv
                                     DataBaseHelper.deleteBodega(DepcApplication.getApplication().getBodegaDao());
                                     DataBaseHelper.deleteProducto(DepcApplication.getApplication().getProductosDao());
                                     DataBaseHelper.deleteZonas(DepcApplication.getApplication().getZonasDao());
+                                    DataBaseHelper.deleteDirecciones(DepcApplication.getApplication().getDireccionesDao());
                                 } catch (SQLException e) {
                                     e.printStackTrace();
                                 }

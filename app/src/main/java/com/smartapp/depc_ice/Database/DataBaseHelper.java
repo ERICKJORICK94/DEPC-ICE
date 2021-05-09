@@ -5,6 +5,7 @@ import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.smartapp.depc_ice.Entities.Bodega;
 import com.smartapp.depc_ice.Entities.Clientes;
+import com.smartapp.depc_ice.Entities.Direcciones;
 import com.smartapp.depc_ice.Entities.Productos;
 import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Entities.Zonas;
@@ -219,11 +220,52 @@ public class DataBaseHelper {
         deleteBuilder.delete();
     }
 
+
     public static List<Zonas> getZonas(Dao<Zonas, Integer> userDao) throws SQLException {
 
         List<Zonas> usuarios = null;
         String query = "SELECT * FROM " + Const.TABLE_ZONAS;
         GenericRawResults<Zonas> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    //HELPER DIRECCIONES
+    public static void saveDirecciones(Direcciones emp, Dao<Direcciones, Integer> userDao) {
+        try {
+            userDao.create(emp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteDirecciones(Dao<Direcciones, Integer> userDao) throws SQLException {
+        DeleteBuilder<Direcciones, Integer> deleteBuilder = userDao.deleteBuilder();
+        deleteBuilder.delete();
+    }
+
+    public static void deleteDireccionesById(Dao<Direcciones, Integer> cabeceraDao, String cliente_id) throws SQLException {
+        DeleteBuilder<Direcciones, Integer> deleteBuilder = cabeceraDao.deleteBuilder();
+        deleteBuilder.where().eq("cliente_id",cliente_id);
+        deleteBuilder.delete();
+    }
+
+    public static List<Direcciones> getDirecciones(Dao<Direcciones, Integer> userDao) throws SQLException {
+
+        List<Direcciones> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_DIRECCIONES;
+        GenericRawResults<Direcciones> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    public static List<Direcciones> getDireccionesBYIdCliente(Dao<Direcciones, Integer> userDao, String idCliente) throws SQLException {
+
+        List<Direcciones> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_DIRECCIONES+" WHERE cliente_id = '"+idCliente+"'";
+        GenericRawResults<Direcciones> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
         usuarios = rawResults.getResults();
 
         return usuarios;

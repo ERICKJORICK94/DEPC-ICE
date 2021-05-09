@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:background="@color/color_fondo">
+
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="15dp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/nombre"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:text="NOMBRE DE LA EMPRESE SUCURSAL"/>
+
+            <TextView
+                android:id="@+id/direccion"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="DIRECCIÓN: Sauces 4 mz 369 villa 54"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/codigo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="COD: 12352343"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/ruc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="RUC: 098765432"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/cedula"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="12sp"
+                android:text="CÉDULA: 098765432"/>
+
+            <TextView
+                android:id="@+id/comentario"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="COMENTARIO: N/A"
+                android:textSize="12sp" />
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:text="DIRECCIONES DE ENTREGA"/>
+
+            <ListView
+                android:id="@+id/lista"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></ListView>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="15dp"
+                android:visibility="gone"
+                android:background="@color/DarkGray"/>
+
+            <Button
+                android:id="@+id/bt_crear_direccion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@color/RoyalBlue"
+                android:textColor="@color/White"
+                android:padding="5dp"
+                android:elevation="5dp"
+                android:textSize="12dp"
+                android:text="CREAR DIRECCiÓN"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+</LinearLayout>
