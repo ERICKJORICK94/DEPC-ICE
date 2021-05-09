@@ -8,6 +8,7 @@ import com.smartapp.depc_ice.Entities.Bodega;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.Productos;
 import com.smartapp.depc_ice.Entities.Usuario;
+import com.smartapp.depc_ice.Entities.Zonas;
 import com.smartapp.depc_ice.Utils.Const;
 import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
@@ -24,8 +25,10 @@ public class DepcApplication extends Application {
     private Dao<Clientes, Integer> clientes = null;
     private Dao<Bodega, Integer> bodegas = null;
     private Dao<Productos, Integer> productos = null;
+    private Dao<Zonas, Integer> zonas = null;
     private static String latitud = "";
     private static String longitud = "";
+    private static Clientes cliente = null;
 
     @Override
     public void onCreate() {
@@ -81,6 +84,21 @@ public class DepcApplication extends Application {
             productos = databaseHelper.getDao(Productos.class);
         }
         return productos;
+    }
+
+    public Dao<Zonas, Integer> getZonasDao() throws SQLException {
+        if (zonas == null) {
+            zonas = databaseHelper.getDao(Zonas.class);
+        }
+        return zonas;
+    }
+
+    public Clientes getCliente() {
+        return this.cliente;
+    }
+
+    public void setCliente(Clientes cliente) {
+        this.cliente = cliente;
     }
 
     public void setLatitud(String latitud){

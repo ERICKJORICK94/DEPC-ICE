@@ -10,6 +10,7 @@ import com.smartapp.depc_ice.Entities.Bodega;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.Productos;
 import com.smartapp.depc_ice.Entities.Usuario;
+import com.smartapp.depc_ice.Entities.Zonas;
 import com.smartapp.depc_ice.Utils.Const;
 import java.sql.SQLException;
 
@@ -33,6 +34,7 @@ public class Database extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Clientes.class);
             TableUtils.createTable(connectionSource, Bodega.class);
             TableUtils.createTable(connectionSource, Productos.class);
+            TableUtils.createTable(connectionSource, Zonas.class);
 
 
         } catch (SQLException e) {
@@ -51,6 +53,7 @@ public class Database extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, Clientes.class, true);
             TableUtils.dropTable(connectionSource, Bodega.class, true);
             TableUtils.dropTable(connectionSource, Productos.class, true);
+            TableUtils.dropTable(connectionSource, Zonas.class, true);
             onCreate(db, connectionSource);
 
         } catch (SQLException e) {

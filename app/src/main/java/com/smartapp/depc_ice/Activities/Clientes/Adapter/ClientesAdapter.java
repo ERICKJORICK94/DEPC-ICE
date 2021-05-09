@@ -71,7 +71,11 @@ public class ClientesAdapter extends BaseAdapter {
         }
 
         Clientes entity = cliente.get(position);
-        viewHolder.codigo.setText("COD: "+entity.getCodigo_cliente_id());
+        String codigo = "";
+        if (entity.getCodigo_cliente_id() != null){
+            codigo = entity.getCodigo_cliente_id();
+        }
+        viewHolder.codigo.setText("COD: "+codigo);
         viewHolder.name.setText("");
         if (entity.getNombre_comercial() != null) {
             viewHolder.name.setText("" + entity.getNombre_comercial());

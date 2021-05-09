@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.appcompat.widget.SearchView;
 import com.google.gson.Gson;
 import com.smartapp.depc_ice.Activities.Clientes.Adapter.ClientesAdapter;
+import com.smartapp.depc_ice.Activities.DetalleCliente.DetalleClienteActivity;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
@@ -49,6 +50,7 @@ public class ClientesActivity extends BaseActitity implements BaseActitity.BaseA
     private boolean isSearch = false;
     private String condition = "";
     private String buscar = "";
+    private List<Clientes> clientesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,18 +160,29 @@ public class ClientesActivity extends BaseActitity implements BaseActitity.BaseA
 
                                                           for (Clientes cl : clientes){
 
+
                                                               boolean isFlag = true;
                                                               if (cl.getNombre_comercial() != null){
-                                                                  if (cl.getNombre_tercero() == null){
-                                                                      cl.setNombre_tercero(""+cl.getNombre_comercial());
-                                                                      isFlag = false;
+                                                                  if (cl.getNombre_comercial().length() > 0) {
+                                                                      if (cl.getNombre_tercero() == null) {
+                                                                          cl.setNombre_tercero("" + cl.getNombre_comercial());
+                                                                          isFlag = false;
+                                                                      }else if (cl.getNombre_tercero().length() == 0) {
+                                                                          cl.setNombre_tercero("" + cl.getNombre_comercial());
+                                                                          isFlag = false;
+                                                                      }
                                                                   }
                                                               }
 
                                                               if (cl.getNombre_tercero() != null){
-                                                                  if (cl.getNombre_comercial() == null){
-                                                                      cl.setNombre_comercial(""+cl.getNombre_tercero());
-                                                                      isFlag = false;
+                                                                  if (cl.getNombre_tercero().length() > 0) {
+                                                                      if (cl.getNombre_comercial() == null) {
+                                                                          cl.setNombre_comercial("" + cl.getNombre_tercero());
+                                                                          isFlag = false;
+                                                                      }else if (cl.getNombre_comercial().length() == 0) {
+                                                                          cl.setNombre_comercial("" + cl.getNombre_tercero());
+                                                                          isFlag = false;
+                                                                      }
                                                                   }
                                                               }
 
@@ -231,7 +244,7 @@ public class ClientesActivity extends BaseActitity implements BaseActitity.BaseA
 
         hideProgressWait();
         try {
-                List<Clientes> clientesList = null;
+                clientesList = null;
                 if (isSearch) {
                     String nuevaCondicion = "nombre_tercero like ('%"+buscar+"%') or nombre_comercial like ('%"+buscar+"%') or codigo_cliente_id like ('%"+buscar+"%') or direccion like ('%"+buscar+"%')";
                     clientesList = DataBaseHelper.getClientesSearch(DepcApplication.getApplication().getClientesDao(), "" + nuevaCondicion);
@@ -246,10 +259,10 @@ public class ClientesActivity extends BaseActitity implements BaseActitity.BaseA
                         lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                /*Intent intent = new Intent(com.app.san_32.Activities.ClientesActivity.this, DetalleClienteActivity.class);
-                                intent.putExtra(Const.DETALLE_CLIENTE, listaClientes.get(position));
-                                intent.putExtra(Const.CODIGO_PADRE, ""+getCodigoPadre());
-                                startActivity(intent);*/
+                                Intent intent = new Intent(ClientesActivity.this, DetalleClienteActivity.class);
+                                intent.putExtra(Const.DETALLE_CLIENTE, clientesList.get(position));
+                                intent.putExtra("consultar", "0");
+                                startActivity(intent);
                             }
                         });
 

@@ -38,6 +38,7 @@ import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.R;
+import com.smartapp.depc_ice.Utils.Const;
 import com.smartapp.depc_ice.Utils.Utils;
 
 import java.sql.SQLException;
@@ -180,6 +181,7 @@ public class MainActivity extends BaseActitity implements BaseActitity.BaseActiv
                                     DataBaseHelper.deleteClientes(DepcApplication.getApplication().getClientesDao());
                                     DataBaseHelper.deleteBodega(DepcApplication.getApplication().getBodegaDao());
                                     DataBaseHelper.deleteProducto(DepcApplication.getApplication().getProductosDao());
+                                    DataBaseHelper.deleteZonas(DepcApplication.getApplication().getZonasDao());
                                 } catch (SQLException e) {
                                     e.printStackTrace();
                                 }
@@ -288,8 +290,10 @@ public class MainActivity extends BaseActitity implements BaseActitity.BaseActiv
                             if (fields[4].length() > 0) {
                                 Intent intent = new Intent(MainActivity.this, Class.forName(fields[4]));
                                 startActivity(intent);
+                                return;
                             }
                         }
+                        showAlert(Const.EN_CONSTRUCCION);
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }

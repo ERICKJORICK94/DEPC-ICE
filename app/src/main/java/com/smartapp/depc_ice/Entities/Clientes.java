@@ -4,8 +4,10 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.smartapp.depc_ice.Utils.Const;
 
+import java.io.Serializable;
+
 @DatabaseTable(tableName = Const.TABLE_CLIENTES)
-public class Clientes {
+public class Clientes implements Serializable {
 
     @DatabaseField(generatedId = true)
     private int id;
@@ -137,6 +139,8 @@ public class Clientes {
     private String zona;
     @DatabaseField
     private String zona_id;
+    @DatabaseField
+    private String cliente_id;
 
     public int getId() {
         return id;
@@ -656,5 +660,13 @@ public class Clientes {
 
     public void setZona_id(String zona_id) {
         this.zona_id = zona_id;
+    }
+
+    public String getCliente_id() {
+        return cliente_id;
+    }
+
+    public void setCliente_id(String cliente_id) {
+        this.cliente_id = cliente_id;
     }
 }

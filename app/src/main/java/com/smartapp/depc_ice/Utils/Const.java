@@ -21,12 +21,16 @@ public class Const {
     public static final String TABLE_CLIENTES = "Clientes";
     public static final String TABLE_BODEGAS = "Bodegas";
     public static final String TABLE_PRODUCTOS = "Productos";
+    public static final String TABLE_ZONAS = "Zonas";
     public static final String ERROR_DEFAULT = "Ha ocurrido un error intente nuevamente";
     public static final String IS_SIN_IMPRESORA = "is_sin_impresora";
     public static final String IS_SELECCT = "is_select";
     public static final String IS_ZEBRA = "is_zebra";
     public static final String ERROR_NO_RESULT = "NO SE ENCONTRARON COINCIDENCIAS";
+    public static final String ERROR_COBERTURA = "NO HAY COBERTURA EN ESTE MOMENTO INTENTE SINCRONIZAR MAS ADELANTE";
     public static final String PRODUCT_DETAIL= "product_detail";
+    public static final String DETALLE_CLIENTE = "detalle_cliente";
+    public static final String EN_CONSTRUCCION = "En construcción";
 
     //FORMA DE PAGO
     public static final String FORMA_EF = "EF";

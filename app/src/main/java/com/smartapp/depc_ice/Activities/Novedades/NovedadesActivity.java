@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.R;
+import com.smartapp.depc_ice.Utils.Const;
 import com.smartapp.depc_ice.Utils.Utils;
 
 public class NovedadesActivity extends BaseActitity implements BaseActitity.BaseActivityCallbacks{
@@ -19,7 +20,7 @@ public class NovedadesActivity extends BaseActitity implements BaseActitity.Base
         layout = addLayout(R.layout.layout_novedades);
         Utils.SetStyleActionBarTitle(this);
         layoutInflater = LayoutInflater.from(this);
-
+        setTextLoading(Const.EN_CONSTRUCCION);
     }
 
     @Override

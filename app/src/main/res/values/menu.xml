@@ -37,4 +37,45 @@
             <activity>com.smartapp.depc_ice.Activities.Productos.ProductosActivity</activity>
         </item>
     </array>
+
+
+    <array name="menu_cliente_array">
+        <item>
+            <code>1</code>
+            <name>Detalle&#160;Cliente</name>
+            <image>@drawable/ic_baseline_perm_contact_calendar_24</image>
+            <activity>com.smartapp.depc_ice.Activities.DetalleCliente.EditarClientesActivity</activity>
+        </item>
+        <item>
+            <code>2</code>
+            <name>Registro&#160;de&#160;Pedidos</name>
+            <image>@drawable/ic_baseline_shopping_basket_24</image>
+            <activity></activity>
+        </item>
+        <item>
+            <code>3</code>
+            <name>Listado&#160;de&#160;Pedidos</name>
+            <image>@drawable/ic_baseline_playlist_add_check_24</image>
+            <activity></activity>
+        </item>
+        <item>
+            <code>4</code>
+            <name>Estado&#160;de&#160;Cuenta</name>
+            <image>@drawable/ic_baseline_post_add_24</image>
+            <activity></activity>
+        </item>
+        <item>
+            <code>5</code>
+            <name>Anticipos</name>
+            <image>@drawable/ic_baseline_attach_money_24</image>
+            <activity></activity>
+        </item>
+        <item>
+            <code>6</code>
+            <name>Ubicaciones</name>
+            <image>@drawable/ic_baseline_add_location_alt_24</image>
+            <activity></activity>
+        </item>
+    </array>
+
 </resources>

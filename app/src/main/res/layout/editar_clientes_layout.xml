@@ -18,14 +18,6 @@
             android:padding="15dp"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:elevation="10dp"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="15dp"
-                android:text="COMPLETE EL FORMULARIO DE REGISTRO"/>
             <LinearLayout
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="8dp"
@@ -552,16 +544,38 @@
                 </RadioGroup>
             </LinearLayout>
 
-            <Button
-                android:id="@+id/registrar"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="REGISTRAR"
-                android:textColor="@color/White"
-                android:background="@color/colorPrimary"
-                android:elevation="10dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"/>
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/actualizar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="ACTUALIZAR"
+                    android:textColor="@color/White"
+                    android:background="@color/colorPrimary"
+                    android:elevation="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginBottom="15dp"/>
+
+                <Button
+                    android:id="@+id/eliminar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="ELIMINAR"
+                    android:textColor="@color/White"
+                    android:background="@color/DarkRed"
+                    android:elevation="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginBottom="15dp"/>
+
+            </LinearLayout>
 
 
         </LinearLayout>

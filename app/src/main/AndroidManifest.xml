@@ -125,6 +125,20 @@
             android:label="Detalle"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".Activities.DetalleCliente.DetalleClienteActivity"
+            android:configChanges="screenSize|orientation"
+            android:icon="@drawable/back"
+            android:label="Detalle Cliente"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Activities.DetalleCliente.EditarClientesActivity"
+            android:configChanges="screenSize|orientation"
+            android:icon="@drawable/back"
+            android:label="Detalle Cliente"
+            android:screenOrientation="portrait" />
+
 
     </application>
 
