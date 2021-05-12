@@ -134,7 +134,7 @@
                             android:nextFocusDown="@id/nombre"
                             android:hint="Dirección"
                             android:minHeight="45dp"
-                            android:inputType="textCapWords"
+                            android:inputType="textCapCharacters"
                             android:digits="0,1,2,3,4,5,6,7,8,9,*,qwe=.@#?()+%:!/\  rtzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,_,-"
                             android:paddingLeft="8dp"
                             android:paddingRight="8dp"
@@ -143,16 +143,261 @@
                     </LinearLayout>
 
                 </LinearLayout>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="13sp"
                     android:layout_marginTop="15dp"
                     android:textColor="@color/DarkGray"
-                    android:text="CIUDAD"/>
+                    android:text="TELÉFONO"/>
 
                 <LinearLayout
-                    android:id="@+id/ll_ruta_ciudad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusableInTouchMode="true"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:background="@drawable/custom_border"
+                        android:padding="10dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_baseline_phone_24" />
+
+                    <EditText
+                        android:id="@+id/celular"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:hint="Teléfono"
+                        android:nextFocusDown="@id/correo"
+                        android:maxLength="10"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:inputType="phone"
+                        android:textSize="15sp"
+                        android:background="@drawable/custom_border"/>
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/DarkGray"
+                    android:text="CORREO"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusableInTouchMode="true"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:background="@drawable/custom_border"
+                        android:padding="10dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_baseline_email_24" />
+
+                    <EditText
+                        android:id="@+id/correo"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:hint="Correo"
+                        android:digits="0,1,2,3,4,5,6,7,8,9,*,qwe=.@#?()+%:!/\  rtzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,_,-"
+                        android:maxLength="50"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:inputType="textEmailAddress"
+                        android:textSize="15sp"
+                        android:background="@drawable/custom_border"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/DarkGray"
+                    android:text="DÍAS VISTADO"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusableInTouchMode="true"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="45dp"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_baseline_calendar_today_24"
+                        android:scaleType="centerInside"
+                        android:background="@drawable/custom_border"/>
+
+                    <LinearLayout
+                        android:layout_gravity="center_vertical"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:background="@drawable/custom_border"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:visibility="gone"
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:text=""
+                            android:textSize="15sp"
+                            />
+
+
+                        <EditText
+                            android:id="@+id/dias"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nextFocusDown="@id/nombre"
+                            android:hint="Días vistas"
+                            android:minHeight="45dp"
+                            android:inputType="number"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:textSize="15sp"
+                            android:background="@drawable/custom_border"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/DarkGray"
+                    android:text="FOTO"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusableInTouchMode="true"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="45dp"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_baseline_image_24"
+                        android:scaleType="centerInside"
+                        android:background="@drawable/custom_border"/>
+
+                    <LinearLayout
+                        android:layout_gravity="center_vertical"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:background="@drawable/custom_border"
+                        android:orientation="horizontal">
+
+
+                        <EditText
+                            android:id="@+id/nombre_foto"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:nextFocusDown="@id/nombre"
+                            android:text="FOTO DE UBICACIÓN"
+                            android:minHeight="45dp"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:textSize="15sp"
+                            android:focusableInTouchMode="false"
+                            android:editable="false"
+                            android:clickable="false"
+                            android:background="@drawable/custom_border"/>
+
+                        <TextView
+                            android:id="@+id/ver_foto"
+                            android:layout_width="60dp"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerInside"
+                            android:tint="@color/colorPrimary"
+                            android:text="VER FOTO"
+                            android:gravity="center"
+                            android:textSize="14sp"
+                            android:textColor="@color/White"
+                            android:background="@color/colorPrimary"/>
+
+                        <TextView
+                            android:id="@+id/agregar"
+                            android:layout_width="65dp"
+                            android:layout_height="match_parent"
+                            android:text="AÑADIR FOTO"
+                            android:gravity="center"
+                            android:textSize="14sp"
+                            android:layout_marginStart="5dp"
+                            android:textColor="@color/White"
+                            android:background="@color/RoyalBlue"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/DarkGray"
+                    android:text="CABINET"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/custom_border"
+                    android:focusableInTouchMode="true"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:src="@drawable/congelador"
+                        android:scaleType="centerCrop"
+                        android:padding="3dp"
+                        android:background="@drawable/custom_border" />
+
+                    <LinearLayout
+                        android:layout_gravity="center_vertical"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal">
+
+                        <Spinner
+                            android:id="@+id/congelador"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:spinnerMode="dialog"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/DarkGray"
+                    android:text="ZONA"/>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/custom_border"
@@ -184,11 +429,10 @@
                             android:textSize="15sp"/>
 
                         <Spinner
-                            android:id="@+id/sp_ciudad"
+                            android:id="@+id/zona"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
-                            android:hint="Latitud: "
                             android:spinnerMode="dialog"
                             android:paddingLeft="8dp"
                             android:paddingRight="8dp"
@@ -242,7 +486,7 @@
                                 android:textStyle="bold"
                                 android:paddingLeft="8dp"
                                 android:paddingRight="8dp"
-                                android:textSize="13sp"/>
+                                android:textSize="12sp"/>
                             <TextView
                                 android:id="@+id/tv_lat"
                                 android:layout_gravity="center_vertical"
@@ -270,7 +514,7 @@
                                 android:textStyle="bold"
                                 android:paddingLeft="8dp"
                                 android:paddingRight="8dp"
-                                android:textSize="13sp"/>
+                                android:textSize="12sp"/>
                             <TextView
                                 android:id="@+id/tv_lon"
                                 android:layout_gravity="center_vertical"
@@ -309,7 +553,7 @@
                         android:background="@color/CadetBlue"
                         android:drawableStart="@drawable/ic_map"
                         android:layout_width="wrap_content"
-                        android:text="VER MAPA"
+                        android:text="MAPA"
                         android:gravity="center"
                         android:textColor="@color/White"
                         android:paddingEnd="10dp"

@@ -32,14 +32,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="13sp"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginRight="10dp"
+                    android:text="Identificación"
                     android:textColor="@color/DarkGray"
-                    android:text="Tipo identificación"
-                    android:layout_marginRight="10dp"/>
+                    android:textSize="13sp" />
                 <RadioGroup
                     android:id="@+id/identificacion"
                     android:orientation="horizontal"
@@ -133,10 +134,10 @@
                     android:maxLength="50"
                     android:digits="0,1,2,3,4,5,6,7,8,9,*,qwe=.@#?()+%:!/\  rtzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,_,-"
                     android:nextFocusDown="@id/direccion"
-                    android:inputType="textCapWords"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
                     android:textSize="15sp"
+                    android:inputType="textCapCharacters"
                     android:background="@drawable/custom_border"/>
 
             </LinearLayout>
@@ -171,10 +172,10 @@
                     android:maxLength="50"
                     android:digits="0,1,2,3,4,5,6,7,8,9,*,qwe=.@#?()+%:!/\  rtzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,_,-"
                     android:nextFocusDown="@id/direccion_cobro"
-                    android:inputType="textCapWords"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
                     android:textSize="15sp"
+                    android:inputType="textCapCharacters"
                     android:background="@drawable/custom_border"/>
 
             </LinearLayout>
@@ -209,10 +210,10 @@
                     android:maxLength="50"
                     android:digits="0,1,2,3,4,5,6,7,8,9,*,qwe=.@#?()+%:!/\  rtzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,_,-"
                     android:nextFocusDown="@id/dias"
-                    android:inputType="textCapWords"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
                     android:textSize="15sp"
+                    android:inputType="textCapCharacters"
                     android:background="@drawable/custom_border"/>
 
             </LinearLayout>
@@ -551,6 +552,17 @@
                         android:text="Extranjero"/>
                 </RadioGroup>
             </LinearLayout>
+
+            <Button
+                android:id="@+id/pdf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="CARGAR PDF"
+                android:textColor="@color/White"
+                android:background="@color/DarkRed"
+                android:elevation="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"/>
 
             <Button
                 android:id="@+id/registrar"

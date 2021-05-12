@@ -1,9 +1,12 @@
 package com.smartapp.depc_ice.Activities.CrearClientes;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +19,8 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.smartapp.depc_ice.Activities.Clientes.ClientesActivity;
@@ -34,7 +39,17 @@ import com.smartapp.depc_ice.Models.RegistrarClienteModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Const;
 import com.smartapp.depc_ice.Utils.Utils;
+import com.vincent.filepicker.Constant;
+import com.vincent.filepicker.activity.ImagePickActivity;
+import com.vincent.filepicker.activity.NormalFilePickActivity;
+import com.vincent.filepicker.filter.entity.NormalFile;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +60,8 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.vincent.filepicker.activity.BaseActivity.IS_NEED_FOLDER_LIST;
 
 public class CrearClientesActivity extends BaseActitity implements BaseActitity.BaseActivityCallbacks {
 
@@ -68,6 +85,7 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
     private RadioButton nacional;
     private RadioButton extranjero;
     private String tipo_id_tercero = "CI";
+    private Button pdf;
     private Button registrar;
 
     private Call<IZonas.dataBodega> call;
@@ -80,6 +98,7 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
     private int indexZonas = -1;
     private boolean nacionalidad = true;
     private List<Zonas> zonas;
+    String PDFbase64String = "null";
 
 
     @Override
@@ -108,6 +127,7 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
         nacional = layout.findViewById(R.id.nacional);
         extranjero = layout.findViewById(R.id.extranjero);
         registrar = (Button) layout.findViewById(R.id.registrar);
+        pdf = (Button) layout.findViewById(R.id.pdf);
 
         ci.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -164,6 +184,22 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
             }
         });
 
+
+        pdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkPermissionForReadExtertalStorage()){
+                    Log.e(TAG,"SI TEINE PERMISO");
+                }
+
+                Intent intent4 = new Intent(CrearClientesActivity.this, NormalFilePickActivity.class);
+                intent4.putExtra(Constant.MAX_NUMBER, 1);
+                intent4.putExtra(IS_NEED_FOLDER_LIST, false);
+                intent4.putExtra(NormalFilePickActivity.SUFFIX, new String[] {"pdf"});
+                startActivityForResult(intent4, Constant.REQUEST_CODE_PICK_FILE);
+
+            }
+        });
 
         String[] itemsFormaPago = new String[]{"CONTADO", "CRÉDITO"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, itemsFormaPago);
@@ -254,6 +290,11 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
                     return;
                 }
 
+                /*if(PDFbase64String.length() == 0 ){
+                    Toast.makeText(CrearClientesActivity.this, "Añada pdf antes de continuar", Toast.LENGTH_LONG).show();
+                    return;
+                }*/
+
                 String mensaje = "¿Seguro que desea continuar con el registro?";
                 new AlertDialog.Builder(CrearClientesActivity.this)
                         .setTitle(getResources().getString(R.string.app_name))
@@ -276,6 +317,59 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
 
         getZonas();
 
+    }
+
+    public boolean checkPermissionForReadExtertalStorage() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int result = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+            return result == PackageManager.PERMISSION_GRANTED;
+        }
+        return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode){
+            case Constant.REQUEST_CODE_PICK_FILE:
+                if (resultCode == RESULT_OK) {
+                    ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
+                    if (list != null){
+                        for (NormalFile f: list){
+                            File file = new File(f.getPath());
+                            byte[] b = new byte[(int) file.length()];
+                            try {
+                                FileInputStream fileInputStream = new FileInputStream(file);
+                                fileInputStream.read(b);
+                                for (int j = 0; j < b.length; j++) {
+                                    System.out.print((char) b[j]);
+                                }
+                            } catch (FileNotFoundException e) {
+                                System.out.println("File Not Found.");
+                                e.printStackTrace();
+                            } catch (IOException e1) {
+                                System.out.println("Error Reading The File.");
+                                e1.printStackTrace();
+                            }
+
+                            byte[] byteFileArray = new byte[0];
+                            try {
+                                byteFileArray = FileUtils.readFileToByteArray(file);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+
+                            if (byteFileArray.length > 0) {
+                                PDFbase64String = android.util.Base64.encodeToString(byteFileArray, android.util.Base64.NO_WRAP);
+                                //Log.e("File Base64 string", "IMAGE PARSE ==>" + base64String);
+                            }
+                        }
+                    }
+                }
+                break;
+        }
     }
 
     private void showListZonas(){
@@ -471,6 +565,7 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
         model.setSw_persona_juridica("1");
         model.setTipo_cliente(""+tipoCliente);
         model.setZona_id(""+zonas.get(indexZonas).getZona_id());
+        model.setDocumentopdf(PDFbase64String);
         model.setMetodo("CrearCliente");
 
         final Gson gson = new Gson();
@@ -566,8 +661,8 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
                                         return;
                                     }
                                 }else{
-                                    if (data.getStatus_message() != null){
-                                        mensajeError = data.getStatus_message();
+                                    if (dataRegistro.getStatus_message() != null){
+                                        mensajeError = dataRegistro.getStatus_message();
                                     }
                                 }
                             }
@@ -589,6 +684,7 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
                 @Override
                 public void onFailure(Call<IRegistrarCliente.dataBodega> call, Throwable t) {
                     hideProgressWait();
+                    Log.e("Error",""+t.toString());
                    showAlert(Const.ERROR_COBERTURA);
 
                 }

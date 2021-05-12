@@ -46,6 +46,7 @@
             android:imeOptions="actionDone"
             android:singleLine="true"
             android:hint="Buscar..."
+            android:inputType="textCapCharacters"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:layout_marginLeft="5dp"

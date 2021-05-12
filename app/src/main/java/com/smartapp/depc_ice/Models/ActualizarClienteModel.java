@@ -1,6 +1,6 @@
 package com.smartapp.depc_ice.Models;
 
-public class RegistrarClienteModel {
+public class ActualizarClienteModel {
 
     private String tipo_id_tercero = "";
     private String tercero_id = "";
@@ -24,6 +24,7 @@ public class RegistrarClienteModel {
     private String sw_persona_juridica = "";
     private String tipo_cliente = "";
     private String zona_id = "";
+    private String cliente_id = "";
     private String metodo = "";
     private String documentopdf = "";
 
@@ -217,5 +218,13 @@ public class RegistrarClienteModel {
 
     public void setDocumentopdf(String documentopdf) {
         this.documentopdf = documentopdf;
+    }
+
+    public String getCliente_id() {
+        return cliente_id;
+    }
+
+    public void setCliente_id(String cliente_id) {
+        this.cliente_id = cliente_id;
     }
 }

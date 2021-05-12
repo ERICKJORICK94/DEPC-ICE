@@ -3,6 +3,9 @@ package com.smartapp.depc_ice.Utils;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,6 +20,7 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.R;
 
+import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -41,6 +45,25 @@ public class Utils {
                 .build();
         sImageLoader.init(config);
     }
+
+    public static String convertBase64String(Bitmap bitmap)
+    {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+
+        return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
+    }
+
+    public static Bitmap convert(String base64Str) throws IllegalArgumentException
+    {
+        byte[] decodedBytes = Base64.decode(
+                base64Str.substring(base64Str.indexOf(",")  + 1),
+                Base64.DEFAULT
+        );
+
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
+
 
     public static String getFechaHora(){
         Calendar c = Calendar.getInstance();

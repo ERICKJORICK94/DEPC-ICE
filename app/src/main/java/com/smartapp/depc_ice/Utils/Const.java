@@ -11,7 +11,7 @@ public class Const {
     public static final String IS_IMEI = "is_imei";
 
 
-    public static final int PARAM_MAX_ROW  = 315;
+    public static final int PARAM_MAX_ROW  = 30;
     public static final String APPLICATION_JSON = "application/json; charset=utf-8";
     public static final int PERMISSIONS_REQUEST_READ_PHONE_STATE = 999;
 
@@ -23,6 +23,11 @@ public class Const {
     public static final String TABLE_DIRECCIONES = "DIRECCIONES";
     public static final String TABLE_PRODUCTOS = "Productos";
     public static final String TABLE_ZONAS = "Zonas";
+    public static final String TABLE_DETALLE_PEDIDO = "Detalle_pedido";
+    public static final String TABLE_PEDIDO = "Pedido";
+    public static final String ID_PEDIDO = "pedido_id";
+
+
     public static final String ERROR_DEFAULT = "Ha ocurrido un error intente nuevamente";
     public static final String IS_SIN_IMPRESORA = "is_sin_impresora";
     public static final String IS_SELECCT = "is_select";

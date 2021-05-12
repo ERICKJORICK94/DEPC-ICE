@@ -1,9 +1,14 @@
 package com.smartapp.depc_ice.Activities.DetalleCliente;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,25 +18,42 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.Gson;
+import com.smartapp.depc_ice.Activities.CrearClientes.CrearClientesActivity;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.Zonas;
-import com.smartapp.depc_ice.Interface.IRegistrarCliente;
+import com.smartapp.depc_ice.Interface.IActualizarCliente;
 import com.smartapp.depc_ice.Interface.IZonas;
+import com.smartapp.depc_ice.Models.ActualizarClienteModel;
 import com.smartapp.depc_ice.Models.BodegasModel;
 import com.smartapp.depc_ice.Models.RegistrarClienteModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Const;
+import com.smartapp.depc_ice.Utils.PDFActivity;
 import com.smartapp.depc_ice.Utils.Utils;
+import com.vincent.filepicker.Constant;
+import com.vincent.filepicker.activity.NormalFilePickActivity;
+import com.vincent.filepicker.filter.entity.NormalFile;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Callable;
 
 import okhttp3.MediaType;
@@ -39,6 +61,8 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.vincent.filepicker.activity.BaseActivity.IS_NEED_FOLDER_LIST;
 
 public class EditarClientesActivity extends BaseActitity implements BaseActitity.BaseActivityCallbacks {
 
@@ -64,11 +88,13 @@ public class EditarClientesActivity extends BaseActitity implements BaseActitity
     private String tipo_id_tercero = "CI";
     private Button actualizar;
     private Button eliminar;
+    private TextView ver_pdf;
+    private TextView pdf;
 
     private Call<IZonas.dataBodega> call;
     private IZonas.dataBodega data;
-    private Call<IRegistrarCliente.dataBodega> callRegistro;
-    private IRegistrarCliente.dataBodega dataRegistro;
+    private Call<IActualizarCliente.dataBodega> callRegistro;
+    private IActualizarCliente.dataBodega dataRegistro;
     private int indexFormaPago = 0;
     private int indexContribuyente = 0;
     private int indexTipoCliente = 0;
@@ -76,6 +102,7 @@ public class EditarClientesActivity extends BaseActitity implements BaseActitity
     private boolean nacionalidad = true;
     private List<Zonas> zonas;
     private Clientes cliente = null;
+    String PDFbase64String = "null";
 
 
     @Override
@@ -89,6 +116,8 @@ public class EditarClientesActivity extends BaseActitity implements BaseActitity
 
 
         cedula = (EditText) layout.findViewById(R.id.cedula);
+        pdf = (TextView) layout.findViewById(R.id.pdf);
+        ver_pdf = (TextView) layout.findViewById(R.id.ver_pdf);
         nombre = (EditText) layout.findViewById(R.id.nombre);
         direccion = (EditText) layout.findViewById(R.id.direccion);
         direccion_cobro = (EditText) layout.findViewById(R.id.direccion_cobro);
@@ -179,6 +208,35 @@ public class EditarClientesActivity extends BaseActitity implements BaseActitity
 
         }
 
+        ver_pdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (cliente != null){
+                    if (cliente.getDocumentopdf() != null){
+                        if (!cliente.getDocumentopdf().equals("null")){
+                            storetoPdfandOpen(EditarClientesActivity.this,cliente.getDocumentopdf());
+
+                            return;
+                        }
+                    }
+                }
+
+                showAlert("NO EXISTE ARCHIVO");
+            }
+        });
+
+
+        pdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent4 = new Intent(EditarClientesActivity.this, NormalFilePickActivity.class);
+                intent4.putExtra(Constant.MAX_NUMBER, 1);
+                intent4.putExtra(IS_NEED_FOLDER_LIST, false);
+                intent4.putExtra(NormalFilePickActivity.SUFFIX, new String[] {"pdf"});
+                startActivityForResult(intent4, Constant.REQUEST_CODE_PICK_FILE);
+            }
+        });
 
 
 
@@ -416,6 +474,112 @@ public class EditarClientesActivity extends BaseActitity implements BaseActitity
 
     }
 
+    public void storetoPdfandOpen(Context context, String base) {
+
+
+        String root = null;
+        try {
+            root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ;
+
+        Log.d("ResponseEnv",root);
+
+        File myDir = new File(root + "/DEPCONSA");
+        if (!myDir.exists()) {
+            myDir.mkdirs();
+        }
+
+        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);
+
+        String fname = "Aechivos-" + n + ".pdf";
+        File file = new File(myDir, fname);
+        if (file.exists())
+            file.delete();
+        try {
+
+            FileOutputStream out = new FileOutputStream(file);
+            byte[] pdfAsBytes = android.util.Base64.decode(base , android.util.Base64.DEFAULT);
+            out.write(pdfAsBytes);
+            out.flush();
+            out.close();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString(), "DEPCONSA");
+        File imgFile = new File(dir, fname);
+        Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+
+        Uri uri;
+        if (Build.VERSION.SDK_INT < 24) {
+            uri = Uri.fromFile(file);
+        } else {
+            uri = Uri.parse("file://" + imgFile); // My work-around for new SDKs, causes ActivityNotFoundException in API 10.
+        }
+
+        /*sendIntent.setDataAndType(uri, "application/pdf");
+        sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        context.startActivity(sendIntent);*/
+        Intent intent = new Intent(EditarClientesActivity.this, PDFActivity.class);
+        intent.putExtra("direccion",uri.getPath());
+        startActivity(intent);
+
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode){
+            case Constant.REQUEST_CODE_PICK_FILE:
+                if (resultCode == RESULT_OK) {
+                    ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
+                    if (list != null){
+                        for (NormalFile f: list){
+                            File file = new File(f.getPath());
+                            byte[] b = new byte[(int) file.length()];
+                            try {
+                                FileInputStream fileInputStream = new FileInputStream(file);
+                                fileInputStream.read(b);
+                                for (int j = 0; j < b.length; j++) {
+                                    System.out.print((char) b[j]);
+                                }
+                            } catch (FileNotFoundException e) {
+                                System.out.println("File Not Found.");
+                                e.printStackTrace();
+                            } catch (IOException e1) {
+                                System.out.println("Error Reading The File.");
+                                e1.printStackTrace();
+                            }
+
+                            byte[] byteFileArray = new byte[0];
+                            try {
+                                byteFileArray = FileUtils.readFileToByteArray(file);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+
+                            if (byteFileArray.length > 0) {
+                                PDFbase64String = android.util.Base64.encodeToString(byteFileArray, android.util.Base64.NO_WRAP);
+                                //Log.e("File Base64 string", "IMAGE PARSE ==>" + base64String);
+                            }
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
     private void showListZonas(){
 
         hideProgressWait();
@@ -570,6 +734,157 @@ public class EditarClientesActivity extends BaseActitity implements BaseActitity
 
 
     private void sendActualizar(){
+
+        showProgressWait();
+        String formaPago = "4";
+        if (indexFormaPago == 0){
+            formaPago = "4";
+        }else{
+            formaPago = "5";
+        }
+
+        String contribuyenteEspecial = "0";
+        if (indexContribuyente == 0){
+            contribuyenteEspecial = "0";
+        }else{
+            contribuyenteEspecial = "1";
+        }
+
+        String claseCliente = "1";
+        if (!nacionalidad){
+            claseCliente = "2";
+        }
+
+        String tipoCliente = "0";
+        if (indexTipoCliente == 0){
+            tipoCliente = "0";
+        }else{
+            tipoCliente = "1";
+        }
+
+        //JSON SEND
+        ActualizarClienteModel model = new ActualizarClienteModel();
+        model.setTipo_id_tercero(""+tipo_id_tercero);
+        model.setTercero_id(""+cedula.getText().toString().trim());
+        model.setDias_credito(""+dias.getText().toString().trim());
+        model.setMonto_credito(""+monto.getText().toString().trim());
+        model.setForma_pago(""+formaPago);
+        model.setContribuyente_especial(""+contribuyenteEspecial);
+        model.setClase_cliente(""+claseCliente);
+        model.setExportador("0");
+        model.setVerificado("0");
+        model.setNo_aplica_ret("0");
+        model.setSociedad("0");
+        model.setDia_max("");
+        model.setDireccion(""+direccion.getText().toString().trim());
+        model.setTelefono1(""+celular.getText().toString().trim());
+        model.setEmail(""+correo.getText().toString().trim());
+        model.setNombre_tercero(""+nombre.getText().toString().trim());
+        model.setDireccion_cobro(""+direccion_cobro.getText().toString().trim());
+        model.setNombre_comercial(""+nombre.getText().toString().trim());
+        model.setSw_persona_juridica("1");
+        model.setTipo_cliente(""+tipoCliente);
+        model.setZona_id(""+zonas.get(indexZonas).getZona_id());
+        model.setCliente_id(""+cliente.getCodigo_cliente_id());
+        model.setDocumentopdf(PDFbase64String);
+        model.setMetodo("ActualizarCliente");
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
+        try {
+
+            IActualizarCliente request = DepcApplication.getApplication().getRestAdapter().create(IActualizarCliente.class);
+            callRegistro = request.getRegistrarCliente(body);
+            callRegistro.enqueue(new Callback<IActualizarCliente.dataBodega>() {
+                @Override
+                public void onResponse(Call<IActualizarCliente.dataBodega> call, Response<IActualizarCliente.dataBodega> response) {
+                    if (response.isSuccessful()) {
+
+                        dataRegistro = response.body();
+                        try {
+
+                            hideProgressWait();
+
+                            String mensajeError = Const.ERROR_DEFAULT;
+
+                            if (dataRegistro != null) {
+                                if (dataRegistro.getStatus() == Const.COD_ERROR_SUCCESS) {
+
+                                    cliente.setTipo_id_tercero(""+model.getTipo_id_tercero());
+                                    cliente.setTercero_id(""+model.getTercero_id());
+                                    cliente.setDias_credito(""+model.getDias_credito());
+                                    cliente.setMonto_credito(""+model.getMonto_credito());
+                                    cliente.setMonto_credito(""+model.getMonto_credito());
+                                    cliente.setForma_pago(""+model.getForma_pago());
+                                    cliente.setContribuyente_especial(""+model.getContribuyente_especial());
+                                    cliente.setClase_cliente(""+model.getClase_cliente());
+                                    cliente.setDireccion(""+model.getDireccion());
+                                    cliente.setTelefono1(""+model.getTelefono1());
+                                    cliente.setEmail(""+model.getEmail());
+                                    cliente.setNombre_tercero(""+model.getNombre_tercero());
+                                    cliente.setNombre_comercial(""+model.getNombre_comercial());
+                                    cliente.setDireccion_cobro(""+model.getDireccion_cobro());
+                                    cliente.setTipo_cliente(""+model.getTipo_cliente());
+                                    cliente.setZona(""+model.getZona_id());
+                                    cliente.setDocumentopdf(""+model.getDocumentopdf());
+
+                                    DataBaseHelper.saveClientes(cliente, DepcApplication.getApplication().getClientesDao());
+
+                                    new AlertDialog.Builder(EditarClientesActivity.this)
+                                            .setTitle(getResources().getString(R.string.app_name))
+                                            .setMessage("Cliente actualizado con éxito")
+                                            .setCancelable(false)
+                                            .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.dismiss();
+                                                    finish();
+                                                }
+                                            })
+                                            .show();
+
+
+
+                                    return;
+                                }else{
+                                    if (dataRegistro.getStatus_message() != null){
+                                        mensajeError = dataRegistro.getStatus_message();
+                                    }
+                                }
+                            }
+
+                            showAlert(mensajeError);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideProgressWait();
+                            showAlert( Const.ERROR_DEFAULT);
+                        }
+
+                    } else {
+                        hideProgressWait();
+                        showAlert( Const.ERROR_DEFAULT);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IActualizarCliente.dataBodega> call, Throwable t) {
+                    hideProgressWait();
+                    Log.e("Error",""+t.toString());
+                    showAlert(Const.ERROR_COBERTURA);
+
+                }
+            });
+
+        }catch (Exception e){
+            hideProgressWait();
+            showAlert( Const.ERROR_DEFAULT);
+
+        }
+
 
 
     }

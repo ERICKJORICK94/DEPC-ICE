@@ -382,8 +382,8 @@ public class ProductosActivity extends BaseActitity implements BaseActitity.Base
         }
 
         if (searchParameter.length() > 0) {
-            this.search = searchParameter;
-            condition = "or a.descripcion like ('%"+search+"%')  or a.codigo_item like (%"+search+"%)";
+            this.search = searchParameter.toUpperCase();
+            condition = "and a.descripcion like ('%"+search+"%')  or a.codigo_item like '%"+search+"%'";
         }
 
         ProductosModel model = new ProductosModel();
@@ -492,7 +492,7 @@ public class ProductosActivity extends BaseActitity implements BaseActitity.Base
         try{
             List<Productos> productoList = null;
             if (condition.length() > 0) {
-                String newCondicion  = "(descripcion like ('%"+search+"%')  or codigo_item like ('%"+search+"%'))";
+                String newCondicion  = "descripcion like ('%"+search+"%')  or codigo_item like '%"+search+"%'";
                 if (currentCodigoFamilia.length() > 0) {
                     newCondicion = newCondicion + " and bodega_id = '" + currentCodigoFamilia + "'";
                 }

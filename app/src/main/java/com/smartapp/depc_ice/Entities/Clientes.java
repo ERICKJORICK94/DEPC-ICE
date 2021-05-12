@@ -141,6 +141,8 @@ public class Clientes implements Serializable {
     private String zona_id;
     @DatabaseField
     private String cliente_id;
+    @DatabaseField
+    private String documentopdf;
 
     public int getId() {
         return id;
@@ -668,5 +670,13 @@ public class Clientes implements Serializable {
 
     public void setCliente_id(String cliente_id) {
         this.cliente_id = cliente_id;
+    }
+
+    public String getDocumentopdf() {
+        return documentopdf;
+    }
+
+    public void setDocumentopdf(String documentopdf) {
+        this.documentopdf = documentopdf;
     }
 }

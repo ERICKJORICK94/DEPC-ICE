@@ -19,6 +19,7 @@ import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Clientes;
+import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Interface.IClientes;
 import com.smartapp.depc_ice.Models.ClientesModel;
 import com.smartapp.depc_ice.R;
@@ -248,6 +249,26 @@ public class DetalleClienteActivity extends BaseActitity implements BaseActitity
     @Override
     public void doRetry() {
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (cliente != null) {
+            try {
+                List<Clientes> clientes = DataBaseHelper.getClientesByCODCLiente(DepcApplication.getApplication().getClientesDao(), "" + cliente.getCodigo_cliente_id());
+                if (clientes != null){
+                    if (clientes.size()>0){
+                    cliente_name.setText(""+clientes.get(0).getNombre_comercial());
+                    direccion.setText(""+clientes.get(0).getDireccion());
+                    }
+                }
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
     }
 
     public Clientes getCliente() {

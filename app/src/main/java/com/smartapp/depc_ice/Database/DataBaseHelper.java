@@ -5,7 +5,9 @@ import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.smartapp.depc_ice.Entities.Bodega;
 import com.smartapp.depc_ice.Entities.Clientes;
+import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.Direcciones;
+import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Productos;
 import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Entities.Zonas;
@@ -270,5 +272,191 @@ public class DataBaseHelper {
 
         return usuarios;
     }
+
+
+
+    //HELPER PEDIDO
+    public static void savePedido(Pedidos pedido, Dao<Pedidos, Integer> pedidoDao) {
+        try {
+
+
+            if (getPedidosByID(pedidoDao, "" + pedido.getId()) != null) {
+                if (getPedidosByID(pedidoDao, "" + pedido.getId()).size() > 0) {
+                    pedidoDao.update(pedido);
+                    return;
+                }
+            }
+            pedidoDao.create(pedido);
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updatePedido(Pedidos pedido, Dao<Pedidos, Integer> pedidoDao) {
+        try {
+            pedidoDao.update(pedido);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deletePedidos(Dao<Pedidos, Integer> pedidoDao) throws SQLException {
+        DeleteBuilder<Pedidos, Integer> deleteBuilder = pedidoDao.deleteBuilder();
+        deleteBuilder.delete();
+    }
+
+
+    public static void deleteClientePendiente(Dao<Clientes, Integer> pedidoDao) throws SQLException {
+        DeleteBuilder<Clientes, Integer> deleteBuilder = pedidoDao.deleteBuilder();
+        deleteBuilder.where().eq("ESTADO_SINCRO","N");
+        deleteBuilder.delete();
+    }
+    public static void deletePedidosByID(Dao<Pedidos, Integer> pedidoDao, String idPedido) throws SQLException {
+        DeleteBuilder<Pedidos, Integer> deleteBuilder = pedidoDao.deleteBuilder();
+        deleteBuilder.where().eq("id",idPedido);
+        deleteBuilder.delete();
+    }
+
+    public static List<Pedidos> getPedidos(Dao<Pedidos, Integer> pedidoDao) throws SQLException {
+
+        List<Pedidos> pedidos = null;
+        String query = "SELECT * FROM " + Const.TABLE_PEDIDO;
+        GenericRawResults<Pedidos> rawResults = pedidoDao.queryRaw(query, pedidoDao.getRawRowMapper());
+        pedidos = rawResults.getResults();
+
+        return pedidos;
+    }
+
+
+    public static List<Pedidos> getPedidosByID(Dao<Pedidos, Integer> pedidoDao, String id) throws SQLException {
+
+        List<Pedidos> pedidos = null;
+        String query = "SELECT * FROM " + Const.TABLE_PEDIDO+" WHERE id = "+id;
+        GenericRawResults<Pedidos> rawResults = pedidoDao.queryRaw(query, pedidoDao.getRawRowMapper());
+        pedidos = rawResults.getResults();
+
+        return pedidos;
+    }
+
+    public static List<Pedidos> getPedidosByCliente(Dao<Pedidos, Integer> pedidoDao, String codigo) throws SQLException {
+
+        List<Pedidos> pedidos = null;
+        String query = "SELECT * FROM " + Const.TABLE_PEDIDO +" WHERE Cliente = '"+codigo+"';";
+        GenericRawResults<Pedidos> rawResults = pedidoDao.queryRaw(query, pedidoDao.getRawRowMapper());
+        pedidos = rawResults.getResults();
+
+        return pedidos;
+    }
+
+
+    //HELPER DETALLE PEDIDO
+    public static void saveDetallePedido(DetallePedido detail, Dao<DetallePedido, Integer> detailDao) {
+        try {
+
+            if (getProductoByPedidoId(detailDao, "" + detail.getIdPedido(), detail.getCodigo()) != null) {
+                if (getProductoByPedidoId(detailDao, "" + detail.getIdPedido(),detail.getCodigo()).size() > 0) {
+                    detailDao.update(detail);
+                    return;
+                }
+            }
+            detailDao.create(detail);
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<DetallePedido> getProductoByPedidoId(Dao<DetallePedido, Integer> detailDao, String pedidoId, String codigoProducto) throws SQLException {
+
+        List<DetallePedido> detalles = null;
+        String query = "SELECT * FROM " + Const.TABLE_DETALLE_PEDIDO + " WHERE idPedido = '" + pedidoId + "'  AND Codigo = '"+codigoProducto+"'";
+        GenericRawResults<DetallePedido> rawResults = detailDao.queryRaw(query, detailDao.getRawRowMapper());
+        detalles = rawResults.getResults();
+
+        return detalles;
+    }
+
+
+    public static void saveDetallePedidoCreate(DetallePedido detail, Dao<DetallePedido, Integer> detailDao) {
+        try {
+            detailDao.create(detail);
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateDetallePedidoCreate(DetallePedido detail, Dao<DetallePedido, Integer> detailDao) {
+        try {
+            detailDao.update(detail);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteDetallePedido(Dao<DetallePedido, Integer> detailDao) throws SQLException {
+        DeleteBuilder<DetallePedido, Integer> deleteBuilder = detailDao.deleteBuilder();
+        deleteBuilder.delete();
+    }
+
+
+    public static void deleteDetallePedidoByProductoCodigo(Dao<DetallePedido, Integer> detailDao, String codigo,String idPedido) throws SQLException {
+        DeleteBuilder<DetallePedido, Integer> deleteBuilder = detailDao.deleteBuilder();
+        deleteBuilder.where().eq("Codigo",codigo).and().eq("idPedido",idPedido);
+        deleteBuilder.delete();
+    }
+
+    public static void deleteDetallePedidoByID(Dao<DetallePedido, Integer> detailDao,String idPedido) throws SQLException {
+        DeleteBuilder<DetallePedido, Integer> deleteBuilder = detailDao.deleteBuilder();
+        deleteBuilder.where().eq("idPedido",idPedido);
+        deleteBuilder.delete();
+    }
+
+    public static List<DetallePedido> getDetallePedido(Dao<DetallePedido, Integer> detailDao) throws SQLException {
+
+        List<DetallePedido> detallePedido = null;
+        String query = "SELECT * FROM " + Const.TABLE_DETALLE_PEDIDO;
+        GenericRawResults<DetallePedido> rawResults = detailDao.queryRaw(query, detailDao.getRawRowMapper());
+        detallePedido = rawResults.getResults();
+
+        return detallePedido;
+    }
+
+
+
+    public static List<DetallePedido> getDetallePedidoByID(Dao<DetallePedido, Integer> detailDao, String ipPedido) throws SQLException {
+
+        List<DetallePedido> detallePedido = null;
+        String query = "SELECT * FROM " + Const.TABLE_DETALLE_PEDIDO+" WHERE idPedido = '"+ipPedido+"'";
+        GenericRawResults<DetallePedido> rawResults = detailDao.queryRaw(query, detailDao.getRawRowMapper());
+        detallePedido = rawResults.getResults();
+
+        return detallePedido;
+    }
+
+    public static List<DetallePedido> getDetallePedidoCodigo(Dao<DetallePedido, Integer> detailDao, String codigo, String idPedido) throws SQLException {
+
+        List<DetallePedido> detallePedido = null;
+        String query = "SELECT * FROM " + Const.TABLE_DETALLE_PEDIDO+" WHERE Codigo = '"+codigo+"' AND idPedido = '"+idPedido+"'";
+        GenericRawResults<DetallePedido> rawResults = detailDao.queryRaw(query, detailDao.getRawRowMapper());
+        detallePedido = rawResults.getResults();
+
+        return detallePedido;
+    }
+
+    public static List<DetallePedido> getDetallePedidoByIDA(Dao<DetallePedido, Integer> detailDao, int id) throws SQLException {
+
+        List<DetallePedido> detallePedido = null;
+        String query = "SELECT * FROM " + Const.TABLE_DETALLE_PEDIDO+" WHERE id = "+id;
+        GenericRawResults<DetallePedido> rawResults = detailDao.queryRaw(query, detailDao.getRawRowMapper());
+        detallePedido = rawResults.getResults();
+
+        return detallePedido;
+    }
+
 
 }

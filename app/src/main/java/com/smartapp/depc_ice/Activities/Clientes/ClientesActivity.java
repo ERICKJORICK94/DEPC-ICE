@@ -17,6 +17,7 @@ import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Clientes;
+import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Interface.IClientes;
 import com.smartapp.depc_ice.Models.ClientesModel;
 import com.smartapp.depc_ice.R;
@@ -108,8 +109,8 @@ public class ClientesActivity extends BaseActitity implements BaseActitity.BaseA
         isSearch = true;
         search.trim();
         buscar = search;
-        search = search.replace(" ","%");
-        condition = "OR b.nombre_tercero like ('%"+search+"%') or b.nombre_comercial like ('%"+search+"%') or b.codigo_cliente_id like (%"+search+"%) or b.direccion like ('%"+search+"%')";
+        search = search.replace(" ","%").toUpperCase();
+        condition = "and (b.nombre_tercero LIKE '%"+search+"%' or b.nombre_comercial LIKE '%"+search+"%' or b.direccion LIKE '%"+search+"%' or a.codigo_cliente_id LIKE '%"+search+"%')";
         getClientes(condition);
     }
 
@@ -120,10 +121,26 @@ public class ClientesActivity extends BaseActitity implements BaseActitity.BaseA
         int limit = Const.PARAM_MAX_ROW;
         num_cliente.setText("");
         num_cliente.setVisibility(View.GONE);
+        String codigoCLiente = "";
+        try {
+            List<Usuario> usuario = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
+            if (usuario != null){
+                if (usuario.size() > 0){
+                    Usuario user = usuario.get(0);
+                    codigoCLiente = user.getUsuario();
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
+        String buscar = "and d.usuario_id="+codigoCLiente;
+        if (search.length() > 0){
+            buscar = buscar+" "+search;
+        }
         //JSON SEND
         ClientesModel model = new ClientesModel();
-        model.setCondicion(search);
+        model.setCondicion(buscar);
         model.setFiltro("limit "+Const.PARAM_MAX_ROW+" offset 0");
         model.setMetodo("ListaClientes");
 
@@ -246,7 +263,7 @@ public class ClientesActivity extends BaseActitity implements BaseActitity.BaseA
         try {
                 clientesList = null;
                 if (isSearch) {
-                    String nuevaCondicion = "nombre_tercero like ('%"+buscar+"%') or nombre_comercial like ('%"+buscar+"%') or codigo_cliente_id like ('%"+buscar+"%') or direccion like ('%"+buscar+"%')";
+                    String nuevaCondicion = "nombre_tercero LIKE '%"+buscar+"%' or nombre_comercial LIKE '%"+buscar+"%' or direccion LIKE '%"+buscar+"%' or codigo_cliente_id LIKE '%"+buscar+"%'";
                     clientesList = DataBaseHelper.getClientesSearch(DepcApplication.getApplication().getClientesDao(), "" + nuevaCondicion);
                 }else{
                     clientesList = DataBaseHelper.getClientes(DepcApplication.getApplication().getClientesDao());

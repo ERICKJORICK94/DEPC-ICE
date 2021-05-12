@@ -51,7 +51,7 @@
             android:paddingEnd="5dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="VENDEDOR: "
                 android:textColor="@color/Black"
@@ -75,7 +75,7 @@
             android:paddingEnd="5dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="CÓDIGO: "
                 android:textColor="@color/Black"
@@ -203,7 +203,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.35"
-                android:text="PRESUPIESTO GALONES"
+                android:text="PRESUPIESTO"
                 android:gravity="center_vertical"
                 android:textColor="@color/Black"
                 android:textStyle="bold"
@@ -237,7 +237,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.35"
-                android:text="VENTA GALONES"
+                android:text="VENTA"
                 android:gravity="center_vertical"
                 android:textColor="@color/Black"
                 android:textStyle="bold"

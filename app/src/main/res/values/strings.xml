@@ -22,5 +22,16 @@
     <string name="current_date">June, 2019</string>
     <string name="add_event">EVENTO</string>
 
+    <string name="vw_confirm">Hecho</string>
+    <string name="vw_no_video_play_app">¡No existe ninguna aplicación para reproducir videos!</string>
+    <string name="vw_record_audio">Grabar audio</string>
+    <string name="vw_rationale_storage">Necesita permiso de almacenamiento de lectura para seleccionar archivos</string>
+    <string name="vw_up_to_max">Ya está al máximo</string>
+    <string name="vw_no_photo_app">¡No hay aplicación de fotos en este teléfono!</string>
+    <string name="vw_no_audio_play_app">¡No existe ninguna aplicación para reproducir audio!</string>
+    <string name="vw_no_video_app">¡No hay aplicación de video en este teléfono!</string>
+    <string name="vw_no_audio_app">¡No hay aplicación de audio en este teléfono!</string>
+    <string name="vw_all">Todas</string>
+
 
 </resources>
