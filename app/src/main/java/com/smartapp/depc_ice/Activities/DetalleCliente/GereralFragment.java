@@ -122,8 +122,8 @@ public class GereralFragment extends BaseFragment implements BaseFragment.BaseFr
 
                     saldoText.setText("Saldo: $ 0.00");
                     disponible.setText("Disponible: " +(String.format("%.2f", cupo)));
-                    porcent.setText("0%");
-                    progress.setProgress(0);
+                    porcent.setText("25%");
+                    //progress.setProgress(0);
 
                     /*if (cliente.getSALDO() != null) {
                         cliente.setSALDO(cliente.getSALDO().replace(",", "."));

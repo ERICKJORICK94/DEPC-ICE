@@ -22,6 +22,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/crear_pedido"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="CREAR PEDIDO"
@@ -333,20 +334,33 @@
                 android:layout_marginLeft="10dp"
                 android:textSize="12sp" />
 
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="vertical"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:padding="1dp"
+            android:background="@drawable/custom_border">
+
             <EditText
                 android:id="@+id/comentario"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="match_parent"
                 android:text=""
-                android:layout_marginTop="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:textSize="12sp"
+                android:textSize="14sp"
+                android:hint="Ingrese un comentario"
                 android:paddingLeft="10dp"
-                android:textColor="@color/Gray"
+                android:textColor="@color/Black"
+                android:inputType="textCapCharacters"
                 android:elevation="1sp"
-                android:layout_marginBottom="10dp"
                 android:background="@color/White"/>
+
+
+        </LinearLayout>
 
 
             <Button

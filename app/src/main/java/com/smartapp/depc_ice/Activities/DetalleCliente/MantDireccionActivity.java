@@ -684,7 +684,7 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
                         }
 
                         if (bitmap == null){
-                            showAlert("NECESITA GREGAR UNA FOTO");
+                            showAlert("NECESITA CARGAR UNA FOTO");
                             return;
                         }
 

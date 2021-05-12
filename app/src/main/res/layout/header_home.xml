@@ -412,7 +412,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="3dp"
-                                android:text="Cobranza"
+                                android:text="Entregas"
                                 android:textColor="@color/White"
                                 android:textSize="12sp" />
 

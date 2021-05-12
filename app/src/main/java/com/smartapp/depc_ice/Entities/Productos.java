@@ -25,6 +25,9 @@ public class Productos implements Serializable {
     private String descripcion_bodega;
     @DatabaseField
     private String existencia;
+    @DatabaseField
+    private int idDetail;
+
 
     public int getId() {
         return id;
@@ -88,5 +91,13 @@ public class Productos implements Serializable {
 
     public void setExistencia(String existencia) {
         this.existencia = existencia;
+    }
+
+    public int getIdDetail() {
+        return idDetail;
+    }
+
+    public void setIdDetail(int idDetail) {
+        this.idDetail = idDetail;
     }
 }

@@ -273,6 +273,16 @@ public class DataBaseHelper {
         return usuarios;
     }
 
+    public static List<Direcciones> getDireccionesBYIdClienteOrder(Dao<Direcciones, Integer> userDao, String idCliente) throws SQLException {
+
+        List<Direcciones> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_DIRECCIONES+" WHERE cliente_id = '"+idCliente+"' ORDER BY id DESC";
+        GenericRawResults<Direcciones> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
 
 
     //HELPER PEDIDO
@@ -292,6 +302,27 @@ public class DataBaseHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static int savePedidoID(Pedidos pedido, Dao<Pedidos, Integer> pedidoDao) {
+        try {
+
+
+            if (getPedidosByID(pedidoDao, "" + pedido.getId()) != null) {
+                if (getPedidosByID(pedidoDao, "" + pedido.getId()).size() > 0) {
+                    pedidoDao.update(pedido);
+                    return pedido.getId();
+                }
+            }
+            pedidoDao.create(pedido);
+            return  pedido.getId();
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
     }
 
     public static void updatePedido(Pedidos pedido, Dao<Pedidos, Integer> pedidoDao) {
@@ -407,6 +438,12 @@ public class DataBaseHelper {
     public static void deleteDetallePedidoByProductoCodigo(Dao<DetallePedido, Integer> detailDao, String codigo,String idPedido) throws SQLException {
         DeleteBuilder<DetallePedido, Integer> deleteBuilder = detailDao.deleteBuilder();
         deleteBuilder.where().eq("Codigo",codigo).and().eq("idPedido",idPedido);
+        deleteBuilder.delete();
+    }
+
+    public static void deleteDetallePedidoByProductoCodigo(Dao<DetallePedido, Integer> detailDao, String id) throws SQLException {
+        DeleteBuilder<DetallePedido, Integer> deleteBuilder = detailDao.deleteBuilder();
+        deleteBuilder.where().eq("id",id);
         deleteBuilder.delete();
     }
 

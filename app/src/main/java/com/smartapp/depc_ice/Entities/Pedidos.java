@@ -30,29 +30,11 @@ public class Pedidos implements Serializable {
     @DatabaseField
     private String Fecha;
     @DatabaseField
-    private String Campana;
-    @DatabaseField
     private String Vendedor;
     @DatabaseField
     private String NombreVendedor;
     @DatabaseField
-    private String FormaPagoCliente;
-    @DatabaseField
-    private String NombreFormaPagoCliente;
-    @DatabaseField
-    private String Transportista;
-    @DatabaseField
-    private String NombreTransportista;
-    @DatabaseField
-    protected String FormaPago;
-    @DatabaseField
     private String Comentario;
-    @DatabaseField
-    private String Consignacion;
-    @DatabaseField
-    private String NivelPrecio;
-    @DatabaseField
-    private String NumeroFilas;
     @DatabaseField
     private String Subtotal;
     @DatabaseField
@@ -66,38 +48,15 @@ public class Pedidos implements Serializable {
     @DatabaseField
     private String Total;
     @DatabaseField
-    private String NumeroAprobacion;
+    private String codigoPedido;
     @DatabaseField
-    private String NumeroPedido;
+    private String codigo_direccione_entrega;
     @DatabaseField
-    private String NumeroDocumento;
+    private String PorcentajeDescuentoAdi;
     @DatabaseField
-    private String estado;
+    private String DescuentoAdicional;
     @DatabaseField
-    private String NumeroMovimiento;
-    @DatabaseField
-    //private String porcentajeDescuentoAdicional;
-    private String porcentajeDescuentoAdi;
-
-    @DatabaseField
-    private String Direccione_entrega;
-    @DatabaseField
-    private String Secuencia_Direccion_Entrega;
-
-
-
-    @DatabaseField
-    private String descuentoAdicional;
-    @DatabaseField
-    private String CodigoEmbalador;
-
-    public String getCodigoEmbalador() {
-        return CodigoEmbalador;
-    }
-
-    public void setCodigoEmbalador(String codigoEmbalador) {
-        CodigoEmbalador = codigoEmbalador;
-    }
+    private String estadoPedido = "0";
 
     public int getId() {
         return id;
@@ -109,14 +68,6 @@ public class Pedidos implements Serializable {
 
     public String getBodega() {
         return Bodega;
-    }
-
-    public String getDireccionEntrega() {
-        return DireccionEntrega;
-    }
-
-    public void setDireccionEntrega(String direccionEntrega) {
-        DireccionEntrega = direccionEntrega;
     }
 
     public void setBodega(String bodega) {
@@ -163,6 +114,14 @@ public class Pedidos implements Serializable {
         DireccionCliente = direccionCliente;
     }
 
+    public String getDireccionEntrega() {
+        return DireccionEntrega;
+    }
+
+    public void setDireccionEntrega(String direccionEntrega) {
+        DireccionEntrega = direccionEntrega;
+    }
+
     public String getTelefonoCliente() {
         return TelefonoCliente;
     }
@@ -195,76 +154,12 @@ public class Pedidos implements Serializable {
         NombreVendedor = nombreVendedor;
     }
 
-    public String getFormaPagoCliente() {
-        return FormaPagoCliente;
-    }
-
-    public void setFormaPagoCliente(String formaPagoCliente) {
-        FormaPagoCliente = formaPagoCliente;
-    }
-
-    public String getNombreFormaPagoCliente() {
-        return NombreFormaPagoCliente;
-    }
-
-    public void setNombreFormaPagoCliente(String nombreFormaPagoCliente) {
-        NombreFormaPagoCliente = nombreFormaPagoCliente;
-    }
-
-    public String getTransportista() {
-        return Transportista;
-    }
-
-    public void setTransportista(String transportista) {
-        Transportista = transportista;
-    }
-
-    public String getNombreTransportista() {
-        return NombreTransportista;
-    }
-
-    public void setNombreTransportista(String nombreTransportista) {
-        NombreTransportista = nombreTransportista;
-    }
-
-    public String getFormaPago() {
-        return FormaPago;
-    }
-
-    public void setFormaPago(String formaPago) {
-        FormaPago = formaPago;
-    }
-
     public String getComentario() {
         return Comentario;
     }
 
     public void setComentario(String comentario) {
         Comentario = comentario;
-    }
-
-    public String getConsignacion() {
-        return Consignacion;
-    }
-
-    public void setConsignacion(String consignacion) {
-        Consignacion = consignacion;
-    }
-
-    public String getNivelPrecio() {
-        return NivelPrecio;
-    }
-
-    public void setNivelPrecio(String nivelPrecio) {
-        NivelPrecio = nivelPrecio;
-    }
-
-    public String getNumeroFilas() {
-        return NumeroFilas;
-    }
-
-    public void setNumeroFilas(String numeroFilas) {
-        NumeroFilas = numeroFilas;
     }
 
     public String getSubtotal() {
@@ -315,94 +210,43 @@ public class Pedidos implements Serializable {
         Total = total;
     }
 
-    public String getNumeroAprobacion() {
-        return NumeroAprobacion;
+    public String getCodigoPedido() {
+        return codigoPedido;
     }
 
-    public void setNumeroAprobacion(String numeroAprobacion) {
-        NumeroAprobacion = numeroAprobacion;
+    public void setCodigoPedido(String codigoPedido) {
+        this.codigoPedido = codigoPedido;
     }
 
-    public String getNumeroPedido() {
-        return NumeroPedido;
+    public String getCodigo_direccione_entrega() {
+        return codigo_direccione_entrega;
     }
 
-    public void setNumeroPedido(String numeroPedido) {
-        NumeroPedido = numeroPedido;
-    }
-
-    public String getNumeroDocumento() {
-        return NumeroDocumento;
-    }
-
-    public void setNumeroDocumento(String numeroDocumento) {
-        NumeroDocumento = numeroDocumento;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public String getDescuentoAdicional() {
-        return descuentoAdicional;
-    }
-
-    public void setDescuentoAdicional(String descuentoAdicional) {
-        this.descuentoAdicional = descuentoAdicional;
-    }
-
-    public String getNumeroMovimiento() {
-        return NumeroMovimiento;
-    }
-
-    public void setNumeroMovimiento(String numeroMovimiento) {
-        NumeroMovimiento = numeroMovimiento;
+    public void setCodigo_direccione_entrega(String codigo_direccione_entrega) {
+        this.codigo_direccione_entrega = codigo_direccione_entrega;
     }
 
     public String getPorcentajeDescuentoAdi() {
-        return porcentajeDescuentoAdi;
+        return PorcentajeDescuentoAdi;
     }
 
     public void setPorcentajeDescuentoAdi(String porcentajeDescuentoAdi) {
-        this.porcentajeDescuentoAdi = porcentajeDescuentoAdi;
+        PorcentajeDescuentoAdi = porcentajeDescuentoAdi;
     }
 
-    public String getCampana() {
-        return Campana;
+    public String getDescuentoAdicional() {
+        return DescuentoAdicional;
     }
 
-    public void setCampana(String campana) {
-        Campana = campana;
+    public void setDescuentoAdicional(String descuentoAdicional) {
+        DescuentoAdicional = descuentoAdicional;
     }
 
-    // Cambio de Joseph 27-07-2020
-    /*
-    public String getPorcentajeDescuentoAdicional() {
-        return porcentajeDescuentoAdicional;
+    public String getEstadoPedido() {
+        return estadoPedido;
     }
 
-    public void setPorcentajeDescuentoAdicional(String porcentajeDescuentoAdicional) {
-        this.porcentajeDescuentoAdicional = porcentajeDescuentoAdicional;
-    }
-*/
-
-    public String getDireccione_entrega() {
-        return Direccione_entrega;
-    }
-
-    public void setDireccione_entrega(String direccione_entrega) {
-        Direccione_entrega = direccione_entrega;
-    }
-
-    public String getSecuencia_Direccion_Entrega() {
-        return Secuencia_Direccion_Entrega;
-    }
-
-    public void setSecuencia_Direccion_Entrega(String secuencia_Direccion_Entrega) {
-        Secuencia_Direccion_Entrega = secuencia_Direccion_Entrega;
+    public void setEstadoPedido(String estadoPedido) {
+        this.estadoPedido = estadoPedido;
     }
 }

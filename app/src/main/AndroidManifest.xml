@@ -171,7 +171,7 @@
             android:name=".Activities.Pedido.RegistroPedidoActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:icon="@drawable/back"
-            android:label="Cabecera de Pedido"
+            android:label="Pedido"
             android:screenOrientation="portrait" />
 
         <activity
@@ -179,6 +179,13 @@
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:icon="@drawable/back"
             android:label="PDF"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Activities.Pedido.DetallePedidoActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:icon="@drawable/back"
+            android:label="Detalle Pedido"
             android:screenOrientation="portrait" />
 
         <meta-data

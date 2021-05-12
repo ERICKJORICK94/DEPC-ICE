@@ -6,17 +6,24 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ScrollView;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.jpvs0101.currencyfy.Currencyfy;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.smartapp.depc_ice.Activities.Pedido.ExpandableListAdapter;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.R;
 
@@ -26,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 public class Utils {
 
@@ -46,12 +54,103 @@ public class Utils {
         sImageLoader.init(config);
     }
 
+    public static void setListViewHeight(ExpandableListView listView,
+                                         int group) {
+        ExpandableListAdapter listAdapter = (ExpandableListAdapter) listView.getExpandableListAdapter();
+        int totalHeight = 0;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
+                View.MeasureSpec.EXACTLY);
+        for (int i = 0; i < listAdapter.getGroupCount(); i++) {
+            View groupItem = listAdapter.getGroupView(i, false, null, listView);
+            groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+            totalHeight += groupItem.getMeasuredHeight();
+
+            if (((listView.isGroupExpanded(i)) && (i != group))
+                    || ((!listView.isGroupExpanded(i)) && (i == group))) {
+                for (int j = 0; j < listAdapter.getChildrenCount(i); j++) {
+                    View listItem = listAdapter.getChildView(i, j, false, null,
+                            listView);
+                    listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+                    totalHeight += listItem.getMeasuredHeight();
+
+                }
+            }
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        int height = totalHeight
+                + (listView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
+        if (height < 10)
+            height = 200;
+        params.height = height;
+        listView.setLayoutParams(params);
+        listView.requestLayout();
+
+    }
+
+
+    public static String foramatearMiles(String number){
+
+        try {
+            if (number != null){
+                number = number.replace(",",".");
+                if (Utils.isNumberDecimal(number)) {
+                    return "$ "+ Currencyfy.currencyfy(new Locale("en", "in"), Double.parseDouble(number), true, false);
+                }
+            }
+
+        }catch (Exception e){
+            Log.e("Error","Exception: "+e.toString());
+            return number;
+        }
+
+        return number;
+    }
+
+    public static void setExpandableListViewHeight(ExpandableListView listView, final ScrollView scrollBody) {
+        try {
+            ExpandableListAdapter listAdapter = (ExpandableListAdapter) listView.getExpandableListAdapter();
+            int totalHeight = 0;
+            for (int i = 0; i < listAdapter.getGroupCount(); i++) {
+                View listItem = listAdapter.getGroupView(i, false, null, listView);
+                listItem.measure(0, 0);
+                totalHeight += listItem.getMeasuredHeight();
+            }
+
+            ViewGroup.LayoutParams params = listView.getLayoutParams();
+            int height = totalHeight + (listView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
+            if (height < 10) height = 200;
+            params.height = height;
+            listView.setLayoutParams(params);
+            listView.requestLayout();
+            scrollBody.post(new Runnable() {
+                public void run() {
+                    scrollBody.fullScroll(ScrollView.FOCUS_UP);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static String convertBase64String(Bitmap bitmap)
     {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
 
         return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
+    }
+
+    public static double roundFloat(double  value, int scale) {
+
+        String cadena = String.format("%.4f",value);
+        return Double.parseDouble(cadena);
+
+
+        //return Math.round(value * Math.pow(10, scale)) / Math.pow(10, scale);
+
     }
 
     public static Bitmap convert(String base64Str) throws IllegalArgumentException

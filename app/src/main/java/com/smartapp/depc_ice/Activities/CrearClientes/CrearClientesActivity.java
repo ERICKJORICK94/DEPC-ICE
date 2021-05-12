@@ -260,10 +260,10 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
                     Toast.makeText(CrearClientesActivity.this, "Ingrese una dirección válida", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if(direccion_cobro.getText().length()==0){
+                /*if(direccion_cobro.getText().length()==0){
                     Toast.makeText(CrearClientesActivity.this, "Ingrese una dirección de cobro válida", Toast.LENGTH_LONG).show();
                     return;
-                }
+                }*/
                 if(nombre.getText().length()==0){
                     Toast.makeText(CrearClientesActivity.this, "Ingrese un nombre válido", Toast.LENGTH_LONG).show();
                     return;
@@ -271,19 +271,22 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
                 if(dias.getText().length()==0){
                     Toast.makeText(CrearClientesActivity.this, "Ingrese días de crédito", Toast.LENGTH_LONG).show();
                     return;
+                }else if (Integer.parseInt(dias.getText().toString()) == 0){
+                    Toast.makeText(CrearClientesActivity.this, "Ingrese días de crédito mayor a cero", Toast.LENGTH_LONG).show();
+                    return;
                 }
                 if(monto.getText().length()==0){
                     Toast.makeText(CrearClientesActivity.this, "Ingrese monto de crédito", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if(celular.getText().length()==0){
+                /*if(celular.getText().length()==0){
                     Toast.makeText(CrearClientesActivity.this, "Ingrese una teléfono válido", Toast.LENGTH_LONG).show();
                     return;
-                }
-                if(correo.getText().length()==0){
+                }*/
+                /*if(correo.getText().length()==0){
                     Toast.makeText(CrearClientesActivity.this, "Ingrese un correo", Toast.LENGTH_LONG).show();
                     return;
-                }
+                }*/
 
                 if(indexZonas < 0 ){
                     Toast.makeText(CrearClientesActivity.this, "Seleccione una zona", Toast.LENGTH_LONG).show();

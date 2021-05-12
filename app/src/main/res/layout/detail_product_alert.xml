@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:orientation="vertical"
+        android:background="@color/colorPrimary">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:orientation="horizontal">
+
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/left_arrow" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="#00000000"></View>
+
+
+            <ImageView
+                android:id="@+id/info_product"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="right"
+                android:padding="3dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/info" />
+
+
+
+
+            <ImageView
+                android:id="@+id/edit_product"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="right"
+                android:padding="3dp"
+                android:src="@drawable/ic_edit_black_24dp" />
+
+
+            <ImageView
+                android:id="@+id/borrar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="right"
+                android:layout_marginLeft="10dp"
+                app:srcCompat="@drawable/ic_delete_black_24dp" />
+
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/codigo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:gravity="left"
+            android:textSize="13sp"
+            android:textColor="#BEBEBE"/>
+
+        <TextView
+            android:id="@+id/nombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:gravity="left"
+            android:textSize="17sp"
+            android:textColor="#ffffff"/>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Resumen"
+            android:gravity="left"
+            android:textSize="13sp"
+            android:textColor="#888888"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/precio_unitario"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$ 0"
+                    android:gravity="left"
+                    android:textSize="17sp"
+                    android:textColor="#404040"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Precio inicial"
+                    android:gravity="left"
+                    android:textSize="12sp"
+                    android:textColor="#888888"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/arrow_rigth"/>
+
+
+                <TextView
+                    android:id="@+id/descuento"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#787878"
+                    android:text="-0%"
+                    android:paddingLeft="7dp"
+                    android:paddingRight="7dp"
+                    android:gravity="left"
+                    android:textSize="13sp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="#ffffff"/>
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/valor_descuento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="$ 0"
+                    android:gravity="left"
+                    android:textSize="17sp"
+                    android:textColor="#404040"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Precio final"
+                    android:gravity="left"
+                    android:textSize="12sp"
+                    android:textColor="#888888"/>
+
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Galones:"
+                android:gravity="right"
+                android:textSize="13sp"
+                android:textColor="#888888"/>
+
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cantidad:"
+                android:gravity="right"
+                android:textSize="13sp"
+                android:textColor="#888888"/>
+
+
+            <TextView
+                android:id="@+id/cantidad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3"
+                android:gravity="left"
+                android:layout_marginLeft="5dp"
+                android:textSize="17sp"
+                android:textColor="#000000"/>
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="0dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Descuento Adicional:"
+                android:gravity="right"
+                android:textSize="13sp"
+                android:textColor="#888888"/>
+
+
+            <TextView
+                android:id="@+id/descuento_adicional"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0%"
+                android:gravity="left"
+                android:layout_marginLeft="5dp"
+                android:textSize="17sp"
+                android:textColor="#000000"/>
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Subtotal Neto:"
+                android:gravity="right"
+                android:textSize="13sp"
+                android:textColor="#888888"/>
+
+
+            <TextView
+                android:id="@+id/subtotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:gravity="left"
+                android:layout_marginLeft="5dp"
+                android:textSize="17sp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:background="@android:color/holo_green_dark"
+                android:textColor="@android:color/white"/>
+
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</LinearLayout>
