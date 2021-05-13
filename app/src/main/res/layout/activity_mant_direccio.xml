@@ -369,22 +369,38 @@
                         android:padding="3dp"
                         android:background="@drawable/custom_border" />
 
-                    <LinearLayout
-                        android:layout_gravity="center_vertical"
-                        android:layout_height="match_parent"
-                        android:layout_width="match_parent"
-                        android:orientation="horizontal">
+                    <EditText
+                        android:id="@+id/congelador"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:nextFocusDown="@id/nombre"
+                        android:hint="Cabinet"
+                        android:minHeight="45dp"
+                        android:inputType="number"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:textSize="15sp"
+                        android:background="@drawable/custom_border"/>
 
-                        <Spinner
-                            android:id="@+id/congelador"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center_vertical"
-                            android:spinnerMode="dialog"
-                            android:paddingLeft="8dp"
-                            android:paddingRight="8dp"
-                            android:textSize="15sp" />
-                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/qr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerInside"
+                        android:tint="@color/colorPrimary"
+                        android:text="SCAN QR"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:textColor="@color/White"
+                        android:drawablePadding="5dp"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:drawableTint="@color/White"
+                        android:layout_marginStart="2dp"
+                        android:drawableLeft="@drawable/ic_baseline_qr_code_scanner_24"
+                        android:background="@color/colorPrimary"/>
 
                 </LinearLayout>
 

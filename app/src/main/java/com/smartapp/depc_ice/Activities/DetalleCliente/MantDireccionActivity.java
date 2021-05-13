@@ -12,6 +12,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
@@ -29,10 +30,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.gson.Gson;
+import com.j256.ormlite.stmt.query.In;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
+import com.smartapp.depc_ice.Activities.ScannerQr.ScanQrActivity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Clientes;
@@ -97,6 +101,9 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
     private Bitmap bitmap;
     private boolean isActualizar = false;
     private Clientes cliente;
+    private TextView qr;
+    private final static int MY_PERMISSIONS_REQUEST_CAMARA = 9991;
+    private String congeladorID = "null";
 
     private Call<ICrearDireccion.dataUsuario> callRegistro;
     private ICrearDireccion.dataUsuario dataRegistro;
@@ -128,6 +135,7 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
         tvLat = layout.findViewById(R.id.tv_lat);
         tvLon = layout.findViewById(R.id.tv_lon);
         tvRuta = layout.findViewById(R.id.tv_ruta);
+        qr = layout.findViewById(R.id.qr);
         etDireccion = layout.findViewById(R.id.et_direccion);
         zona = (Spinner) layout.findViewById(R.id.zona);
         btn_whatsapp = layout.findViewById(R.id.btn_whatsapp);
@@ -375,6 +383,14 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
         });
 
 
+        qr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                checkCameraPermission();
+            }
+        });
+
 
         agregar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -394,7 +410,7 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
                     }
 
                 }else{
-                    showAlert("LO SENTIMOS NO TIEN FOTO ASIGNADA");
+                    showAlert("LO SENTIMOS NO TIENE FOTO ASIGNADA");
                 }
             }
         });
@@ -427,6 +443,34 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
 
 
     }
+
+    private void checkCameraPermission() {
+        if (Build.VERSION.SDK_INT>Build.VERSION_CODES.LOLLIPOP_MR1) {// Marshmallow+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+                    // Show an expanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+                } else {
+                    // No se necesita dar una explicación al usuario, sólo pedimos el permiso.
+                    ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_CAMARA );
+                    // MY_PERMISSIONS_REQUEST_CAMARA es una constante definida en la app. El método callback obtiene el resultado de la petición.
+                }
+            }else{ //have permissions
+                iniciarScan ();
+            }
+        }else{ // Pre-Marshmallow
+            iniciarScan ();
+        }
+    }
+
+    private void iniciarScan(){
+
+        Intent intent = new Intent(MantDireccionActivity.this, ScanQrActivity.class);
+        startActivity(intent);
+
+    }
+
 
     private void selectPick(){
         try {
@@ -502,6 +546,12 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
                 selectPick();
             } else {
                 Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+            }
+        }else if (requestCode == MY_PERMISSIONS_REQUEST_CAMARA){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                iniciarScan();
+            } else {
+                showAlert("Debe aceptar el permiso antes de continuar");
             }
         }
     }
@@ -697,7 +747,7 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
                             }
                         }
                         direccion.setCliente_id(""+getIntent().getStringExtra("cliente"));
-                        direccion.setCongelador_id("");
+                        direccion.setCongelador_id(congeladorID);
                         direccion.setDia_visita(""+dias.getText().toString());
                         direccion.setEmail_contacto(""+correo.getText().toString());
                         direccion.setExtension_contacto("");

@@ -217,8 +217,8 @@ public class DetalleUbicacionClienteActivity extends BaseActitity implements Bas
     private void showLit(){
 
         try {
-            if( DataBaseHelper.getDireccionesBYIdCliente(DepcApplication.getApplication().getDireccionesDao(), ""+ cliente.getCodigo_cliente_id()) != null){
-                listaEntrega = DataBaseHelper.getDireccionesBYIdCliente(DepcApplication.getApplication().getDireccionesDao(), ""+ cliente.getCodigo_cliente_id());
+            if( DataBaseHelper.getDireccionesBYIdClienteDESC(DepcApplication.getApplication().getDireccionesDao(), ""+ cliente.getCodigo_cliente_id()) != null){
+                listaEntrega = DataBaseHelper.getDireccionesBYIdClienteDESC(DepcApplication.getApplication().getDireccionesDao(), ""+ cliente.getCodigo_cliente_id());
                 lista.setAdapter(new DireccionClientesAdapter(this, listaEntrega, cliente.getNombre_comercial()));
 
                 Utils.setListViewHeightBasedOnChildren(lista);

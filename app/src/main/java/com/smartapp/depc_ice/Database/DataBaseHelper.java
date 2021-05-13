@@ -273,6 +273,16 @@ public class DataBaseHelper {
         return usuarios;
     }
 
+    public static List<Direcciones> getDireccionesBYIdClienteDESC(Dao<Direcciones, Integer> userDao, String idCliente) throws SQLException {
+
+        List<Direcciones> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_DIRECCIONES+" WHERE cliente_id = '"+idCliente+"' ORDER BY id DESC";
+        GenericRawResults<Direcciones> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
     public static List<Direcciones> getDireccionesBYIdClienteOrder(Dao<Direcciones, Integer> userDao, String idCliente) throws SQLException {
 
         List<Direcciones> usuarios = null;
