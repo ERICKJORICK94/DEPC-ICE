@@ -132,14 +132,19 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 if (DataBaseHelper.getDetallePedidoByIDA(DepcApplication.getApplication().getDetallePedidoDao(),child.getIdDetail()).size() > 0){
                     final DetallePedido dt =  DataBaseHelper.getDetallePedidoByIDA(DepcApplication.getApplication().getDetallePedidoDao(),child.getIdDetail()).get(0);
 
+                    if (dt.getCantidad() != null) {
+                        float cant = Float.parseFloat(dt.getCantidad());
+                        float x = cant - (int) cant;
+                        unidades.setText((int) cant+" u.");
+
+                    }
+
                     subtotal.setText("");
                     if (dt.getSubtotal() != null){
                         if (Utils.isNumberDecimal(dt.getSubtotal())) {
                             subtotal.setText("" + Utils.foramatearMiles(String.format("%.2f", Float.parseFloat(dt.getSubtotal()))));
                         }
                     }
-
-
 
                     if (dt.getPorcentajeDescuento() != null) {
                         float cant = Float.parseFloat(dt.getPorcentajeDescuento());
@@ -173,7 +178,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                             TextView valor_descuento = (TextView) detailProduct.findViewById(R.id.valor_descuento);
                             TextView subtotal = (TextView) detailProduct.findViewById(R.id.subtotal);
                             TextView cantidad = (TextView) detailProduct.findViewById(R.id.cantidad);
-                            TextView descuento_adicional = (TextView) detailProduct.findViewById(R.id.descuento_adicional);
                             Utils.imageColor(info_product, _context.getResources().getColor(R.color.White));
 
                             edit_product.setVisibility(View.VISIBLE);
@@ -197,6 +201,20 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                             valor_descuento.setText(""+Utils.foramatearMiles(""+Utils.roundFloat(valor,4)));
                             subtotal.setText(""+Utils.foramatearMiles(dt.getSubtotalNeto()));
                             cantidad.setText(""+dt.getCantidad());
+
+                            if (dt.getCantidad() != null) {
+                                if (Utils.isNumber(""+dt.getCantidad())){
+                                    int cantidadNume = Integer.valueOf(""+dt.getCantidad());
+                                    cantidad.setText(""+cantidadNume);
+                                }else{
+                                    if (Utils.isNumberDecimal(""+dt.getCantidad())){
+                                        float cantidadNum = Float.valueOf(""+dt.getCantidad());
+                                        cantidad.setText(""+(int)cantidadNum);
+                                    }
+                                }
+                            }
+
+
 
                             float cant = Float.parseFloat(dt.getCantidad());
 
@@ -227,21 +245,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                             } catch (SQLException e) {
                                 e.printStackTrace();
                             }
-
-
-                            descuento_adicional.setBackgroundColor(Color.TRANSPARENT);
-                            descuento_adicional.setText("0%");
-
-                            if (dt.getPorcentajeDescuentoAdicional() != null){
-                                if (Utils.isNumber(dt.getPorcentajeDescuentoAdicional()) || Utils.isNumberDecimal(dt.getPorcentajeDescuentoAdicional())){
-                                    float porcentaje = Float.parseFloat(dt.getPorcentajeDescuentoAdicional());
-                                    if (porcentaje > 0){
-                                        descuento_adicional.setBackgroundColor(Color.YELLOW);
-                                        descuento_adicional.setText(""+(int) porcentaje+"%");
-                                    }
-                                }
-                            }
-
 
                             info_product.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -676,12 +679,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         codigo.setText(""+producto.getCodigo_item());
         name.setText(""+producto.getDescripcion());
-        grupo.setText("Bodega: "+producto.getDescripcion_bodega());
+        grupo.setText("BODEGA: "+producto.getDescripcion_bodega());
 
         if (producto.getExistencia() != null) {
             if (Utils.isNumber(""+producto.getExistencia())){
                 int cantidad = Integer.valueOf(""+producto.getExistencia());
                 stock.setText(""+cantidad+"\nUNIDADES");
+            }else{
+                if (Utils.isNumberDecimal(""+producto.getExistencia())){
+                    float cantidad = Float.valueOf(""+producto.getExistencia());
+                    stock.setText(""+(int)cantidad+"\nUNIDADES");
+                }
             }
         }
 
@@ -713,7 +721,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
 
     private void validateCalcular(float precioProducto, float iva1, Productos producto){
-        if (cantidadEdit.getText().toString().length() > 0){
+        //if (cantidadEdit.getText().toString().length() > 0){
             float descuento = 0;
             float cantidad = 0;
             double subtotal = 0;
@@ -777,7 +785,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             //edt_total.setText(""+total);
             edt_total.setText(""+String.format("%.2f",total));
 
-        }
+        //}
     }
 
 

@@ -16,7 +16,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="20dp"
             android:orientation="horizontal">
 
 
@@ -200,23 +200,6 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Galones:"
-                android:gravity="right"
-                android:textSize="13sp"
-                android:textColor="#888888"/>
-
-
-
-        </LinearLayout>
 
 
         <LinearLayout
@@ -246,36 +229,6 @@
 
 
         </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="0dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Descuento Adicional:"
-                android:gravity="right"
-                android:textSize="13sp"
-                android:textColor="#888888"/>
-
-
-            <TextView
-                android:id="@+id/descuento_adicional"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0%"
-                android:gravity="left"
-                android:layout_marginLeft="5dp"
-                android:textSize="17sp"
-                android:textColor="#000000"/>
-
-
-        </LinearLayout>
-
 
         <LinearLayout
             android:layout_width="wrap_content"

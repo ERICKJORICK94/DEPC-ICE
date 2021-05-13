@@ -108,8 +108,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
         android:paddingBottom="5dp"
         android:gravity="center_horizontal"
         android:orientation="vertical">
@@ -205,7 +205,7 @@
 
                 <TextView
                     android:id="@+id/stock"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
                     android:gravity="left"
@@ -249,9 +249,10 @@
         <EditText
             android:id="@+id/cantidad"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:hint="0"
-            android:inputType="numberDecimal"
+            android:inputType="number"
+            android:background="@drawable/custom_border"
             android:gravity="center" />
 
         <LinearLayout
@@ -283,11 +284,12 @@
                 <EditText
                     android:id="@+id/precio"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="45dp"
                     android:hint="0"
                     android:enabled="false"
                     android:inputType="numberDecimal"
                     android:textColor="@color/DarkRed"
+                    android:background="@drawable/custom_border_gray"
                     android:gravity="center" />
 
 
@@ -314,9 +316,10 @@
             <EditText
                 android:id="@+id/descuento"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
                 android:hint="0"
                 android:inputType="numberDecimal"
+                android:background="@drawable/custom_border"
                 android:gravity="center" />
 
 
@@ -348,11 +351,12 @@
         <EditText
             android:id="@+id/edt_iva"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:hint="0"
             android:inputType="number"
             android:gravity="center"
             android:enabled="false"
+            android:background="@drawable/custom_border_gray"
             android:textColor="@color/Black"
             />
 
@@ -363,6 +367,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:layout_marginLeft="10dp"
                 android:layout_weight="1">
 
         <TextView
@@ -377,25 +382,17 @@
         <EditText
             android:id="@+id/subtotal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:hint="0"
             android:inputType="number"
             android:gravity="center"
             android:enabled="false"
+            android:background="@drawable/custom_border_gray"
             android:textColor="@color/Black" />
 
             </LinearLayout>
 
         </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Galones"
-            android:gravity="left"
-            android:textSize="14sp"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/DarkGray"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -409,24 +406,23 @@
         <EditText
             android:id="@+id/edt_total"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:hint="0"
             android:inputType="number"
             android:gravity="center"
             android:enabled="false"
+            android:background="@drawable/custom_border_gray"
             android:textColor="@color/Black" />
 
         <Button
             android:id="@+id/calcular"
             android:layout_width="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:layout_height="40dp"
             android:text="Calcular"
             android:elevation="4dp"
             android:background="@color/RoyalBlue"
             android:textColor="@color/White"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:layout_marginBottom="10dp"/>
 
 

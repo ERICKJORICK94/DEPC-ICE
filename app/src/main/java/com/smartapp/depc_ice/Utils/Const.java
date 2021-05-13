@@ -27,6 +27,7 @@ public class Const {
     public static final String TABLE_PEDIDO = "Pedido";
     public static final String ID_PEDIDO = "pedido_id";
     public static final String ID_PEDIDOS = "id_pedidos";
+    public static final String PEDIDO_PASS= "pedido_pass";
 
 
     public static final String ERROR_DEFAULT = "Ha ocurrido un error intente nuevamente";

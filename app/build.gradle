@@ -73,21 +73,20 @@ dependencies {
     implementation 'com.squareup.okhttp:okhttp:2.4.0'
     implementation 'com.google.code.gson:gson:2.6.2'
     implementation 'cz.msebera.android:httpclient:4.4.1.2'
-    implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'in.srain.cube:grid-view-with-header-footer:1.0.12'
-    implementation 'com.layer-net:step-indicator:1.1.0'
     implementation 'com.akexorcist:RoundCornerProgressBar:2.0.3'
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
     implementation 'com.github.clans:fab:1.6.2'
     implementation 'com.astuetz:pagerslidingtabstrip:1.0.1'
     implementation 'com.github.quentin7b:android-location-tracker:3.2'
-    implementation 'com.github.quentin7b:android-location-tracker:3.2'
     implementation 'com.vincent.filepicker:MultiTypeFilePicker:1.0.8'
     implementation 'com.github.chrisbanes:PhotoView:2.0.0'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.github.barteksc:android-pdf-viewer:3.2.0-beta.1'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'com.github.jpvs0101:Currencyfy:v1.0.2'
     implementation 'com.budiyev.android:code-scanner:2.1.0'
+    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 
 
     implementation files('libs/commons-io-2.2.jar')

@@ -328,6 +328,77 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="NOMBRE PERSONA QUIEN RECIBE"
+                android:textColor="@color/Black"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:textSize="12sp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:padding="1dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_marginEnd="5dp"
+                android:padding="1dp"
+                android:background="@drawable/custom_border">
+
+                <EditText
+                    android:id="@+id/persona_recibe"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text=""
+                    android:textSize="14sp"
+                    android:hint="Ingrese nombre"
+                    android:paddingLeft="10dp"
+                    android:textColor="@color/Black"
+                    android:inputType="textCapCharacters"
+                    android:elevation="1sp"
+                    android:background="@color/White"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/ver_foto"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
+                android:tint="@color/colorPrimary"
+                android:text="VER FOTO"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:textColor="@color/White"
+                android:background="@color/colorPrimary"/>
+
+            <TextView
+                android:id="@+id/agregar"
+                android:layout_width="65dp"
+                android:layout_height="match_parent"
+                android:text="AÑADIR FOTO"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:layout_marginStart="5dp"
+                android:textColor="@color/White"
+                android:background="@color/RoyalBlue"/>
+
+
+        </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="COMENTARIO"
                 android:textColor="@color/Black"
                 android:layout_marginTop="10dp"

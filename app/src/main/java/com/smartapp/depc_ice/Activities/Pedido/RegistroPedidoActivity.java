@@ -1,7 +1,13 @@
 package com.smartapp.depc_ice.Activities.Pedido;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +21,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.smartapp.depc_ice.Activities.DetalleCliente.DetalleUbicacionClienteActivity;
 import com.smartapp.depc_ice.Activities.DetalleCliente.EditarClientesActivity;
+import com.smartapp.depc_ice.Activities.DetalleCliente.MantDireccionActivity;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
@@ -32,8 +41,10 @@ import com.smartapp.depc_ice.Models.BodegasModel;
 import com.smartapp.depc_ice.Models.DireccionesModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Const;
+import com.smartapp.depc_ice.Utils.PhotoViewer;
 import com.smartapp.depc_ice.Utils.Utils;
 
+import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,12 +72,13 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
     private EditText cupo_mes;
     private Spinner spinner_bodega;
     private EditText ruc;
+    private EditText persona_recibe;
     private EditText direccion;
     private EditText telefono;
     private EditText vendedor;
     private EditText comentario;
     private Button crear;
-    private TextView crear_pedido;
+    private TextView crear_pedido, agregar,ver_foto;
     private List<Bodega> bodegas;
     private Spinner spinner_direccion;
     private ImageButton crear_ubicacion;
@@ -78,11 +90,14 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
     private int indexBodega = -1;
     boolean flagBodega = false;
     boolean flagDirecciones = false;
+    private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
+    private static final int MY_CAMERA_REQUEST_CODE = 100;
 
     private Call<IDirecciones.dataBodega> callDirecciones;
     private IDirecciones.dataBodega dataDirecciones;
     private int indexDirecciones = -1;
     private List<Direcciones> direccionesList;
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +110,10 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
         cliente_name = (EditText) layout.findViewById(R.id.cliente_name);
         cupo = (EditText) layout.findViewById(R.id.cupo);
         cupo_mes = (EditText) layout.findViewById(R.id.cupo_mes);
+        cupo_mes = (EditText) layout.findViewById(R.id.cupo_mes);
+        agregar = layout.findViewById(R.id.agregar);
+        ver_foto = layout.findViewById(R.id.ver_foto);
+        persona_recibe = (EditText) layout.findViewById(R.id.persona_recibe);
         spinner_bodega = (Spinner) layout.findViewById(R.id.spinner_bodega);
         ruc = (EditText) layout.findViewById(R.id.ruc);
         crear_pedido = (TextView) layout.findViewById(R.id.crear_pedido);
@@ -296,9 +315,111 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
             }
         });
 
+        agregar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectPick();
+            }
+        });
+
+        ver_foto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (bitmap != null){
+                    if (Utils.convertBase64String(bitmap) != null) {
+                        Intent intent = new Intent(RegistroPedidoActivity.this, PhotoViewer.class);
+                        intent.putExtra("imageString64", "" +Utils.convertBase64String(bitmap));
+                        startActivity(intent);
+                    }
+
+                }else{
+                    showAlert("LO SENTIMOS NO TIENE FOTO ASIGNADA");
+                }
+            }
+        });
+
         getBodegas();
 
     }
+
+    private void selectPick(){
+        try {
+            PackageManager pm = getPackageManager();
+            int hasPerm = pm.checkPermission(Manifest.permission.CAMERA, getPackageName());
+            if (hasPerm == PackageManager.PERMISSION_GRANTED) {
+                final CharSequence[] options = {"Cámara", "Galería"};
+                androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(RegistroPedidoActivity.this);
+                builder.setTitle("Subir Foto");
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (options[item].equals("Cámara")) {
+                            dialog.dismiss();
+                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            startActivityForResult(intent, PICK_IMAGE_CAMERA);
+                        } else if (options[item].equals("Galería")) {
+                            dialog.dismiss();
+                            Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            startActivityForResult(pickPhoto, PICK_IMAGE_GALLERY);
+                        } else if (options[item].equals("Cancel")) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                builder.show();
+            } else
+                //Toast.makeText(GridFotosActivity.this, "Camera Permission error", Toast.LENGTH_SHORT).show();
+                if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
+                }
+        } catch (Exception e) {
+            Toast.makeText(RegistroPedidoActivity.this, "Camera Permission error", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_CAMERA) {
+            try {
+                Uri selectedImage = data.getData();
+                bitmap = (Bitmap) data.getExtras().get("data");
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+                Log.e(TAG,"Base64: "+Utils.convertBase64String(bitmap));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (requestCode == PICK_IMAGE_GALLERY) {
+            Uri selectedImage = data.getData();
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+                Log.e(TAG,"Base64: "+Utils.convertBase64String(bitmap));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_CAMERA_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
+                selectPick();
+            } else {
+                Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
 
     private void showbodegas(){
 

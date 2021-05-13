@@ -24,6 +24,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.gson.Gson;
@@ -155,11 +156,10 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
             floatingActionButton1.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     //TODO something when floating action menu first item clicked
-                    /*Intent intent = new Intent(com.app.san_32.Activities.DetallePedidoActivity.this, BusquedaPedidoActivity.class);
-                    intent.putExtra(Const.IS_CATALOGO,false);
+                    Intent intent = new Intent(DetallePedidoActivity.this, BusquedaPedidoActivity.class);
                     intent.putExtra(Const.PEDIDO_PASS, pedido);
                     startActivity(intent);
-                    materialDesignFAM.close(false);*/
+                    materialDesignFAM.close(false);
 
                     materialDesignFAM.close(true);
 
@@ -233,6 +233,38 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
         }
 
 
+        add_descuento.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                new MaterialDialog.Builder(DetallePedidoActivity.this)
+                        .title("Atención")
+                        .content("Inserte porcentaje adicional")
+                        .inputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL)
+                        .input("0", "0", new MaterialDialog.InputCallback() {
+                            @Override
+                            public void onInput(MaterialDialog dialog, CharSequence input) {
+
+                                if (input.length() == 0) {
+                                    descuaneto_adicional.setText(""+0);
+                                }else{
+                                    descuaneto_adicional.setText(""+input);
+                                }
+                                pedido.setPorcentajeDescuentoAdi(""+input);
+
+                                try {
+                                    DataBaseHelper.updatePedido(pedido, DepcApplication.getApplication().getPedidosDao());
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+                                getPedidos();
+                            }
+                        }).show();
+
+
+            }
+        });
+
 
     }
 
@@ -288,7 +320,7 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
                         if (descuaneto_adicional != null){
                             if (Utils.isNumber(descuaneto_adicional.getText().toString()) || Utils.isNumberDecimal(descuaneto_adicional.getText().toString())){
                                 float descuentoFactura = Float.parseFloat(descuaneto_adicional.getText().toString());
-                                if (descuentoFactura > 0){
+                                if (descuentoFactura >= 0){
                                     for(DetallePedido dt : detalles){
 
                                         float descuento = descuentoFactura;
@@ -493,12 +525,12 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
 
 
         for(Productos pr : productos){
-            if(listDataHeader.contains(""+pr.getDescripcion())){
-                int retval = listDataHeader.indexOf(""+pr.getDescripcion());
+            if(listDataHeader.contains("BODEGA "+pr.getDescripcion_bodega())){
+                int retval = listDataHeader.indexOf("BODEGA "+pr.getDescripcion_bodega());
                 prd.get(retval).add(pr);
 
             }else{
-                listDataHeader.add(""+pr.getDescripcion());
+                listDataHeader.add("BODEGA "+pr.getDescripcion_bodega());
                 List<Productos > aux = new ArrayList<Productos>();
                 aux.add(pr);
                 prd.add(aux);
