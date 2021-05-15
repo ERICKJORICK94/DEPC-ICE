@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/relative_name"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fadingEdgeLength="0dp"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:scrollbars="none"
+    android:id="@+id/scroll">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="5dp">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textStyle="bold"
+            android:textSize="17sp"
+            android:textColor="@color/Black"
+            android:text="VALOR TOTAL"/>
+
+
+        <TextView
+            android:id="@+id/total_facturas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_margin="5dp"
+            android:textStyle="bold"
+            android:textSize="17sp"
+            android:textColor="@color/DarkRed"
+            android:text="$ "/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:focusableInTouchMode="true"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".45"
+                android:text="Recaudador: "
+                android:textStyle="bold"
+                android:textColor="@color/Black" />
+
+            <EditText
+                android:id="@+id/recaudador"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:focusableInTouchMode="false"
+                android:focusable="false"
+                android:padding="5dp"
+                android:textSize="14sp"
+                android:background="@drawable/custom_border"
+                android:layout_marginLeft="10dp"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linear_referencia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".45"
+                android:text="Comentario: "
+                android:textStyle="bold"
+                android:textColor="@color/Black" />
+
+            <EditText
+                android:id="@+id/edt_referencia"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:padding="5dp"
+                android:layout_marginLeft="10dp"
+                android:text=""
+                android:textSize="14sp"
+                android:background="@drawable/custom_border"
+                android:layout_weight="1"></EditText>
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".45"
+                android:text="Pagado por: "
+                android:textStyle="bold"
+                android:textColor="@color/Black" />
+
+            <EditText
+                android:id="@+id/edit_numero_ingreso"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:text=""
+                android:padding="5dp"
+                android:background="@drawable/custom_border"
+                android:textSize="14sp"
+                android:layout_weight="1"></EditText>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/enviar"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="ENVIAR"
+            android:textColor="@color/White"
+            android:background="@color/RoyalBlue"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="15dp"
+            android:elevation="4dp"/>
+
+    </LinearLayout>
+
+
+</ScrollView>
+
+
+</RelativeLayout>

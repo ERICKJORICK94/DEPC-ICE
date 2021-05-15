@@ -21,6 +21,13 @@
     <string name="lbl_seleccion">SELECCIONE</string>
     <string name="current_date">June, 2019</string>
     <string name="add_event">EVENTO</string>
+    <string name="lbl_cuota">#</string>
+    <string name="lbl_fec_i">Número</string>
+    <string name="lbl_fec_v">Fecha\nVenc.</string>
+    <string name="lbl_abono">Valor\nAbono</string>
+    <string name="lbl_vencido">Valor\nVenc.</string>
+    <string name="lbl_valor_total">VALOR\nTOTAL:</string>
+
 
     <string name="vw_confirm">Hecho</string>
     <string name="vw_no_video_play_app">¡No existe ninguna aplicación para reproducir videos!</string>

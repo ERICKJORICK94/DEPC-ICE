@@ -214,9 +214,19 @@ public class EditarClientesActivity extends BaseActitity implements BaseActitity
 
                 if (cliente != null){
                     if (cliente.getDocumentopdf() != null){
-                        if (!cliente.getDocumentopdf().equals("null")){
-                            storetoPdfandOpen(EditarClientesActivity.this,cliente.getDocumentopdf());
+                    if (cliente.getDocumentopdf().length() > 0) {
+                        if (!cliente.getDocumentopdf().equals("null")) {
+                            storetoPdfandOpen(EditarClientesActivity.this, cliente.getDocumentopdf());
+                            return;
+                        }
+                    }
+                    }
+                }
 
+                if (PDFbase64String != null){
+                    if (PDFbase64String.length() > 0){
+                        if (!PDFbase64String.equals("null")) {
+                            storetoPdfandOpen(EditarClientesActivity.this, PDFbase64String);
                             return;
                         }
                     }

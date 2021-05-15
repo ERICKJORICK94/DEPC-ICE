@@ -1,0 +1,736 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:background="@color/color_fondo">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:padding="15dp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".45"
+                        android:text="Monto: "
+                        android:textStyle="bold"
+                        android:textColor="@color/Black" />
+
+                    <EditText
+                        android:id="@+id/edt_monto"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        
+                        android:text="20483.02"
+                        android:enabled="false"
+                        android:background="@drawable/custom_border"
+                        android:padding="5dp"
+                        android:inputType="numberDecimal"
+                        android:layout_weight="1"></EditText>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".45"
+                        android:text="Saldo: "
+                        android:textStyle="bold"
+                        android:textColor="@color/Black" />
+
+                    <EditText
+                        android:id="@+id/edit_saldo"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        
+                        android:text="0.00"
+                        android:enabled="false"
+                        android:background="@drawable/custom_border"
+                        android:padding="5dp"
+                        android:inputType="numberDecimal"
+                        android:layout_weight="1"></EditText>
+
+                </LinearLayout>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/DarkGray"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:text="Forma de Pago: "
+                    android:textStyle="bold"
+                    android:textColor="@color/Black" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_border">
+
+                <Spinner
+                    android:id="@+id/spinner_forma"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:spinnerMode="dialog"
+                    android:elevation="4dp"></Spinner>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_tarjeta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Tarjeta: " />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_border">
+
+                <Spinner
+                    android:id="@+id/spinner_tarjeta"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:spinnerMode="dialog"
+                    android:elevation="4dp"></Spinner>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/linear_n_tarjeta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Nro. Tarjeta: " />
+
+                <EditText
+                    android:id="@+id/edt_numero_tarjeta"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:inputType="number"
+                    android:padding="5dp"
+                    android:background="@drawable/custom_border"
+                    android:layout_weight="1"></EditText>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/linear_nro_voucher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Nro. Voucher: " />
+
+                <EditText
+                    android:id="@+id/edt_numero_voucher"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    
+                    android:inputType="number"
+                    android:padding="5dp"
+                    android:background="@drawable/custom_border"
+                    android:layout_weight="1"></EditText>
+
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:id="@+id/linear_n_com"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Nro. COM: " />
+
+                <EditText
+                    android:id="@+id/edt_nro_com"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    
+                    android:inputType="number"
+                    android:padding="5dp"
+                    android:background="@drawable/custom_border"
+                    android:layout_weight="1"></EditText>
+
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:id="@+id/linear_nro_letra"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Nro. Letras: " />
+
+                <EditText
+                    android:id="@+id/edt_numero_letras"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    
+                    android:inputType="number"
+                    android:background="@drawable/custom_border"
+                    android:padding="5dp"
+                    android:layout_weight="1"></EditText>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_cuotas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Cuotas: " />
+
+                <EditText
+                    android:id="@+id/edt_cuotas"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    
+                    android:inputType="number"
+                    android:background="@drawable/custom_border"
+                    android:padding="5dp"
+                    android:layout_weight="1"></EditText>
+
+            </LinearLayout>
+
+
+
+
+
+            <LinearLayout
+                android:id="@+id/linear_numero_nc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Nro. N/C: " />
+
+                <EditText
+                    android:id="@+id/edt_numero_nc"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:inputType="number"
+                    android:background="@drawable/custom_border"
+                    android:padding="5dp"
+                    android:layout_weight="1"></EditText>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_banco"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Banco: " />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_border">
+
+                    <Spinner
+                        android:id="@+id/spinner_banco"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:spinnerMode="dialog"
+                        android:elevation="4dp"></Spinner>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/linear_cuenta_bancaria"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Cuenta Bancaria: " />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_border">
+
+                    <Spinner
+                        android:id="@+id/spinner_cuentas"
+                        android:layout_width="match_parent"
+                        android:spinnerMode="dialog"
+                        android:layout_height="match_parent"
+                        android:elevation="4dp"></Spinner>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_monto_pago"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Monto Pago: " />
+
+                <EditText
+                    android:id="@+id/edt_monto_pagar"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    
+                    android:background="@drawable/custom_border"
+                    android:padding="5dp"
+                    android:inputType="numberDecimal"
+                    android:layout_weight="1"></EditText>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/linear_vencimiento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Vencimiento: " />
+
+                <Button
+                    android:id="@+id/btn_vencimiento"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    
+                    android:text="2018/05/27"
+                    android:textSize="12sp"
+                    android:layout_weight="1"></Button>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_autoriazacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Autorización" />
+
+                <EditText
+                    android:id="@+id/edt_autorizacion"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    
+                    android:background="@drawable/custom_border"
+                    android:padding="5dp"
+                    android:layout_weight="1"></EditText>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/linear_numero_cuenta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Nro. Cuenta" />
+
+                <EditText
+                    android:id="@+id/edt_numero_cuenta"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/custom_border"
+                    android:padding="5dp"
+                    
+                    android:inputType="number"
+                    android:layout_weight="1"></EditText>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_numero_cheque"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Nro. Cheque" />
+
+                <EditText
+                    android:id="@+id/edt_numero_cheque"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/custom_border"
+                    android:padding="5dp"
+                    
+                    android:inputType="number"
+                    android:layout_weight="1"></EditText>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_numero_deposito"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Nro. Depósito" />
+
+                <EditText
+                    android:id="@+id/edt_numero_deposito"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/custom_border"
+                    android:padding="5dp"
+                    
+                    android:inputType="number"
+                    android:layout_weight="1"></EditText>
+
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:id="@+id/linear_fecha_vigencia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Fecha Vigencia" />
+
+                <Button
+                    android:id="@+id/btn_fecha_vigencia"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    
+                    android:text="dd/mm/aaaa"
+                    android:layout_weight="1"></Button>
+
+            </LinearLayout>
+
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/DarkGray"
+                android:text="FOTO"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_baseline_image_24"
+                    android:scaleType="centerInside"
+                    android:background="@drawable/custom_border"/>
+
+                <LinearLayout
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:background="@drawable/custom_border"
+                    android:orientation="horizontal">
+
+
+                    <EditText
+                        android:id="@+id/nombre_foto"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:nextFocusDown="@id/nombre"
+                        android:text="FOTO DEL PAGO"
+                        android:minHeight="45dp"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:textSize="15sp"
+                        android:focusableInTouchMode="false"
+                        android:editable="false"
+                        android:clickable="false"
+                        android:background="@drawable/custom_border"/>
+
+                    <TextView
+                        android:id="@+id/ver_foto"
+                        android:layout_width="60dp"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerInside"
+                        android:tint="@color/colorPrimary"
+                        android:text="VER FOTO"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:textColor="@color/White"
+                        android:background="@color/colorPrimary"/>
+
+                    <TextView
+                        android:id="@+id/agregar"
+                        android:layout_width="65dp"
+                        android:layout_height="match_parent"
+                        android:text="AÑADIR FOTO"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:layout_marginStart="5dp"
+                        android:textColor="@color/White"
+                        android:background="@color/RoyalBlue"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_agregar"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/RoyalBlue"
+                android:textColor="@color/White"
+                android:text="AGREGAR"/>
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+</LinearLayout>

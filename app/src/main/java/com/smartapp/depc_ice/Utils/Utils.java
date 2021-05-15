@@ -1,5 +1,6 @@
 package com.smartapp.depc_ice.Utils;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,6 +19,8 @@ import android.widget.ScrollView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.jpvs0101.currencyfy.Currencyfy;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -25,11 +28,14 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.smartapp.depc_ice.Activities.Pedido.ExpandableListAdapter;
 import com.smartapp.depc_ice.DepcApplication;
+import com.smartapp.depc_ice.Models.Device;
 import com.smartapp.depc_ice.R;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -53,6 +59,37 @@ public class Utils {
                 .build();
         sImageLoader.init(config);
     }
+
+    public static void saveDevices(ArrayList<Device> devices, Activity act){
+
+        if (devices != null){
+            if (devices.size() > 0){
+                SharedPreferences mPrefs = act.getPreferences(act.MODE_PRIVATE);
+                SharedPreferences.Editor prefsEditor = mPrefs.edit();
+                Gson gson = new Gson();
+                String json = gson.toJson(devices);
+                prefsEditor.putString(PREFERENCE_DEVICE, json);
+                prefsEditor.commit();
+            }
+        }
+
+    }
+
+    public static ArrayList<Device> getDevices(Activity act){
+
+        ArrayList<Device> devicesArray = null;
+
+        SharedPreferences  mPrefs = act.getPreferences(act.MODE_PRIVATE);
+
+        Gson gson = new Gson();
+        String json = mPrefs.getString(PREFERENCE_DEVICE, "");
+        Type type = new TypeToken<ArrayList<Device>>(){}.getType();
+        devicesArray = gson.fromJson(json, type);
+
+
+        return devicesArray;
+    }
+
 
     public static void setListViewHeight(ExpandableListView listView,
                                          int group) {

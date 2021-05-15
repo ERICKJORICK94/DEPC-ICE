@@ -5,9 +5,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +23,10 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.gson.Gson;
 import com.smartapp.depc_ice.Activities.Clientes.ClientesActivity;
@@ -188,15 +194,32 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
         pdf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkPermissionForReadExtertalStorage()){
-                    Log.e(TAG,"SI TEINE PERMISO");
-                }
 
-                Intent intent4 = new Intent(CrearClientesActivity.this, NormalFilePickActivity.class);
-                intent4.putExtra(Constant.MAX_NUMBER, 1);
-                intent4.putExtra(IS_NEED_FOLDER_LIST, false);
-                intent4.putExtra(NormalFilePickActivity.SUFFIX, new String[] {"pdf"});
-                startActivityForResult(intent4, Constant.REQUEST_CODE_PICK_FILE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    if (!Environment.isExternalStorageManager()) {
+
+                        try {
+                            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                            intent.addCategory("android.intent.category.DEFAULT");
+                            intent.setData(Uri.parse(String.format("package:%s",getApplicationContext().getPackageName())));
+                            startActivityForResult(intent, 2296);
+                        } catch (Exception e) {
+                            Intent intent = new Intent();
+                            intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                            startActivityForResult(intent, 2296);
+                        }
+
+                    }else{
+
+                        checkPermissionForReadExtertalStorage();
+
+                    }
+
+                } else {
+
+                    checkPermissionForReadExtertalStorage();
+
+                }
 
             }
         });
@@ -322,17 +345,67 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
 
     }
 
-    public boolean checkPermissionForReadExtertalStorage() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int result = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
-            return result == PackageManager.PERMISSION_GRANTED;
+    private void iniciarCarga(){
+
+        Intent intent4 = new Intent(CrearClientesActivity.this, NormalFilePickActivity.class);
+        intent4.putExtra(Constant.MAX_NUMBER, 1);
+        intent4.putExtra(IS_NEED_FOLDER_LIST, false);
+        intent4.putExtra(NormalFilePickActivity.SUFFIX, new String[] {"pdf"});
+        startActivityForResult(intent4, Constant.REQUEST_CODE_PICK_FILE);
+
+
+    }
+
+    public void checkPermissionForReadExtertalStorage() {
+
+        if (Build.VERSION.SDK_INT>Build.VERSION_CODES.LOLLIPOP_MR1) {// Marshmallow+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    // Show an expanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+                } else {
+                    // No se necesita dar una explicación al usuario, sólo pedimos el permiso.
+                    ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 3102 );
+                    // MY_PERMISSIONS_REQUEST_CAMARA es una constante definida en la app. El método callback obtiene el resultado de la petición.
+                }
+            }else{ //have permissions
+                iniciarCarga ();
+            }
+        }else{ // Pre-Marshmallow
+            iniciarCarga ();
         }
-        return false;
+
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 3102) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                iniciarCarga();
+            } else {
+                Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 2296) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (Environment.isExternalStorageManager()) {
+                    checkPermissionForReadExtertalStorage();
+                } else {
+                    Toast.makeText(this, "Allow permission for storage access!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            return;
+        }
 
         switch (requestCode){
             case Constant.REQUEST_CODE_PICK_FILE:

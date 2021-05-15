@@ -27,7 +27,7 @@
             android:textStyle="bold"
             android:textSize="17sp"
             android:textColor="@color/Black"
-            android:text="AGENDA"/>
+            android:text="AGENDA PEDIDOS"/>
 
     </LinearLayout>
 
@@ -40,7 +40,7 @@
         android:paddingEnd="5dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="VENDEDOR: "
             android:textColor="@color/Black"
@@ -63,7 +63,7 @@
         android:paddingEnd="5dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="CÓDIGO: "
             android:textColor="@color/Black"

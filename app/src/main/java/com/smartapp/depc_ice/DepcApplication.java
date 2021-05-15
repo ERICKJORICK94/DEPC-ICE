@@ -6,6 +6,7 @@ import com.j256.ormlite.dao.Dao;
 import com.smartapp.depc_ice.Database.Database;
 import com.smartapp.depc_ice.Entities.Bodega;
 import com.smartapp.depc_ice.Entities.Clientes;
+import com.smartapp.depc_ice.Entities.ClientesVisitas;
 import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.Direcciones;
 import com.smartapp.depc_ice.Entities.Pedidos;
@@ -32,6 +33,7 @@ public class DepcApplication extends Application {
     private Dao<Direcciones, Integer> direcciones = null;
     private Dao<Pedidos, Integer> pedidos = null;
     private Dao<DetallePedido, Integer> detallePedidos = null;
+    private Dao<ClientesVisitas, Integer> clientesVisitas = null;
     private static String latitud = "";
     private static String longitud = "";
     private static Clientes cliente = null;
@@ -118,6 +120,13 @@ public class DepcApplication extends Application {
             detallePedidos = databaseHelper.getDao(DetallePedido.class);
         }
         return detallePedidos;
+    }
+
+    public Dao<ClientesVisitas, Integer> getClientesVisitasDao() throws SQLException {
+        if (clientesVisitas == null) {
+            clientesVisitas = databaseHelper.getDao(ClientesVisitas.class);
+        }
+        return clientesVisitas;
     }
 
     public Clientes getCliente() {

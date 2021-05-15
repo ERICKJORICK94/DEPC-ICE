@@ -14,6 +14,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.smartapp.depc_ice.Activities.Agenda.Adapter.GridAdapterCalendar;
+import com.smartapp.depc_ice.Activities.Agenda.PlanficadorPedidod;
+import com.smartapp.depc_ice.Database.DataBaseHelper;
+import com.smartapp.depc_ice.DepcApplication;
+import com.smartapp.depc_ice.Entities.Clientes;
+import com.smartapp.depc_ice.Entities.ClientesVisitas;
 import com.smartapp.depc_ice.R;
 
 import java.sql.SQLException;
@@ -101,9 +106,9 @@ public class CalendarCustomView extends LinearLayout {
                 int clickMes = c.get(Calendar.MONTH);
                 if (mesTo == clickMes) {
 
-                    /*Intent intent = new Intent(context, AgendaCliente.class);
+                    Intent intent = new Intent(context, PlanficadorPedidod.class);
                     intent.putExtra("fecha", time);
-                    context.startActivity(intent);*/
+                    context.startActivity(intent);
                 }
 
 
@@ -120,6 +125,72 @@ public class CalendarCustomView extends LinearLayout {
         if (mes <= 9){
             mesString = "0"+mes;
         }
+
+        /**************/
+        try {
+
+            //DEMOOOO
+            DataBaseHelper.deleteClientesVisitas(DepcApplication.getApplication().getClientesVisitasDao());
+            List<Clientes> clientesOriginal = DataBaseHelper.getClientesLimit(DepcApplication.getApplication().getClientesDao());
+            if (clientesOriginal != null){
+                int contador = 0;
+                for(Clientes cl : clientesOriginal){
+                    String fecha = Utils.getFecha();
+                    if (contador == 3){
+                        fecha = "17/05/2021";
+                    }else{
+                        if (contador == 6 || contador == 7){
+                            fecha = "19/05/2021";
+                        }else
+                        if (contador == 8 || contador == 9){
+                            fecha = "20/05/2021";
+                        }
+                    }
+
+                    ClientesVisitas cv = new ClientesVisitas();
+                    cv.setCODIGO(""+cl.getCodigo_cliente_id());
+                    cv.setCODIGO1(""+cl.getCodigo_cliente_id());
+                    cv.setCOMENTARIO("");
+                    cv.setFECHA(fecha);
+                    cv.setFECHA_PROXIMA("");
+                    cv.setRAZON_SOCIAL(""+cl.getNombre_comercial());
+                    DataBaseHelper.saveClientesVisitas(cv,DepcApplication.getApplication().getClientesVisitasDao());
+                    contador++;
+                }
+            }
+            //DEMOOOO
+
+            List<ClientesVisitas> clientes = DataBaseHelper.getClienteVisita(DepcApplication.getApplication().getClientesVisitasDao(), mesString, ""+year);
+
+            if (clientes != null) {
+
+                EventObjects evente;
+                for (ClientesVisitas c : clientes) {
+
+                    if (c.getFECHA() != null) {
+
+                        if (mEvents.contains(new EventObjects(c.getFECHA()))){
+                            int index = mEvents.indexOf(new EventObjects(c.getFECHA()));
+                            mEvents.get(index).setContador(mEvents.get(index).getContador() + 1);
+                            mEvents.get(index).setMessage("# vist. " + mEvents.get(index).getContador());
+                        }else{
+                            evente = new EventObjects();
+                            evente.setContador(1);
+                            evente.setFecha(c.getFECHA());
+                            evente.setMessage("# vist. " + evente.getContador());
+                            evente.setDate(ConvertToDate("" + evente.getFecha()));
+                            mEvents.add(evente);
+                        }
+                    }
+
+                }
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        /************/
 
         Calendar mCal = (Calendar)cal.clone();
         mCal.set(Calendar.DAY_OF_MONTH, 1);

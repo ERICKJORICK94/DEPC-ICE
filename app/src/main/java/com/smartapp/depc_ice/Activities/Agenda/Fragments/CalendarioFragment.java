@@ -9,6 +9,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.smartapp.depc_ice.Database.DataBaseHelper;
+import com.smartapp.depc_ice.DepcApplication;
+import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Fragments.BaseFragment;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.CalendarCustomView;
@@ -40,6 +43,7 @@ public class CalendarioFragment extends BaseFragment implements BaseFragment.Bas
     String codVendedor = "";
     boolean isFlag =  true;
     int currentMes  = 0;
+    private Usuario user;
 
 
     @Override
@@ -55,19 +59,25 @@ public class CalendarioFragment extends BaseFragment implements BaseFragment.Bas
         vendedor = (TextView) layout.findViewById(R.id.vendedor);
         cod_vendedor = (TextView) layout.findViewById(R.id.cod_vendedor);
 
-        /*try {
-            if (DataBaseHelper.getUsuario(San32Application.getApplication().getUsuarioDao()) != null){
-                if (DataBaseHelper.getUsuario(San32Application.getApplication().getUsuarioDao()).size() > 0) {
-                    Usuario user = DataBaseHelper.getUsuario(San32Application.getApplication().getUsuarioDao()).get(0);
-                    vendedor.setText(""+user.getVendedorNombre());
-                    cod_vendedor.setText(""+user.getVendedorCodigo());
-                    codVendedor = ""+user.getVendedorCodigo();
+        try {
+            List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
+            if (usuarios != null){
+                if (usuarios.size() > 0){
+                    user = usuarios.get(0);
+                    if (user.getNombrescompletos() != null){
+                        vendedor.setText(""+user.getNombrescompletos());
+                    }
 
+                    if (user.getUsuario() != null){
+                        cod_vendedor.setText(""+user.getUsuario());
+                    }
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }*/
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
 
         Calendar calendar = Calendar.getInstance();
