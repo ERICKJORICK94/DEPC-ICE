@@ -101,7 +101,7 @@
             android:name=".Activities.Agenda.AgendaActivity"
             android:configChanges="screenSize|orientation"
             android:icon="@drawable/back"
-            android:label="Crear Cliente"
+            android:label="Agenda Pedidos"
             android:screenOrientation="portrait" />
 
         <activity

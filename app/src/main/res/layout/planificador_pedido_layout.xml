@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:gravity="bottom"
         sothree:umanoPanelHeight="85dp"
-        sothree:umanoShadowHeight="4dp"
+        sothree:umanoShadowHeight="10dp"
         sothree:umanoScrollableView="@+id/lista"
         android:background="@color/White">
 
@@ -27,27 +27,40 @@
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
            android:orientation="vertical"
-           android:layout_marginTop="150dp"
-           android:background="@color/color_fondo"
-           android:padding="10dp">
+           android:background="#F1F1F1"
+           android:layout_marginTop="150dp">
+
+           <androidx.cardview.widget.CardView
+               android:layout_width="match_parent"
+               android:layout_height="85dp"
+               sothree:cardElevation="10dp"
+               android:background="@drawable/shadow_bottom">
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="vertical">
+
+
 
            <View
                android:layout_width="100dp"
                android:layout_height="5dp"
                android:layout_gravity="center_horizontal"
-               android:layout_marginTop="5dp"
+               android:layout_marginTop="15dp"
                android:background="@color/LightGrey"/>
 
            <TextView
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:textColor="@color/colorPrimary"
-               android:textSize="17sp"
+               android:textSize="14sp"
                android:textStyle="bold"
-               android:drawableStart="@drawable/ic_baseline_edit_location_24"
+               android:drawableStart="@drawable/ic_baseline_directions_24"
                android:drawableTint="@color/colorPrimary"
                android:drawablePadding="5dp"
                android:layout_marginTop="10dp"
+               android:layout_marginStart="15sp"
                android:gravity="center_vertical"
                android:text="PLANIFICADOR DE RUTAS"/>
 
@@ -55,39 +68,31 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:gravity="center_vertical"
-              android:layout_marginStart="30dp"
+              android:layout_marginStart="45dp"
               android:orientation="horizontal">
 
               <TextView
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:textSize="15sp"
+                  android:textSize="13sp"
                   android:layout_marginEnd="5dp"
                   android:drawablePadding="5dp"
+                  android:textColor="@color/Black"
                   android:text="LISTADO CLIENTES A VISITAR"/>
 
               <TextView
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:textSize="15sp"
+                  android:textSize="13sp"
                   android:textColor="@color/DarkRed"
-                  android:textStyle="bold"
-
-                  android:text="15/05/2021"/>
+                  android:textStyle="italic"
+                  android:text="15 MAYO 2021"/>
 
           </LinearLayout>
 
-           <TextView
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:padding="5dp"
-               android:gravity="center"
-               android:layout_marginTop="10dp"
-               android:background="@drawable/radius_top"
-               android:layout_marginStart="5dp"
-               android:layout_marginEnd="5dp"
-               android:textColor="@color/White"
-               android:text="20 CLIENTES"/>
+               </LinearLayout>
+
+           </androidx.cardview.widget.CardView>
 
            <ListView
                android:id="@+id/lista"
@@ -95,6 +100,7 @@
                android:layout_height="wrap_content"
                android:dividerHeight="0dp"
                android:divider="@color/transparent"
+               android:layout_marginTop="5dp"
                android:focusable="true"/>
 
 

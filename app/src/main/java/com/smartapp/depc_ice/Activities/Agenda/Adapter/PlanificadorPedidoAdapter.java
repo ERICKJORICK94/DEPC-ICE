@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.smartapp.depc_ice.Activities.Cobros.CobrosActivity;
@@ -59,6 +60,8 @@ public class PlanificadorPedidoAdapter extends BaseAdapter {
             viewHolder.nombre = (TextView) convertView.findViewById(R.id.nombre);
             viewHolder.direccion = (TextView) convertView.findViewById(R.id.direccion);
             viewHolder.hora = (TextView) convertView.findViewById(R.id.hora);
+            viewHolder.linear_first = (View) convertView.findViewById(R.id.linear_first);
+            viewHolder.linear_final = (View) convertView.findViewById(R.id.linear_final);
             /*viewHolder.numero = (TextView) convertView.findViewById(R.id.numero);
             viewHolder.fecha_vencida = (TextView) convertView.findViewById(R.id.fecha_vencida);
             viewHolder.valor_vendido = (TextView) convertView.findViewById(R.id.valor_vendido);
@@ -70,12 +73,28 @@ public class PlanificadorPedidoAdapter extends BaseAdapter {
             viewHolder= (ViewHolder)convertView.getTag();
         }
 
+        viewHolder.linear_first.setVisibility(View.VISIBLE);
+        if (position == 0 ){
+            viewHolder.linear_first.setVisibility(View.INVISIBLE);
+        }
+
+        viewHolder.linear_final.setVisibility(View.VISIBLE);
+        if (position == (getCount() - 1) ){
+            viewHolder.linear_final.setVisibility(View.INVISIBLE);
+        }
+
+
+
+
+
         if (position == 0 || position == 1){
             viewHolder.estado.setText("VISITADO");
+            viewHolder.estado.setVisibility(View.VISIBLE);
             viewHolder.estado.setBackgroundColor(mContext.getResources().getColor(R.color.Green));
         }else {
             viewHolder.estado.setText("OENDIENTE");
-            viewHolder.estado.setBackgroundColor(mContext.getResources().getColor(R.color.OrangeRed));
+            viewHolder.estado.setVisibility(View.GONE);
+            //viewHolder.estado.setBackgroundColor(mContext.getResources().getColor(R.color.OrangeRed));
         }
 
         if (position == 1){
@@ -104,6 +123,8 @@ public class PlanificadorPedidoAdapter extends BaseAdapter {
         TextView direccion;
         TextView nombre;
         TextView hora;
+        View linear_first;
+        View linear_final;
 
 
     }
