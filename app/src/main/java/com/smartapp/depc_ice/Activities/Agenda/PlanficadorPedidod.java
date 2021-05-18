@@ -3,24 +3,44 @@ package com.smartapp.depc_ice.Activities.Agenda;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.akexorcist.googledirection.BuildConfig;
+import com.akexorcist.googledirection.DirectionCallback;
+import com.akexorcist.googledirection.GoogleDirection;
+import com.akexorcist.googledirection.config.GoogleDirectionConfiguration;
+import com.akexorcist.googledirection.constant.TransportMode;
+import com.akexorcist.googledirection.model.Coordination;
+import com.akexorcist.googledirection.model.Direction;
+import com.akexorcist.googledirection.model.Leg;
+import com.akexorcist.googledirection.model.Route;
+import com.akexorcist.googledirection.model.Step;
+import com.akexorcist.googledirection.util.DirectionConverter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.smartapp.depc_ice.Activities.Agenda.Adapter.PlanificadorPedidoAdapter;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.quentinklein.slt.LocationTracker;
 import fr.quentinklein.slt.TrackerSettings;
@@ -32,6 +52,12 @@ public class PlanficadorPedidod extends BaseActitity implements OnMapReadyCallba
     private GoogleMap mMap;
     private Marker startPerc = null;
     private ListView lista;
+
+    private final String serverKey = "AIzaSyAg_dcLJ_XnK3aVtyBiGFTxaVe-XP6zPj0";
+    private LatLng park = new LatLng(-2.128685, -79.89429666666666);
+    private LatLng shopping = new LatLng(-2.09513578088982, -79.91638178353094);
+    private LatLng dinner = new LatLng(-2.1078659777639466, -79.94509791683966);
+    private LatLng gallery = new LatLng(-2.1298057177493757, -79.91702239587498);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +91,29 @@ public class PlanficadorPedidod extends BaseActitity implements OnMapReadyCallba
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        //LatLng marker = new LatLng(Double.parseDouble(sincroDireccion.getLatitud()), Double.parseDouble(sincroDireccion.getLongitud()));
-        //mMap.addMarker(new MarkerOptions().position(marker).title(""+sincroDireccion.getDireccion_envio()).snippet(""));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, 15));
         getLocationFromGPS();
+        //requestDirection();
+    }
+
+    private void requestDirection() {
+        GoogleDirectionConfiguration.getInstance().setLogEnabled(true);
+        GoogleDirection.withServerKey(serverKey)
+                .from(park)
+                .and(shopping)
+                .and(dinner)
+                .to(park)
+                .transportMode(TransportMode.DRIVING)
+                .execute(new DirectionCallback() {
+                    @Override
+                    public void onDirectionSuccess(@Nullable Direction direction) {
+                        onDirectionSuccessPaint(direction);
+                    }
+
+                    @Override
+                    public void onDirectionFailure(@NonNull Throwable t) {
+                        onDirectionFailureError(t);
+                    }
+                });
     }
     
     private void getLocationFromGPS(){
@@ -110,6 +155,7 @@ public class PlanficadorPedidod extends BaseActitity implements OnMapReadyCallba
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));*/
 
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinate, 18.0f));
+                            requestDirection();
 
                         } else {
                             hideProgressWait();
@@ -136,6 +182,54 @@ public class PlanficadorPedidod extends BaseActitity implements OnMapReadyCallba
             };
             tracker.startListening();
         }
+    }
+
+    private void onDirectionSuccessPaint(Direction direction) {
+
+                if (direction.isOK()) {
+                Route route = direction.getRouteList().get(0);
+                int legCount = route.getLegList().size();
+                for (int index = 0; index < legCount; index ++) {
+                    Leg leg = route.getLegList().get(index);
+                    mMap.addMarker(new MarkerOptions().position(leg.getStartLocation().getCoordination())).setTitle(""+index);
+                    if (index == legCount - 1) {
+                        mMap.addMarker(new MarkerOptions().position(leg.getEndLocation().getCoordination())).setTitle(""+index);
+                    }
+                    List<Step> stepList = leg.getStepList();
+                    ArrayList<PolylineOptions> polylineOptionList = DirectionConverter.createTransitPolyline(
+                            this,
+                            stepList,
+                            5,
+                            Color.RED,
+                            3,
+                            Color.BLUE
+                    );
+                    for (PolylineOptions polylineOption : polylineOptionList) {
+                        mMap.addPolyline(polylineOption);
+                    }
+                }
+                setCameraWithCoordinationBounds(route);
+
+            } else {
+                showSnackbar(direction.getStatus());
+            }
+    }
+
+    private void setCameraWithCoordinationBounds(Route route) {
+        Coordination southwest = route.getBound(). getSouthwestCoordination();
+        Coordination northeast = route.getBound().getNortheastCoordination();
+        LatLngBounds bounds = new LatLngBounds(southwest.getCoordination(),northeast.getCoordination());
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+    }
+
+    private void onDirectionFailureError(Throwable t) {
+        showSnackbar(t.getMessage());
+    }
+
+
+
+    private void showSnackbar(String message) {
+        showAlert(message);
     }
 
     @Override

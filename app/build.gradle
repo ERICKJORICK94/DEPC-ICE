@@ -88,6 +88,7 @@ dependencies {
     implementation 'com.budiyev.android:code-scanner:2.1.0'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     implementation 'com.sothree.slidinguppanel:library:3.4.0'
+    implementation 'com.akexorcist:google-direction-library:1.2.1'
 
     implementation files('libs/commons-io-2.2.jar')
     implementation files('libs/commons-net-3.1.jar')
