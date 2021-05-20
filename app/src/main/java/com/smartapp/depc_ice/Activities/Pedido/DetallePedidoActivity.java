@@ -32,10 +32,15 @@ import com.google.gson.reflect.TypeToken;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
+import com.smartapp.depc_ice.Entities.Bodega;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Productos;
+import com.smartapp.depc_ice.Entities.Usuario;;
+import com.smartapp.depc_ice.Interface.IPedido;
+import com.smartapp.depc_ice.Models.CrearPreventaModel;
+import com.smartapp.depc_ice.Models.DetalleCrearPreventaModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Const;
 import com.smartapp.depc_ice.Utils.Utils;
@@ -67,6 +72,8 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
     private String codCliente = "";
     private String direccionEntrega = "";
     private boolean isCotizacion = false;
+    private Call<IPedido.dataPedido> call;
+    private IPedido.dataPedido data;
 
     private String idPedido = "";
     FloatingActionMenu materialDesignFAM;
@@ -280,10 +287,17 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
             direccion.setText(""+pedido.getDireccionCliente());
             documento.setText("" + pedido.getId());
 
+            anular.setVisibility(View.GONE);
             if (pedido.getEstadoPedido().equals("0")){
-                anular.setVisibility(View.GONE);
                 modificar.setVisibility(View.GONE);
                 enviar.setVisibility(View.VISIBLE);
+            }else if (pedido.getEstadoPedido().equals("1")){
+                modificar.setVisibility(View.VISIBLE);
+                enviar.setVisibility(View.GONE);
+            }else if (pedido.getEstadoPedido().equals("2")){
+                modificar.setVisibility(View.GONE);
+                enviar.setVisibility(View.GONE);
+                materialDesignFAM.setVisibility(View.GONE);
             }
         }
 
@@ -441,13 +455,7 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
 
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                try {
-
-                                                    final Pedidos ped =  DataBaseHelper.getPedidosByID(DepcApplication.getApplication().getPedidosDao(), idPedido).get(0);
-                                                    //sendPedido();
-                                                } catch (SQLException e) {
-                                                    e.printStackTrace();
-                                                }
+                                                sendPedido(false);
                                                 dialog.dismiss();
 
                                             }
@@ -567,6 +575,129 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
     @Override
     public void doRetry() {
 
+    }
+
+    private void sendPedido(Boolean isActualizar){
+
+        showProgressWait();
+
+        String codigoUsuario = "";
+        try {
+            List<Usuario> usuario = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
+            if (usuario != null){
+                if (usuario.size() > 0){
+                    Usuario user = usuario.get(0);
+                    codigoUsuario = user.getUsuario();
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        //JSON SEND
+        CrearPreventaModel model = new CrearPreventaModel();
+        model.setUsuario_id(""+codigoUsuario);
+        model.setCliente_id(""+cliente.getCodigo_cliente_id());
+        model.setTotal_neto(""+pedido.getSubtotal());
+        model.setForma_pago(""+pedido.getForma_pago());
+        model.setDias_credito(""+cliente.getDias_credito());
+        model.setTotal(""+pedido.getTotal());
+        model.setCobrar_iva(""+cliente.getCobrar_iva());
+        model.setObservaciones(""+pedido.getComentario());
+        model.setForma_pago_id(""+pedido.getForma_pago_id());
+
+        List<DetalleCrearPreventaModel> detalleModel = new ArrayList<DetalleCrearPreventaModel>();
+
+        try {
+            List<DetallePedido> detalles = DataBaseHelper.getDetallePedidoByID(DepcApplication.getApplication().getDetallePedidoDao(), ""+pedido.getId());
+
+            if (detalles != null){
+                for (DetallePedido dt : detalles){
+                    DetalleCrearPreventaModel md = new DetalleCrearPreventaModel();
+
+                    md.setCantidad(""+dt.getCantidad());
+                    md.setPrecio(""+dt.getPrecioUnitario());
+                    md.setDescuento("");
+                    md.setBodega_id(""+pedido.getBodega());
+                    md.setCodigo_item(""+dt.getCodigo());
+                    md.setDescripcion(""+dt.getDescripcion());
+                    md.setCosto("");
+                    md.setCodigo_unidad("");
+                    detalleModel.add(md);
+                }
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        model.setDetalle(detalleModel);
+        model.setMetodo("CrearPreventa");
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+        try {
+            IPedido request = DepcApplication.getApplication().getRestAdapter().create(IPedido.class);
+            call = request.getPedido(body);
+            call.enqueue(new Callback<IPedido.dataPedido>() {
+                @Override
+                public void onResponse(Call<IPedido.dataPedido> call, Response<IPedido.dataPedido> response) {
+                    if (response.isSuccessful()) {
+
+                        data = response.body();
+                        try {
+
+                            hideProgressWait();
+                            String mensajeError = Const.ERROR_COBERTURA;
+
+                            if (data != null) {
+                                if (data.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    //success
+
+                                    return;
+                                }else{
+                                    //Error
+
+                                    if (data.getStatus_message() != null){
+                                        if (data.getStatus_message().length() > 0){
+                                            mensajeError = data.getStatus_message();
+                                        }
+                                    }
+
+                                    showAlert(""+mensajeError);
+
+                                    return;
+                                }
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            showError();
+                        }
+
+                    } else {
+                        showError();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IPedido.dataPedido> call, Throwable t) {
+                    showError();
+                }
+            });
+
+        }catch (Exception e){
+            hideProgressWait();
+            showError();
+
+        }
+
+    }
+
+    private void showError(){
+        showAlert(""+Const.ERROR_COBERTURA);
     }
 
 

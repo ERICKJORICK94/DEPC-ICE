@@ -74,6 +74,7 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
     private EditText cupo;
     private EditText cupo_mes;
     private Spinner spinner_bodega;
+    private Spinner spinner_forma_pago;
     private EditText ruc;
     private EditText persona_recibe;
     private EditText direccion;
@@ -99,8 +100,11 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
     private Call<IDirecciones.dataBodega> callDirecciones;
     private IDirecciones.dataBodega dataDirecciones;
     private int indexDirecciones = -1;
+    private int indexFormaPago = 0;
     private List<Direcciones> direccionesList;
     private Bitmap bitmap;
+
+    String FormaPago[] = {"CONTADO","CRÉDITO"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +130,7 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
         vendedor = (EditText) layout.findViewById(R.id.vendedor);
         comentario = (EditText) layout.findViewById(R.id.comentario);
         spinner_direccion = (Spinner) layout.findViewById(R.id.spinner_direccion);
+        spinner_forma_pago = (Spinner) layout.findViewById(R.id.spinner_forma_pago);
         crear = (Button) layout.findViewById(R.id.crear);
         crear_ubicacion = (ImageButton) layout.findViewById(R.id.crear_ubicacion);
 
@@ -227,6 +232,12 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
                         }
                     }
 
+                    pedido.setForma_pago("" + FormaPago[indexFormaPago]);
+                    pedido.setForma_pago_id("4");
+                    if (indexFormaPago == 1) {
+                        pedido.setForma_pago_id("5");
+                    }
+
                     try {
                         DataBaseHelper.updatePedido(pedido,DepcApplication.getApplication().getPedidosDao());
                         finish();
@@ -289,6 +300,12 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
                         pedido.setDescuento("0.00");
                         pedido.setIva("0.00");
                         pedido.setTotal("0.00");
+
+                        pedido.setForma_pago("" + FormaPago[indexFormaPago]);
+                        pedido.setForma_pago_id("4");
+                        if (indexFormaPago == 1) {
+                            pedido.setForma_pago_id("5");
+                        }
 
                         if (direccionesList != null){
                             if (direccionesList.size() > 0) {
@@ -371,6 +388,8 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
         });
 
         getBodegas();
+
+        showFormaPago();
 
     }
 
@@ -584,6 +603,34 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
             Log.e("TAG---","error: "+e.toString());
 
         }
+
+    }
+
+
+    private void showFormaPago(){
+
+        indexFormaPago = 0;
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, FormaPago);
+        spinner_forma_pago.setAdapter(adapter);
+        if (pedido != null){
+            if (pedido.getForma_pago_id() != null){
+                if (pedido.getForma_pago_id().equals("5")){
+                    indexFormaPago = 1;
+                }
+            }
+        }
+
+        spinner_forma_pago.setSelection(indexFormaPago);
+        spinner_forma_pago.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                indexFormaPago = position;
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
     }
 

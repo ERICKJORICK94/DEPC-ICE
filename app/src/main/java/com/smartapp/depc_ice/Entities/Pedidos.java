@@ -57,6 +57,13 @@ public class Pedidos implements Serializable {
     private String DescuentoAdicional;
     @DatabaseField
     private String estadoPedido = "0";
+    @DatabaseField
+    private String forma_pago;
+    @DatabaseField
+    private String forma_pago_id;
+    @DatabaseField
+    private String dias_credito;
+
 
     public int getId() {
         return id;
@@ -248,5 +255,29 @@ public class Pedidos implements Serializable {
 
     public void setEstadoPedido(String estadoPedido) {
         this.estadoPedido = estadoPedido;
+    }
+
+    public String getForma_pago() {
+        return forma_pago;
+    }
+
+    public void setForma_pago(String forma_pago) {
+        this.forma_pago = forma_pago;
+    }
+
+    public String getForma_pago_id() {
+        return forma_pago_id;
+    }
+
+    public void setForma_pago_id(String forma_pago_id) {
+        this.forma_pago_id = forma_pago_id;
+    }
+
+    public String getDias_credito() {
+        return dias_credito;
+    }
+
+    public void setDias_credito(String dias_credito) {
+        this.dias_credito = dias_credito;
     }
 }
