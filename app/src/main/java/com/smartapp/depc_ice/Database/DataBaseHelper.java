@@ -144,6 +144,16 @@ public class DataBaseHelper {
         return usuarios;
     }
 
+    public static List<Bodega> getBodegaByID(Dao<Bodega, Integer> userDao, String bodega_id) throws SQLException {
+
+        List<Bodega> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_BODEGAS+" WHERE bodega_id = '"+bodega_id+"'";
+        GenericRawResults<Bodega> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
     public static List<Bodega> getBodegaSearch(Dao<Bodega, Integer> userDao, String condicion) throws SQLException {
 
         List<Bodega> usuarios = null;
@@ -375,6 +385,16 @@ public class DataBaseHelper {
 
         List<Pedidos> pedidos = null;
         String query = "SELECT * FROM " + Const.TABLE_PEDIDO;
+        GenericRawResults<Pedidos> rawResults = pedidoDao.queryRaw(query, pedidoDao.getRawRowMapper());
+        pedidos = rawResults.getResults();
+
+        return pedidos;
+    }
+
+    public static List<Pedidos> getPedidosByCuenta(Dao<Pedidos, Integer> pedidoDao, String cuenta_id) throws SQLException {
+
+        List<Pedidos> pedidos = null;
+        String query = "SELECT * FROM " + Const.TABLE_PEDIDO+" WHERE cuenta_id = '"+cuenta_id+"'";
         GenericRawResults<Pedidos> rawResults = pedidoDao.queryRaw(query, pedidoDao.getRawRowMapper());
         pedidos = rawResults.getResults();
 

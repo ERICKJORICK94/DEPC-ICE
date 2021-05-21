@@ -63,6 +63,10 @@ public class Pedidos implements Serializable {
     private String forma_pago_id;
     @DatabaseField
     private String dias_credito;
+    @DatabaseField
+    private String cuenta_id = "";
+    @DatabaseField
+    private String foto = "";
 
 
     public int getId() {
@@ -279,5 +283,21 @@ public class Pedidos implements Serializable {
 
     public void setDias_credito(String dias_credito) {
         this.dias_credito = dias_credito;
+    }
+
+    public String getCuenta_id() {
+        return cuenta_id;
+    }
+
+    public void setCuenta_id(String cuenta_id) {
+        this.cuenta_id = cuenta_id;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 }

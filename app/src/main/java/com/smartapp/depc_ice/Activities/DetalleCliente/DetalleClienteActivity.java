@@ -18,9 +18,12 @@ import com.google.gson.Gson;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
+import com.smartapp.depc_ice.Entities.Bodega;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.Usuario;
+import com.smartapp.depc_ice.Interface.IBodegas;
 import com.smartapp.depc_ice.Interface.IClientes;
+import com.smartapp.depc_ice.Models.BodegasModel;
 import com.smartapp.depc_ice.Models.ClientesModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Const;
@@ -55,6 +58,8 @@ public class DetalleClienteActivity extends BaseActitity implements BaseActitity
     private String isConsultar = "0";
     private Call<IClientes.dataClientes> call;
     private IClientes.dataClientes data;
+    private Call<IBodegas.dataBodega> callBodega;
+    private IBodegas.dataBodega dataBodega;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +102,105 @@ public class DetalleClienteActivity extends BaseActitity implements BaseActitity
 
         }
 
+        getBodegas();
+
+    }
+
+
+
+    private void getBodegas(){
+
+        showProgressWait();
+
+        //JSON SEND
+        BodegasModel model = new BodegasModel();
+        model.setCondicion("");
+        model.setMetodo("ListaBodegas");
+
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
+        try {
+
+            IBodegas request = DepcApplication.getApplication().getRestAdapter().create(IBodegas.class);
+            callBodega = request.getBodegas(body);
+            callBodega.enqueue(new Callback<IBodegas.dataBodega>() {
+                @Override
+                public void onResponse(Call<IBodegas.dataBodega> call, Response<IBodegas.dataBodega> response) {
+                    if (response.isSuccessful()) {
+
+                        dataBodega = response.body();
+                        try {
+
+                            hideProgressWait();
+
+                            String mensajeError = Const.ERROR_DEFAULT;
+
+                            if (dataBodega != null) {
+                                if (dataBodega.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    if (dataBodega.getData() != null){
+                                        if (dataBodega.getData().getListarBodegas() != null) {
+                                            if (dataBodega.getData().getListarBodegas().size() > 0) {
+
+
+                                                final List<Bodega> bodegas;
+                                                bodegas = dataBodega.getData().getListarBodegas().get(0);
+
+                                                if (bodegas != null) {
+                                                    DataBaseHelper.deleteBodega(DepcApplication.getApplication().getBodegaDao());
+                                                    DepcApplication.getApplication().getBodegaDao().callBatchTasks(new Callable<Bodega>() {
+                                                        @Override
+                                                        public Bodega call() throws Exception {
+                                                            for (Bodega cl : bodegas) {
+                                                                DataBaseHelper.saveBodega(cl, DepcApplication.getApplication().getBodegaDao());
+                                                            }
+                                                            return null;
+                                                        }
+                                                    });
+
+
+                                                }
+
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    if (data.getStatus_message() != null){
+                                        mensajeError = dataBodega.getStatus_message();
+                                    }
+                                }
+                            }
+
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideProgressWait();
+
+                        }
+
+                    } else {
+                        hideProgressWait();
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IBodegas.dataBodega> call, Throwable t) {
+                    hideProgressWait();
+
+                }
+            });
+
+        }catch (Exception e){
+            hideProgressWait();
+
+
+        }
     }
 
     private void showList(){

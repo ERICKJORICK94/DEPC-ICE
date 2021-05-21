@@ -2,11 +2,13 @@ package com.smartapp.depc_ice.Activities.Agenda;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -85,6 +87,16 @@ public class PlanficadorPedidod extends BaseActitity implements OnMapReadyCallba
         mapFragment.getMapAsync(this);
         lista = (ListView) layout.findViewById(R.id.lista);
         lista.setAdapter(new PlanificadorPedidoAdapter(this));
+        lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent intent = new Intent(PlanficadorPedidod.this, DetallePlanificacionActivity.class);
+                intent.putExtra("fecha",fecha);
+                startActivity(intent);
+
+            }
+        });
 
     }
 

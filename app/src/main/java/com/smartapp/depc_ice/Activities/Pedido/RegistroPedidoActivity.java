@@ -25,12 +25,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.gson.Gson;
 import com.smartapp.depc_ice.Activities.DetalleCliente.DetalleUbicacionClienteActivity;
 import com.smartapp.depc_ice.Activities.DetalleCliente.EditarClientesActivity;
 import com.smartapp.depc_ice.Activities.DetalleCliente.MantDireccionActivity;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
+import com.smartapp.depc_ice.Activities.ScannerQr.ScanQrActivity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Bodega;
@@ -103,6 +106,8 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
     private int indexFormaPago = 0;
     private List<Direcciones> direccionesList;
     private Bitmap bitmap;
+    private TextView qr;
+    private final static int MY_PERMISSIONS_REQUEST_CAMARA = 9991;
 
     String FormaPago[] = {"CONTADO","CRÉDITO"};
 
@@ -132,7 +137,41 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
         spinner_direccion = (Spinner) layout.findViewById(R.id.spinner_direccion);
         spinner_forma_pago = (Spinner) layout.findViewById(R.id.spinner_forma_pago);
         crear = (Button) layout.findViewById(R.id.crear);
+        qr = layout.findViewById(R.id.qr);
         crear_ubicacion = (ImageButton) layout.findViewById(R.id.crear_ubicacion);
+
+        qr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    if (!Environment.isExternalStorageManager()) {
+
+                        try {
+                            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                            intent.addCategory("android.intent.category.DEFAULT");
+                            intent.setData(Uri.parse(String.format("package:%s",getApplicationContext().getPackageName())));
+                            startActivityForResult(intent, 2299);
+                        } catch (Exception e) {
+                            Intent intent = new Intent();
+                            intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                            startActivityForResult(intent, 2299);
+                        }
+
+                    }else{
+
+                        checkCameraPermission();
+
+                    }
+
+                } else {
+
+                    checkCameraPermission();
+
+                }
+
+            }
+        });
 
         try {
             List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
@@ -156,6 +195,15 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
                 if (pedido != null){
                     if (pedido.getComentario() != null){
                         comentario.setText(""+pedido.getComentario());
+                    }
+                }
+
+                if (pedido.getFoto() != null){
+                    if (pedido.getFoto().length() > 0) {
+                        if (!pedido.getFoto().equals("null")) {
+                            bitmap = Utils.convert(pedido.getFoto());
+                            return;
+                        }
                     }
                 }
             }
@@ -233,6 +281,13 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
                     }
 
                     pedido.setForma_pago("" + FormaPago[indexFormaPago]);
+
+                    //pedido.setFoto("null");
+                    if (bitmap != null){
+                        pedido.setFoto(""+Utils.convertBase64String(bitmap));
+                    }
+
+
                     pedido.setForma_pago_id("4");
                     if (indexFormaPago == 1) {
                         pedido.setForma_pago_id("5");
@@ -300,6 +355,10 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
                         pedido.setDescuento("0.00");
                         pedido.setIva("0.00");
                         pedido.setTotal("0.00");
+                        pedido.setFoto("null");
+                        if (bitmap != null){
+                            pedido.setFoto(""+Utils.convertBase64String(bitmap));
+                        }
 
                         pedido.setForma_pago("" + FormaPago[indexFormaPago]);
                         pedido.setForma_pago_id("4");
@@ -393,6 +452,33 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
 
     }
 
+    private void checkCameraPermission() {
+        if (Build.VERSION.SDK_INT>Build.VERSION_CODES.LOLLIPOP_MR1) {// Marshmallow+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+                    // Show an expanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+                } else {
+                    // No se necesita dar una explicación al usuario, sólo pedimos el permiso.
+                    ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_CAMARA );
+                    // MY_PERMISSIONS_REQUEST_CAMARA es una constante definida en la app. El método callback obtiene el resultado de la petición.
+                }
+            }else{ //have permissions
+                iniciarScan ();
+            }
+        }else{ // Pre-Marshmallow
+            iniciarScan ();
+        }
+    }
+
+    private void iniciarScan(){
+
+        Intent intent = new Intent(RegistroPedidoActivity.this, ScanQrActivity.class);
+        startActivity(intent);
+
+    }
+
     private void selectPick(){
         try {
             PackageManager pm = getPackageManager();
@@ -433,7 +519,15 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 2296) {
+        if (requestCode == 2299) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (Environment.isExternalStorageManager()) {
+                    checkCameraPermission();
+                } else {
+                    Toast.makeText(this, "Allow permission for storage access!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }else  if (requestCode == 2296) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 if (Environment.isExternalStorageManager()) {
                     selectPick();
@@ -469,7 +563,13 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_CAMERA_REQUEST_CODE) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_CAMARA){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                iniciarScan();
+            } else {
+                showAlert("Debe aceptar el permiso antes de continuar");
+            }
+        }else if (requestCode == MY_CAMERA_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 //Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
                 selectPick();

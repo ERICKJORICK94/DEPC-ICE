@@ -12,9 +12,12 @@ public class CrearPreventaModel {
     private String total = "";
     private String cobrar_iva = "";
     private String observaciones = "";
+    private String direccion_envio_id = "";
     private String forma_pago_id = "";
     private List<DetalleCrearPreventaModel> detalle;
     private String metodo = "";
+    private String cuenta_id = "";
+    private String foto = "";
 
     public String getUsuario_id() {
         return usuario_id;
@@ -80,6 +83,14 @@ public class CrearPreventaModel {
         this.observaciones = observaciones;
     }
 
+    public String getDireccion_envio_id() {
+        return direccion_envio_id;
+    }
+
+    public void setDireccion_envio_id(String direccion_envio_id) {
+        this.direccion_envio_id = direccion_envio_id;
+    }
+
     public String getForma_pago_id() {
         return forma_pago_id;
     }
@@ -102,5 +113,21 @@ public class CrearPreventaModel {
 
     public void setMetodo(String metodo) {
         this.metodo = metodo;
+    }
+
+    public String getCuenta_id() {
+        return cuenta_id;
+    }
+
+    public void setCuenta_id(String cuenta_id) {
+        this.cuenta_id = cuenta_id;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 }

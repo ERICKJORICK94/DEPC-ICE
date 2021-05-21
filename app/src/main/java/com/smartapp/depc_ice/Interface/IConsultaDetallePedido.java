@@ -1,8 +1,8 @@
 package com.smartapp.depc_ice.Interface;
 
 
-import com.smartapp.depc_ice.Models.CrearPreventaModel;
-import com.smartapp.depc_ice.Models.DataClienteModel;
+import com.smartapp.depc_ice.Models.DataDetallePedidosModel;
+import com.smartapp.depc_ice.Models.DataPedidosModel;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -14,7 +14,7 @@ import retrofit2.http.POST;
  * Created by GrupoLink on 09/04/2015.
  */
 
-public interface IPedido {
+public interface IConsultaDetallePedido {
 
     //@FormUrlEncoded
     @Headers("Content-Type: application/json")
@@ -25,7 +25,7 @@ public interface IPedido {
 
         private int status;
         private String status_message;
-        private CrearPreventaModel data;
+        private DataDetallePedidosModel data;
 
         public int getStatus() {
             return status;
@@ -43,11 +43,11 @@ public interface IPedido {
             this.status_message = status_message;
         }
 
-        public CrearPreventaModel getData() {
+        public DataDetallePedidosModel getData() {
             return data;
         }
 
-        public void setData(CrearPreventaModel data) {
+        public void setData(DataDetallePedidosModel data) {
             this.data = data;
         }
     }

@@ -514,7 +514,7 @@ public class BusquedaPedidoActivity extends BaseActitity implements BaseActitity
                         detalle.setDescripcion("" + producto.getDescripcion());
                         detalle.setTipoInventario("");
                         detalle.setCantidad("" + cantidad);
-                        detalle.setCosto(""+producto.getPvp());
+                        detalle.setCosto(""+producto.getCosto());
                         detalle.setPrecioUnitario("" + producto.getPvp());
                         detalle.setSubtotal("" + String.format("%.2f",subtotal));
                         detalle.setSubtotalNeto("" + String.format("%.2f", subtotalNeto));

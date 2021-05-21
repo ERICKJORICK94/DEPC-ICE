@@ -244,6 +244,13 @@
             android:label="Planificador"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".Activities.Agenda.DetallePlanificacionActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:icon="@drawable/back"
+            android:label="Visita Cliente"
+            android:screenOrientation="portrait" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

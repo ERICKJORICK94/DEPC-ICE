@@ -38,9 +38,19 @@ import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Productos;
 import com.smartapp.depc_ice.Entities.Usuario;;
+import com.smartapp.depc_ice.Entities.Zonas;
+import com.smartapp.depc_ice.Interface.IConsultaDetallePedido;
+import com.smartapp.depc_ice.Interface.IConsultaPedido;
 import com.smartapp.depc_ice.Interface.IPedido;
+import com.smartapp.depc_ice.Interface.IRemoverPedido;
+import com.smartapp.depc_ice.Models.BodegasModel;
+import com.smartapp.depc_ice.Models.ConsultasDetallePedidosModel;
+import com.smartapp.depc_ice.Models.ConsultasPedidosModel;
 import com.smartapp.depc_ice.Models.CrearPreventaModel;
 import com.smartapp.depc_ice.Models.DetalleCrearPreventaModel;
+import com.smartapp.depc_ice.Models.ListarDetalleProformas;
+import com.smartapp.depc_ice.Models.ListarProformas;
+import com.smartapp.depc_ice.Models.RemoverPedidoModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Const;
 import com.smartapp.depc_ice.Utils.Utils;
@@ -50,7 +60,10 @@ import org.json.JSONObject;
 
 import java.net.InetAddress;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -74,6 +87,10 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
     private boolean isCotizacion = false;
     private Call<IPedido.dataPedido> call;
     private IPedido.dataPedido data;
+    private Call<IConsultaDetallePedido.dataPedido> callDetalle;
+    private IConsultaDetallePedido.dataPedido dataDetalle;
+
+    IRemoverPedido.dataPedido dataRemove;
 
     private String idPedido = "";
     FloatingActionMenu materialDesignFAM;
@@ -113,6 +130,8 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
         layout = addLayout(R.layout.detalle_pedido);
         Utils.SetStyleActionBarTitle(this);
         layoutInflater = LayoutInflater.from(this);
+
+        cliente = DepcApplication.getApplication().getCliente();
 
         documento = (TextView) layout.findViewById(R.id.documento);
         clienteName = (TextView) layout.findViewById(R.id.clienteName);
@@ -188,15 +207,19 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
                         public void onClick(DialogInterface dialog, int which) {
 
                             try {
-                                DataBaseHelper.deleteDetallePedidoByID(DepcApplication.getApplication().getDetallePedidoDao(),""+pedido.getId());
-                                DataBaseHelper.deletePedidosByID(DepcApplication.getApplication().getPedidosDao(),""+pedido.getId());
+
+                                if (pedido.getEstadoPedido().equals("1")){
+                                    dialog.dismiss();
+                                    removePedido();
+                                }else {
+                                    DataBaseHelper.deleteDetallePedidoByID(DepcApplication.getApplication().getDetallePedidoDao(), "" + pedido.getId());
+                                    DataBaseHelper.deletePedidosByID(DepcApplication.getApplication().getPedidosDao(), "" + pedido.getId());
+                                    dialog.dismiss();
+                                    finish();
+                                }
                             } catch (SQLException e) {
                                 e.printStackTrace();
                             }
-
-                            dialog.dismiss();
-                            finish();
-
 
                         }
                     });
@@ -273,6 +296,217 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
         });
 
 
+
+        if (pedido != null){
+            if (pedido.getEstadoPedido().equals("1")){
+
+                try {
+                    boolean flag = true;
+                    List<DetallePedido> detalles = DataBaseHelper.getDetallePedidoByID(DepcApplication.getApplication().getDetallePedidoDao(), ""+pedido.getId());
+                    if (detalles != null) {
+                        if (detalles.size() > 0) {
+                            flag = false;
+                        }
+                    }
+
+                    if (flag){
+                        //pedir detalles
+                        getDetallesPedido();
+                    }
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+
+
+            }
+        }
+
+
+    }
+
+    private void getDetallesPedido(){
+
+        showProgressWait();
+
+        //JSON SEND
+        ConsultasDetallePedidosModel model = new ConsultasDetallePedidosModel();
+        model.setCuenta_id(""+pedido.getCuenta_id());
+        model.setMetodo("ConsultarPreventaClienteDetalle");
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
+        try {
+
+            IConsultaDetallePedido request = DepcApplication.getApplication().getRestAdapter().create(IConsultaDetallePedido.class);
+            callDetalle = request.getPedido(body);
+            callDetalle.enqueue(new Callback<IConsultaDetallePedido.dataPedido>() {
+                @Override
+                public void onResponse(Call<IConsultaDetallePedido.dataPedido> call, Response<IConsultaDetallePedido.dataPedido> response) {
+                    if (response.isSuccessful()) {
+
+                        dataDetalle = response.body();
+                        try {
+
+                            hideProgressWait();
+
+                            String mensajeError = Const.ERROR_DEFAULT;
+
+                            if (dataDetalle != null) {
+                                if (dataDetalle.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    if (dataDetalle.getData() != null){
+                                        if (dataDetalle.getData().getListarProformas() != null) {
+                                            if (dataDetalle.getData().getListarProformas().size() > 0) {
+
+                                                final List<ListarDetalleProformas> proformas;
+                                                proformas = dataDetalle.getData().getListarProformas().get(0);
+
+                                                if (proformas != null) {
+                                                    for (ListarDetalleProformas prof : proformas) {
+
+                                                        double descuento = 0;
+                                                        double cantidad = 0;
+                                                        double subtotal = 0;
+                                                        double subtotalNeto = 0;
+                                                        double total = 0;
+                                                        double iva = 12;
+                                                        double subtotalIva = 0;
+                                                        double precioFijo = 0;
+
+                                                        cantidad = Float.parseFloat("" + prof.getCantidad());
+                                                        precioFijo = Float.parseFloat("" + prof.getPrecio());
+                                                        double desc = Float.parseFloat("" + prof.getDescuento());
+
+                                                        try {
+                                                            if (DataBaseHelper.getClientesByCODCLiente(DepcApplication.getApplication().getClientesDao(), pedido.getCliente()) != null){
+                                                                if (DataBaseHelper.getClientesByCODCLiente(DepcApplication.getApplication().getClientesDao(), pedido.getCliente()).size() > 0) {
+                                                                    Clientes cl = DataBaseHelper.getClientesByCODCLiente(DepcApplication.getApplication().getClientesDao(), pedido.getCliente()).get(0);
+                                                                    if (cl.getCobrar_iva() != null){
+                                                                        if (cl.getCobrar_iva().toLowerCase().equals("0")){
+                                                                            iva = 0;
+                                                                        }
+                                                                    }
+
+                                                                }
+
+                                                            }
+                                                        } catch (SQLException e) {
+                                                            e.printStackTrace();
+                                                        }
+
+
+                                                        descuento = (desc * 100 ) / precioFijo;
+                                                        subtotal = (cantidad * precioFijo);
+                                                        subtotalNeto = (cantidad * precioFijo) - ((cantidad * precioFijo) * (descuento / 100));
+                                                        subtotalIva = (subtotalNeto * (iva / 100));
+
+                                                        total = (subtotalNeto) + subtotalIva;
+
+                                                        DetallePedido detalle = new DetallePedido();
+
+                                                        detalle.setIdPedido("" + pedido.getId());
+                                                        detalle.setNumeroItem("" + prof.getCodigo_item());
+                                                        detalle.setCodigo("" + prof.getCodigo_item());
+                                                        detalle.setDescripcion("" + prof.getDescripcion());
+                                                        detalle.setTipoInventario("");
+                                                        detalle.setCantidad("" + prof.getCantidad());
+                                                        detalle.setCosto(""+prof.getCosto());
+                                                        detalle.setPrecioUnitario("" + prof.getPrecio());
+                                                        detalle.setSubtotal("" + String.format("%.2f",subtotal));
+                                                        detalle.setSubtotalNeto("" + String.format("%.2f", subtotalNeto));
+                                                        detalle.setSubtotalNetoFijo("" + String.format("%.2f" , subtotalNeto));
+                                                        detalle.setPorcentajeDescuento("" + String.format("%.2f", descuento));
+                                                        double ds = ((cantidad * precioFijo) * (descuento / 100));
+                                                        //ds = Utils.roundFloat(ds,4);
+                                                        detalle.setDescuento("" + String.format("%.2f", ds ));
+                                                        detalle.setPorcentajeDescuentoAdicional("0");
+                                                        detalle.setDescuentoAdicional("0");
+                                                        detalle.setNeto("" + String.format("%.2f", subtotalNeto));
+                                                        detalle.setPorcentajeIva("" + String.format("%.2f", iva)  /*Utils.roundFloat(iva,2)*/);
+                                                        detalle.setIva("" + String.format("%.2f" , subtotalIva ) /*Utils.roundFloat(subtotalIva,2)*/ );
+                                                        detalle.setTotal("" + String.format("%.2f", total ) /*Utils.roundFloat(total,2)*/ );
+                                                        detalle.setPromocion("0");
+                                                        pedido.setBodega(""+prof.getBodega_id());
+
+
+                                                        String nombreBodega = "";
+
+                                                        boolean flag = true;
+                                                        if(DataBaseHelper.getProductoByCOD(DepcApplication.getApplication().getProductosDao(), prof.getCodigo_item()) != null){
+                                                            if(DataBaseHelper.getProductoByCOD(DepcApplication.getApplication().getProductosDao(),  prof.getCodigo_item()).size() > 0) {
+                                                                flag = false;
+                                                            }
+                                                        }
+
+                                                        if(DataBaseHelper.getBodegaByID(DepcApplication.getApplication().getBodegaDao(), prof.getBodega_id()) != null){
+                                                            if(DataBaseHelper.getBodegaByID(DepcApplication.getApplication().getBodegaDao(), prof.getBodega_id()).size() > 0) {
+                                                                Bodega bg = DataBaseHelper.getBodegaByID(DepcApplication.getApplication().getBodegaDao(), prof.getBodega_id()).get(0);
+                                                                nombreBodega = bg.getDescripcion();
+                                                            }
+                                                        }
+
+                                                        if (flag){
+                                                            Productos p = new Productos();
+                                                            p.setCodigo_item(""+prof.getCodigo_item());
+                                                            p.setDescripcion(""+prof.getDescripcion());
+                                                            p.setDescripcion_abrev(""+prof.getDescripcion());
+                                                            p.setPvp(""+prof.getPrecio());
+                                                            p.setBodega_id(""+prof.getBodega_id());
+                                                            p.setDescripcion_bodega(""+nombreBodega);
+                                                            p.setExistencia("0");
+                                                            p.setCosto(""+prof.getCosto());
+                                                            DataBaseHelper.saveProduto(p, DepcApplication.getApplication().getProductosDao());
+                                                        }
+
+                                                        DataBaseHelper.updatePedido(pedido,DepcApplication.getApplication().getPedidosDao());
+                                                        DataBaseHelper.saveDetallePedidoCreate(detalle, DepcApplication.getApplication().getDetallePedidoDao());
+
+                                                    }
+                                                }
+
+                                                getPedidos();
+
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    if (dataDetalle.getStatus_message() != null){
+                                        mensajeError = data.getStatus_message();
+                                    }
+                                }
+                            }
+
+                            getPedidos();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideProgressWait();
+                            getPedidos();
+                        }
+
+                    } else {
+                        hideProgressWait();
+                        //showAlert(Const.ERROR_DEFAULT);
+                        getPedidos();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IConsultaDetallePedido.dataPedido> call, Throwable t) {
+                    hideProgressWait();
+                    //showAlert(Const.ERROR_DEFAULT);
+                    getPedidos();
+                }
+            });
+
+        }catch (Exception e){
+            hideProgressWait();
+            //showAlert(Const.ERROR_DEFAULT);
+            getPedidos();
+
+        }
     }
 
 
@@ -285,7 +519,7 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
             ruc.setText(""+pedido.getRucCliente());
             fecha.setText(""+pedido.getFecha());
             direccion.setText(""+pedido.getDireccionCliente());
-            documento.setText("" + pedido.getId());
+            documento.setText("" + pedido.getCuenta_id());
 
             anular.setVisibility(View.GONE);
             if (pedido.getEstadoPedido().equals("0")){
@@ -340,8 +574,6 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
                                         float descuento = descuentoFactura;
                                         float subtotalNeto = Float.parseFloat(dt.getSubtotalNetoFijo());
                                         double newsubtotalNeto = subtotalNeto  - (subtotalNeto * (descuento / 100));
-
-                                        Productos prod = DataBaseHelper.getProductoByCOD(DepcApplication.getApplication().getProductosDao(), dt.getCodigo()).get(0);
 
                                         double iva1 =  0;
 
@@ -473,6 +705,40 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
 
                                 }
                             });
+
+
+
+                            modificar.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    String mensajeAlert = "¿Desea modificar el pedido?";
+
+                                    AlertDialog.Builder alert = new AlertDialog.Builder(
+                                            DetallePedidoActivity.this);
+                                    alert.setTitle("Atención");
+                                    alert.setMessage(mensajeAlert);
+                                    alert.setPositiveButton("SÍ", new DialogInterface.OnClickListener() {
+
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            sendPedido(true);
+                                            dialog.dismiss();
+
+                                        }
+                                    });
+                                    alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            dialog.dismiss();
+                                        }
+                                    });
+
+                                    alert.show();
+
+                                }
+                            });
                         }
 
 
@@ -577,6 +843,93 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
 
     }
 
+
+    private void removePedido(){
+
+        showProgressWait();
+
+        //JSON SEND
+        RemoverPedidoModel model = new RemoverPedidoModel();
+        model.setCuenta_id(""+pedido.getCuenta_id());
+        model.setMetodo("EliminarPreventaCliente");
+
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
+        try {
+
+
+            IRemoverPedido request = DepcApplication.getApplication().getRestAdapter().create(IRemoverPedido.class);
+            Call<IRemoverPedido.dataPedido> call = request.getRemoverPedido(body);
+            call.enqueue(new Callback<IRemoverPedido.dataPedido>() {
+                @Override
+                public void onResponse(Call<IRemoverPedido.dataPedido> call, Response<IRemoverPedido.dataPedido> response) {
+                    if (response.isSuccessful()) {
+
+                        dataRemove = response.body();
+                        try {
+
+                            hideProgressWait();
+
+                            String mensajeError = Const.ERROR_DEFAULT;
+
+                            if (dataRemove != null) {
+                                if (dataRemove.getStatus() == Const.COD_ERROR_SUCCESS) {
+
+                                    DataBaseHelper.deleteDetallePedidoByID(DepcApplication.getApplication().getDetallePedidoDao(), "" + pedido.getId());
+                                    DataBaseHelper.deletePedidosByID(DepcApplication.getApplication().getPedidosDao(), "" + pedido.getId());
+
+                                    new AlertDialog.Builder(DetallePedidoActivity.this)
+                                            .setTitle("Atención")
+                                            .setMessage("Pedido Eliminado")
+                                            .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    finish();
+                                                }
+                                            })
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .show();
+
+
+                                }else{
+                                    if (data.getStatus_message() != null){
+                                        mensajeError = data.getStatus_message();
+                                    }
+
+                                    showAlert(mensajeError);
+                                }
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideProgressWait();
+                        }
+
+                    } else {
+                        hideProgressWait();
+                        showAlert(Const.ERROR_DEFAULT);
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IRemoverPedido.dataPedido> call, Throwable t) {
+                    hideProgressWait();
+                    showAlert(Const.ERROR_DEFAULT);
+                }
+            });
+
+        }catch (Exception e){
+            hideProgressWait();
+            showAlert(Const.ERROR_DEFAULT);
+
+        }
+
+    }
+
     private void sendPedido(Boolean isActualizar){
 
         showProgressWait();
@@ -604,7 +957,9 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
         model.setTotal(""+pedido.getTotal());
         model.setCobrar_iva(""+cliente.getCobrar_iva());
         model.setObservaciones(""+pedido.getComentario());
+        model.setDireccion_envio_id(""+pedido.getCodigo_direccione_entrega());
         model.setForma_pago_id(""+pedido.getForma_pago_id());
+        model.setFoto(""+pedido.getFoto());
 
         List<DetalleCrearPreventaModel> detalleModel = new ArrayList<DetalleCrearPreventaModel>();
 
@@ -615,14 +970,24 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
                 for (DetallePedido dt : detalles){
                     DetalleCrearPreventaModel md = new DetalleCrearPreventaModel();
 
+                    double descuento = 0;
+
+                    if (dt.getPorcentajeDescuento() != null) {
+                        if (Float.parseFloat(dt.getPorcentajeDescuento()) > 0) {
+                            descuento = (Float.parseFloat("" + dt.getPrecioUnitario()) * (Float.parseFloat(dt.getPorcentajeDescuento()) / 100));
+                            descuento = Utils.roundFloat(descuento, 2);
+                        }
+
+                    }
+
                     md.setCantidad(""+dt.getCantidad());
                     md.setPrecio(""+dt.getPrecioUnitario());
-                    md.setDescuento("");
+                    md.setDescuento(""+descuento);
                     md.setBodega_id(""+pedido.getBodega());
                     md.setCodigo_item(""+dt.getCodigo());
                     md.setDescripcion(""+dt.getDescripcion());
-                    md.setCosto("");
-                    md.setCodigo_unidad("");
+                    md.setCosto(""+dt.getCosto());
+                    md.setCodigo_unidad(""+dt.getCodigo());
                     detalleModel.add(md);
                 }
             }
@@ -632,7 +997,12 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
         }
 
         model.setDetalle(detalleModel);
-        model.setMetodo("CrearPreventa");
+        if (!isActualizar) {
+            model.setMetodo("CrearPreventa");
+        }else{
+            model.setMetodo("ModificarPreventa");
+            model.setCuenta_id(""+pedido.getCuenta_id());
+        }
 
         final Gson gson = new Gson();
         String json = gson.toJson(model);
@@ -655,6 +1025,15 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
                             if (data != null) {
                                 if (data.getStatus() == Const.COD_ERROR_SUCCESS) {
                                     //success
+
+                                    if (data.getData().getCuenta_id() != null){
+                                        pedido.setCuenta_id(""+data.getData().getCuenta_id());
+                                        pedido.setEstadoPedido("1");
+                                        DataBaseHelper.updatePedido(pedido, DepcApplication.getApplication().getPedidosDao());
+                                    }
+
+                                    showAlert("Preventa creada con éxito");
+                                    getPedidos();
 
                                     return;
                                 }else{
@@ -684,6 +1063,7 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
 
                 @Override
                 public void onFailure(Call<IPedido.dataPedido> call, Throwable t) {
+
                     showError();
                 }
             });
@@ -697,6 +1077,7 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
     }
 
     private void showError(){
+        hideProgressWait();
         showAlert(""+Const.ERROR_COBERTURA);
     }
 
