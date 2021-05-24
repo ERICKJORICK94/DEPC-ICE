@@ -103,6 +103,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:visibility="gone"
                     android:orientation="vertical">
 
                     <TextView
@@ -213,6 +214,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
             <LinearLayout
@@ -220,7 +222,6 @@
                 android:layout_height="45dp"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:layout_marginBottom="10dp"
                 android:paddingLeft="10dp"
                 android:layout_marginTop="1dp"
                 android:layout_marginLeft="10dp"
@@ -468,6 +469,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -479,7 +483,6 @@
                     android:gravity="center"
                     android:textSize="14sp"
                     android:layout_marginEnd="10dp"
-                    android:layout_marginStart="5dp"
                     android:textColor="@color/White"
                     android:background="@color/RoyalBlue"/>
 
@@ -491,7 +494,6 @@
                     android:scaleType="centerInside"
                     android:tint="@color/colorPrimary"
                     android:text="VER FOTO"
-
                     android:gravity="center"
                     android:textSize="14sp"
                     android:textColor="@color/White"
@@ -507,8 +509,10 @@
                 android:layout_height="40dp"
                 android:background="@color/colorPrimary"
                 android:textSize="14sp"
-                android:layout_margin="10dp"
                 android:elevation="4sp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:textColor="@color/White"
                 android:text="CREAR"/>
 

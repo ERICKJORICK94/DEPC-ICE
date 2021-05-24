@@ -40,6 +40,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.smartapp.depc_ice.Activities.Agenda.Adapter.PlanificadorPedidoAdapter;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.R;
+import com.smartapp.depc_ice.Utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,7 @@ public class PlanficadorPedidod extends BaseActitity implements OnMapReadyCallba
         super.onCreate(savedInstanceState);
 
         layout = addLayout(R.layout.planificador_pedido_layout);
-        //Utils.SetStyleActionBarTitle(this);
+        Utils.SetStyleActionBarTitle(this);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }

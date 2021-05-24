@@ -202,7 +202,6 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
                     if (pedido.getFoto().length() > 0) {
                         if (!pedido.getFoto().equals("null")) {
                             bitmap = Utils.convert(pedido.getFoto());
-                            return;
                         }
                     }
                 }

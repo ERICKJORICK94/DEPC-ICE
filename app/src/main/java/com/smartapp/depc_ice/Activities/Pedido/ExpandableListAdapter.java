@@ -382,9 +382,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         int unidad = this._listDataChild.get(this._listDataHeader.get(groupPosition)).size();
 
         if(unidad == 1) {
-            unidades.setText("" + unidad+" unidad");
+            unidades.setText("" + unidad+" item");
         }else{
-            unidades.setText("" + unidad+" unidades");
+            unidades.setText("" + unidad+" items");
         }
 
         if (isExpanded){
@@ -450,9 +450,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
                 cantidadEdit.setText("" + (int) cantidadPrint);
                 descuentoEdit.setText(""+detalleRetorno.getPorcentajeDescuento());
-                edt_iva.setText(""+detalleRetorno.getIva());
-                edt_total.setText(""+detalleRetorno.getTotal());
-                subtotalEdit.setText(""+detalleRetorno.getSubtotal());
+                edt_iva.setText(""+ String.format("%.2f", Float.parseFloat(detalleRetorno.getIva())));
+                edt_total.setText(""+String.format("%.2f", Float.parseFloat(detalleRetorno.getTotal())));
+                subtotalEdit.setText(""+String.format("%.2f", Float.parseFloat(detalleRetorno.getSubtotal())));
                 delete.setVisibility(View.VISIBLE);
             }
         }

@@ -1032,7 +1032,11 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
                                         DataBaseHelper.updatePedido(pedido, DepcApplication.getApplication().getPedidosDao());
                                     }
 
-                                    showAlert("Preventa creada con éxito");
+                                    if (isActualizar) {
+                                        showAlert("Preventa modificada con éxito");
+                                    }else{
+                                        showAlert("Preventa creada con éxito");
+                                    }
                                     getPedidos();
 
                                     return;
