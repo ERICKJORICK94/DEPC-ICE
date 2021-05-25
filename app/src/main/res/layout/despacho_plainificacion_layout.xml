@@ -15,6 +15,16 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/impresora"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Impresora: "
+                android:textColor="@color/White"
+                android:background="@color/Red"
+                android:padding="5dp"
+                android:textSize="12sp"/>
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -250,6 +260,7 @@
                     </LinearLayout>
 
 
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -291,8 +302,33 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="13sp"
+                        android:text="MOTIVO DESPACHO"
                         android:layout_marginTop="10dp"
+                        android:textSize="12sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:orientation="vertical"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/custom_border">
+                        <Spinner
+                            android:id="@+id/spinner_despacho"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text=""
+                            android:textSize="12sp"
+                            android:elevation="1sp"
+                            android:enabled="false"
+                            android:spinnerMode="dialog" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+                        android:layout_marginTop="15dp"
                         android:textColor="@color/DarkGray"
                         android:text="OBSERVACIÓN"/>
 
@@ -304,25 +340,59 @@
 
                         <ImageView
                             android:layout_width="45dp"
-                            android:layout_height="45dp"
-                            android:padding="10dp"
+                            android:layout_height="match_parent"
                             android:src="@drawable/ic_baseline_playlist_add_check_24"
-                            android:scaleType="centerCrop"
+                            android:scaleType="centerInside"
                             android:background="@drawable/custom_border"/>
 
-                        <EditText
-                            android:id="@+id/comentario"
+                        <LinearLayout
+                            android:layout_gravity="center_vertical"
+                            android:layout_height="wrap_content"
                             android:layout_width="match_parent"
-                            android:layout_height="45dp"
-                            android:hint="Comentario"
-                            android:maxLength="50"
-                            android:digits="0,1,2,3,4,5,6,7,8,9,*,qwe=.@#?()+%:!/\  rtzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,_,-"
-                            android:nextFocusDown="@id/direccion"
-                            android:paddingLeft="8dp"
-                            android:paddingRight="8dp"
-                            android:textSize="15sp"
-                            android:inputType="textCapCharacters"
-                            android:background="@drawable/custom_border"/>
+                            android:background="@drawable/custom_border"
+                            android:orientation="horizontal">
+
+
+                            <EditText
+                                android:id="@+id/comentario"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:nextFocusDown="@id/nombre"
+                                android:hint="Comentario"
+                                android:minHeight="45dp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:textSize="15sp"
+                                android:focusableInTouchMode="false"
+                                android:editable="false"
+                                android:clickable="false"
+                                android:background="@drawable/custom_border"/>
+
+                            <TextView
+                                android:id="@+id/ver_foto"
+                                android:layout_width="60dp"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerInside"
+                                android:tint="@color/colorPrimary"
+                                android:text="VER FOTO"
+                                android:gravity="center"
+                                android:textSize="14sp"
+                                android:textColor="@color/White"
+                                android:background="@color/colorPrimary"/>
+
+                            <TextView
+                                android:id="@+id/agregar"
+                                android:layout_width="65dp"
+                                android:layout_height="match_parent"
+                                android:text="AÑADIR FOTO"
+                                android:gravity="center"
+                                android:textSize="14sp"
+                                android:layout_marginStart="5dp"
+                                android:textColor="@color/White"
+                                android:background="@color/RoyalBlue"/>
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -331,7 +401,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:textColor="@color/White"
-                        android:text="REGISTRAR VISITA"
+                        android:text="REGISTRAR DESPACHO"
                         android:elevation="4sp"
                         android:layout_marginBottom="10dp"
                         android:layout_marginTop="20dp"
@@ -354,8 +424,8 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:textColor="@color/DarkGray"
-                android:text="LISTADO DE PEDIDOS"/>
+                android:textColor="@color/Black"
+                android:text="LISTADO ITEMS"/>
 
             <com.smartapp.depc_ice.Utils.NonScrollListView
                 android:id="@+id/lista"
@@ -370,19 +440,5 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-
-
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:backgroundTint="#dc4b3f"
-        android:src="@drawable/fab_add" />
-
-
 
 </RelativeLayout>

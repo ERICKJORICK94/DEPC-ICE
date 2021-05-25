@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.smartapp.depc_ice.Activities.Agenda.Adapter.GridAdapterCalendar;
-import com.smartapp.depc_ice.Activities.Agenda.PlanficadorPedidod;
+import com.smartapp.depc_ice.Activities.Agenda.PlanficadorPedidosActivity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Clientes;
@@ -106,7 +106,7 @@ public class CalendarCustomView extends LinearLayout {
                 int clickMes = c.get(Calendar.MONTH);
                 if (mesTo == clickMes) {
 
-                    Intent intent = new Intent(context, PlanficadorPedidod.class);
+                    Intent intent = new Intent(context, PlanficadorPedidosActivity.class);
                     intent.putExtra("fecha", time);
                     context.startActivity(intent);
                 }

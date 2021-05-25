@@ -64,9 +64,9 @@ public class Pedidos implements Serializable {
     @DatabaseField
     private String dias_credito;
     @DatabaseField
-    private String cuenta_id = "";
+    private String cuenta_id;
     @DatabaseField
-    private String foto = "";
+    private String foto;
 
 
     public int getId() {

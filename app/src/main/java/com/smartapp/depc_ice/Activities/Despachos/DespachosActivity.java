@@ -2,11 +2,9 @@ package com.smartapp.depc_ice.Activities.Despachos;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -45,14 +43,10 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.smartapp.depc_ice.Activities.Agenda.Adapter.PlanificadorPedidoAdapter;
-import com.smartapp.depc_ice.Activities.Agenda.DetallePlanificacionActivity;
-import com.smartapp.depc_ice.Activities.Agenda.PlanficadorPedidod;
-import com.smartapp.depc_ice.Activities.Cobros.FormaPagoActivity;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Utils;
 
-import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -96,9 +90,9 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                /*Intent intent = new Intent(DespachosActivity.this, DetallePlanificacionActivity.class);
+                Intent intent = new Intent(DespachosActivity.this, DetalleDespachosPlanificacionActivity.class);
                 intent.putExtra("fecha",fecha.getText());
-                startActivity(intent);*/
+                startActivity(intent);
 
             }
         });

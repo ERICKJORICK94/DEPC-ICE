@@ -13,10 +13,8 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.akexorcist.googledirection.BuildConfig;
 import com.akexorcist.googledirection.DirectionCallback;
 import com.akexorcist.googledirection.GoogleDirection;
 import com.akexorcist.googledirection.config.GoogleDirectionConfiguration;
@@ -31,7 +29,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -48,7 +45,7 @@ import java.util.List;
 import fr.quentinklein.slt.LocationTracker;
 import fr.quentinklein.slt.TrackerSettings;
 
-public class PlanficadorPedidod extends BaseActitity implements OnMapReadyCallback, BaseActitity.BaseActivityCallbacks {
+public class PlanficadorPedidosActivity extends BaseActitity implements OnMapReadyCallback, BaseActitity.BaseActivityCallbacks {
 
     private View layout;
     private String fecha;
@@ -92,7 +89,7 @@ public class PlanficadorPedidod extends BaseActitity implements OnMapReadyCallba
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent intent = new Intent(PlanficadorPedidod.this, DetallePlanificacionActivity.class);
+                Intent intent = new Intent(PlanficadorPedidosActivity.this, DetallePlanificacionActivity.class);
                 intent.putExtra("fecha",fecha);
                 startActivity(intent);
 
@@ -130,13 +127,13 @@ public class PlanficadorPedidod extends BaseActitity implements OnMapReadyCallba
     }
     
     private void getLocationFromGPS(){
-        if (    ContextCompat.checkSelfPermission(PlanficadorPedidod.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(PlanficadorPedidod.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (    ContextCompat.checkSelfPermission(PlanficadorPedidosActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(PlanficadorPedidosActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // You need to ask the user to enable the permissions
         } else {
             showProgressWait("Tomando Ubicación GPS");
             LocationTracker tracker = new LocationTracker(
-                    PlanficadorPedidod.this,
+                    PlanficadorPedidosActivity.this,
                     new TrackerSettings()
                             .setUseGPS(true)
                             .setUseNetwork(true)
