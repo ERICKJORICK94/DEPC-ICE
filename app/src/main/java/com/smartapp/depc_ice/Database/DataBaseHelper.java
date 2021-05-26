@@ -540,30 +540,13 @@ public class DataBaseHelper {
     //HELPER CLIENTES VISITAS
     public static void saveClientesVisitas(ClientesVisitas clientes, Dao<ClientesVisitas, Integer> clientesDao) {
         try {
-            List<ClientesVisitas> cls = getClienteVisitaByCodAndFecha(clientesDao, "" + clientes.getCODIGO(),"" + clientes.getFECHA());
+            List<ClientesVisitas> cls = getClienteVisitaByID(clientesDao, "" + clientes.getId());
             if (cls != null) {
                 if (cls.size() > 0) {
                     ClientesVisitas cl = cls.get(0);
-
-
-                    if (cl.getFECHA().equals(clientes.getFECHA())) {
-                        clientes.setId(cl.getId());
-                        clientes.setHORA_INICIO_GUARDADA(cl.getHORA_INICIO_GUARDADA());
-                        clientes.setHORA_FIN_GUARDADA(cl.getHORA_FIN_GUARDADA());
-                        clientes.setCHECK_HORA_INICIO(cl.getCHECK_HORA_INICIO());
-                        clientes.setCHECK_HORA_FIN(cl.getCHECK_HORA_FIN());
-                        clientes.setCOMENTARIO_GUARDADO(cl.getCOMENTARIO_GUARDADO());
-                        clientes.setID_MOTIVO(cl.getID_MOTIVO());
-                        clientes.setPENDIENTE(cl.getPENDIENTE());
-                        clientes.setFECHA_PROXIMA_GUARDADA(cl.getFECHA_PROXIMA_GUARDADA());
-                        clientes.setFECHA_REAGENDAR(cl.getFECHA_REAGENDAR());
-                        clientes.setPENDIENTE_REAGENDAR(cl.getPENDIENTE_REAGENDAR());
-                        clientes.setLATITUD(cl.getLATITUD());
-                        clientes.setLONGITUD(cl.getLONGITUD());
-                        clientes.setIdAgendar(0);
-                        clientesDao.update(clientes);
-                        return;
-                    }
+                    clientes.setPrimaryKey(cl.getPrimaryKey());
+                    clientesDao.update(clientes);
+                    return;
 
                 }
             }
@@ -571,44 +554,6 @@ public class DataBaseHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    public static int saveClientesVisitaByIDs(ClientesVisitas clientes, Dao<ClientesVisitas, Integer> clientesDao) {
-        try {
-            List<ClientesVisitas> cls = saveClientesVisitasByCod(clientesDao, "" + clientes.getCODIGO(),"" + clientes.getFECHA());
-            if (cls != null) {
-                if (cls.size() > 0) {
-                    ClientesVisitas cl = cls.get(0);
-
-                    if (cl.getFECHA().equals(clientes.getFECHA())) {
-                        clientes.setId(cl.getId());
-                        clientes.setHORA_INICIO_GUARDADA(cl.getHORA_INICIO_GUARDADA());
-                        clientes.setHORA_FIN_GUARDADA(cl.getHORA_FIN_GUARDADA());
-                        clientes.setCHECK_HORA_INICIO(cl.getCHECK_HORA_INICIO());
-                        clientes.setCHECK_HORA_FIN(cl.getCHECK_HORA_FIN());
-                        clientes.setCOMENTARIO_GUARDADO(cl.getCOMENTARIO_GUARDADO());
-                        clientes.setID_MOTIVO(cl.getID_MOTIVO());
-                        clientes.setPENDIENTE(cl.getPENDIENTE());
-                        clientes.setFECHA_PROXIMA_GUARDADA(cl.getFECHA_PROXIMA_GUARDADA());
-                        clientes.setFECHA_REAGENDAR(cl.getFECHA_REAGENDAR());
-                        clientes.setPENDIENTE_REAGENDAR(cl.getPENDIENTE_REAGENDAR());
-                        clientes.setLATITUD(cl.getLATITUD());
-                        clientes.setLONGITUD(cl.getLONGITUD());
-                        clientes.setIdAgendar(0);
-                        clientesDao.update(clientes);
-                        return clientes.getId();
-
-                    }
-
-                }
-            }
-            clientesDao.create(clientes);
-            return clientes.getId();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return 0;
     }
 
     public static void updateClienteVisitas(ClientesVisitas clientes, Dao<ClientesVisitas, Integer> clientesDao) {
@@ -617,17 +562,6 @@ public class DataBaseHelper {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-
-    public static List<ClientesVisitas> saveClientesVisitasByCod(Dao<ClientesVisitas, Integer> clienteDao, String codigoCleinte, String fecha) throws SQLException {
-
-        List<ClientesVisitas> clientes = null;
-        String query = "SELECT * FROM " + Const.TABLE_CLIENTE_VISITA + " WHERE CODIGO = '" + codigoCleinte + "' AND FECHA = '"+fecha+"'";
-        GenericRawResults<ClientesVisitas> rawResults = clienteDao.queryRaw(query, clienteDao.getRawRowMapper());
-        clientes = rawResults.getResults();
-
-        return clientes;
     }
 
     public static void deleteClientesVisitas(Dao<ClientesVisitas, Integer> clientesDao) throws SQLException {
@@ -645,11 +579,10 @@ public class DataBaseHelper {
         return clientes;
     }
 
-
-    public static List<ClientesVisitas> getClienteVisitaOn(Dao<ClientesVisitas, Integer> clientesDao) throws SQLException {
+    public static List<ClientesVisitas> getClienteVisitaDiaVisita(Dao<ClientesVisitas, Integer> clientesDao, String dia_visita) throws SQLException {
 
         List<ClientesVisitas> clientes = null;
-        String query = "SELECT * FROM "+ Const.TABLE_CLIENTE_VISITA+" WHERE VISITA = '0' AND CHECK_HORA_INICIO = 1 AND CHECK_HORA_FIN = 0";
+        String query = "SELECT * FROM "+ Const.TABLE_CLIENTE_VISITA+" WHERE dia_visita = '"+dia_visita+"'";
         GenericRawResults<ClientesVisitas> rawResults = clientesDao.queryRaw(query, clientesDao.getRawRowMapper());
         clientes = rawResults.getResults();
 
@@ -657,65 +590,17 @@ public class DataBaseHelper {
     }
 
 
-    public static List<ClientesVisitas> getClienteVisitaByMes(Dao<ClientesVisitas, Integer> clientesDao,String mes, String year) throws SQLException {
-
-
-        List<ClientesVisitas> clientes = null;
-        String query = "SELECT * FROM "+ Const.TABLE_CLIENTE_VISITA+" WHERE FECHA LIKE '%/"+mes+"/"+year+"'";
-        GenericRawResults<ClientesVisitas> rawResults = clientesDao.queryRaw(query, clientesDao.getRawRowMapper());
-        clientes = rawResults.getResults();
-
-        return clientes;
-    }
-
-
-
-
-
-    public static List<ClientesVisitas> getClienteVisitaPendiente(Dao<ClientesVisitas, Integer> clientesDao) throws SQLException {
-
-        List<ClientesVisitas> clientes = null;
-        String query = "SELECT * FROM "+ Const.TABLE_CLIENTE_VISITA +" WHERE PENDIENTE = 1 ORDER BY FECHA , HORA_INICIO ASC";
-        GenericRawResults<ClientesVisitas> rawResults = clientesDao.queryRaw(query, clientesDao.getRawRowMapper());
-        clientes = rawResults.getResults();
-
-        return clientes;
-    }
-
-
-    public static void deleteClientesVisitas(Dao<ClientesVisitas, Integer> clienteDao, int id) throws SQLException {
+    public static void deleteClientesVisitas(Dao<ClientesVisitas, Integer> clienteDao, int primaryKey) throws SQLException {
         DeleteBuilder<ClientesVisitas, Integer> deleteBuilder = clienteDao.deleteBuilder();
-        deleteBuilder.where().eq("id",id);
+        deleteBuilder.where().eq("primaryKey",primaryKey);
         deleteBuilder.delete();
     }
 
 
-    public static List<ClientesVisitas> getClienteVisitabyCodigo(Dao<ClientesVisitas, Integer> clientesDao, String codigo, String fecha) throws SQLException {
+    public static List<ClientesVisitas> getClienteVisitaByID(Dao<ClientesVisitas, Integer> clientesDao,String id) throws SQLException {
 
         List<ClientesVisitas> clientes = null;
-        String query = "SELECT * FROM "+ Const.TABLE_CLIENTE_VISITA+" WHERE CODIGO = '"+codigo+"' AND FECHA = '"+fecha+"'";
-        GenericRawResults<ClientesVisitas> rawResults = clientesDao.queryRaw(query, clientesDao.getRawRowMapper());
-        clientes = rawResults.getResults();
-
-        return clientes;
-    }
-
-
-    public static List<ClientesVisitas> getClienteVisita(Dao<ClientesVisitas, Integer> clientesDao, String mes, String year) throws SQLException {
-
-        List<ClientesVisitas> clientes = null;
-        String query = "SELECT * FROM "+ Const.TABLE_CLIENTE_VISITA+" WHERE FECHA LIKE '%/"+mes+"/"+year+"' ORDER BY FECHA";
-        GenericRawResults<ClientesVisitas> rawResults = clientesDao.queryRaw(query, clientesDao.getRawRowMapper());
-        clientes = rawResults.getResults();
-
-        return clientes;
-    }
-
-
-    public static List<ClientesVisitas> getClienteVisitaByCodAndFecha(Dao<ClientesVisitas, Integer> clientesDao,String codigo, String fecha) throws SQLException {
-
-        List<ClientesVisitas> clientes = null;
-        String query = "SELECT * FROM "+ Const.TABLE_CLIENTE_VISITA+" WHERE CODIGO = '"+codigo+"' AND FECHA = '"+fecha+"'";
+        String query = "SELECT * FROM "+ Const.TABLE_CLIENTE_VISITA+" WHERE id = '"+id+"'";
         GenericRawResults<ClientesVisitas> rawResults = clientesDao.queryRaw(query, clientesDao.getRawRowMapper());
         clientes = rawResults.getResults();
 

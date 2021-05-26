@@ -658,7 +658,7 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
                 if (direccionesList.size() > 0) {
                     List<String> items= new ArrayList<String>();
                     for (Direcciones z : direccionesList){
-                        items.add(z.getDireccion_envio());
+                        items.add(""+z.getDireccion_envio());
 
                         if (pedido != null){
                             if (pedido.getCodigo_direccione_entrega() != null){

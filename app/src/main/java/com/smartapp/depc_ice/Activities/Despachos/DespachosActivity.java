@@ -43,6 +43,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.smartapp.depc_ice.Activities.Agenda.Adapter.PlanificadorPedidoAdapter;
+import com.smartapp.depc_ice.Activities.Despachos.Adapter.PlanificadorDespachosAdapter;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Utils;
@@ -85,7 +86,7 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         lista = (ListView) layout.findViewById(R.id.lista);
-        lista.setAdapter(new PlanificadorPedidoAdapter(this));
+        lista.setAdapter(new PlanificadorDespachosAdapter(this));
         lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

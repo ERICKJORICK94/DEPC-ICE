@@ -22,6 +22,7 @@ import com.smartapp.depc_ice.Entities.ClientesVisitas;
 import com.smartapp.depc_ice.R;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -102,12 +103,15 @@ public class CalendarCustomView extends LinearLayout {
                 String time = sdf.format(dayValueInCells.get(position));
                 Calendar c = Calendar.getInstance();
                 c.setTime(dayValueInCells.get(position));
+                int day = c.get(Calendar.DAY_OF_MONTH);
+                int dayWeek = c.get(Calendar.DAY_OF_WEEK);
 
                 int clickMes = c.get(Calendar.MONTH);
                 if (mesTo == clickMes) {
 
                     Intent intent = new Intent(context, PlanficadorPedidosActivity.class);
                     intent.putExtra("fecha", time);
+                    intent.putExtra("dia", ""+(dayWeek - 1));
                     context.startActivity(intent);
                 }
 
@@ -125,58 +129,52 @@ public class CalendarCustomView extends LinearLayout {
         if (mes <= 9){
             mesString = "0"+mes;
         }
-
-        /**************/
         try {
 
-            //DEMOOOO
-            DataBaseHelper.deleteClientesVisitas(DepcApplication.getApplication().getClientesVisitasDao());
-            List<Clientes> clientesOriginal = DataBaseHelper.getClientesLimit(DepcApplication.getApplication().getClientesDao());
-            if (clientesOriginal != null){
-                int contador = 0;
-                for(Clientes cl : clientesOriginal){
-                    String fecha = Utils.getFecha();
-                    if (contador == 3){
-                        fecha = "17/05/2021";
-                    }else{
-                        if (contador == 6 || contador == 7){
-                            fecha = "19/05/2021";
-                        }else
-                        if (contador == 8 || contador == 9){
-                            fecha = "20/05/2021";
-                        }
-                    }
-
-                    ClientesVisitas cv = new ClientesVisitas();
-                    cv.setCODIGO(""+cl.getCodigo_cliente_id());
-                    cv.setCODIGO1(""+cl.getCodigo_cliente_id());
-                    cv.setCOMENTARIO("");
-                    cv.setFECHA(fecha);
-                    cv.setFECHA_PROXIMA("");
-                    cv.setRAZON_SOCIAL(""+cl.getNombre_comercial());
-                    DataBaseHelper.saveClientesVisitas(cv,DepcApplication.getApplication().getClientesVisitasDao());
-                    contador++;
-                }
-            }
-            //DEMOOOO
-
-            List<ClientesVisitas> clientes = DataBaseHelper.getClienteVisita(DepcApplication.getApplication().getClientesVisitasDao(), mesString, ""+year);
+            //List<ClientesVisitas> clientes = DataBaseHelper.getClienteVisita(DepcApplication.getApplication().getClientesVisitasDao(), mesString, ""+year);
+            List<ClientesVisitas> clientes = DataBaseHelper.getClienteVisita(DepcApplication.getApplication().getClientesVisitasDao());
 
             if (clientes != null) {
+
+                String fecha = null;
+
+                DateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, mesTo,calendar.get(Calendar.DAY_OF_MONTH));
+                calendar.setFirstDayOfWeek(Calendar.MONDAY);
+                calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                String[] days = new String[7];
+                for (int i = 0; i < 7; i++)
+                {
+                    days[i] = format1.format(calendar.getTime());
+                    Log.e("Fechas:",""+days[i]);
+                    calendar.add(Calendar.DAY_OF_MONTH, 1);
+                }
+
 
                 EventObjects evente;
                 for (ClientesVisitas c : clientes) {
 
-                    if (c.getFECHA() != null) {
 
-                        if (mEvents.contains(new EventObjects(c.getFECHA()))){
-                            int index = mEvents.indexOf(new EventObjects(c.getFECHA()));
+                    if (c.getDia_visita() != null){
+                        if (Utils.isNumber(c.getDia_visita())){
+                            int dia = Integer.parseInt(c.getDia_visita());
+                            fecha = days[dia - 1];
+                        }
+
+                    }
+
+
+
+                    if (fecha != null) {
+                        if (mEvents.contains(new EventObjects(fecha))){
+                            int index = mEvents.indexOf(new EventObjects(fecha));
                             mEvents.get(index).setContador(mEvents.get(index).getContador() + 1);
                             mEvents.get(index).setMessage("# vist. " + mEvents.get(index).getContador());
                         }else{
                             evente = new EventObjects();
                             evente.setContador(1);
-                            evente.setFecha(c.getFECHA());
+                            evente.setFecha(fecha);
                             evente.setMessage("# vist. " + evente.getContador());
                             evente.setDate(ConvertToDate("" + evente.getFecha()));
                             mEvents.add(evente);

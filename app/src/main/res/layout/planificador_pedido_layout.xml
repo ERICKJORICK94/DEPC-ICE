@@ -81,12 +81,13 @@
                   android:text="LISTADO CLIENTES A VISITAR"/>
 
               <TextView
+                  android:id="@+id/lbl_fecha"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:textSize="13sp"
                   android:textColor="@color/DarkRed"
                   android:textStyle="italic"
-                  android:text="15 MAYO 2021"/>
+                  android:text=""/>
 
           </LinearLayout>
 

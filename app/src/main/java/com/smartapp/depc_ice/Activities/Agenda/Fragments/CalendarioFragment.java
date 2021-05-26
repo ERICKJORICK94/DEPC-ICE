@@ -9,10 +9,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
+import com.smartapp.depc_ice.Entities.ClientesVisitas;
 import com.smartapp.depc_ice.Entities.Usuario;
+import com.smartapp.depc_ice.Entities.Zonas;
 import com.smartapp.depc_ice.Fragments.BaseFragment;
+import com.smartapp.depc_ice.Interface.IVisitaPedidos;
+import com.smartapp.depc_ice.Interface.IZonas;
+import com.smartapp.depc_ice.Models.BodegasModel;
+import com.smartapp.depc_ice.Models.VisitaPedidoModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.CalendarCustomView;
 import com.smartapp.depc_ice.Utils.Const;
@@ -26,6 +33,9 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CalendarioFragment extends BaseFragment implements BaseFragment.BaseFragmentCallbacks {
 
@@ -44,6 +54,9 @@ public class CalendarioFragment extends BaseFragment implements BaseFragment.Bas
     boolean isFlag =  true;
     int currentMes  = 0;
     private Usuario user;
+
+    private Call<IVisitaPedidos.dataClientes> call;
+    private IVisitaPedidos.dataClientes data;
 
 
     @Override
@@ -95,8 +108,7 @@ public class CalendarioFragment extends BaseFragment implements BaseFragment.Bas
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (isFirst) {
                     finalMes = position;
-                    //getCobros(finalMes, finalYear);
-                    showList();
+                    getVisitaPedidos(finalMes, finalYear);
                 }
             }
 
@@ -124,8 +136,7 @@ public class CalendarioFragment extends BaseFragment implements BaseFragment.Bas
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (isFirst) {
                     finalYear = Integer.parseInt(YEARS[position].trim());
-                    //getCobros(finalMes, finalYear);
-                    showList();
+                    getVisitaPedidos(finalMes, finalYear);
                 }
                 isFirst = true;
             }
@@ -137,12 +148,12 @@ public class CalendarioFragment extends BaseFragment implements BaseFragment.Bas
         });
 
 
-        //getCobros(finalMes,finalYear);
+        getVisitaPedidos(finalMes,finalYear);
 
     }
 
 
-    /*private void getCobros(final int mes, final int yearParam){
+    private void getVisitaPedidos(final int mes, final int yearParam){
 
         showProgressWait();
         Calendar cal = Calendar.getInstance();
@@ -153,47 +164,15 @@ public class CalendarioFragment extends BaseFragment implements BaseFragment.Bas
         Calendar c2 = Calendar.getInstance();
         c2.set(yearParam, mes, MAX_DAY);
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-
-
         String desde = ""+format.format(c1.getTime());
         String hasta = ""+format.format(c2.getTime());
 
-        if (Utils.isTablet(getActivity())){
-            if (isFlag){
-                DateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(yearParam, mes,calendar.get(Calendar.DAY_OF_MONTH));
-                calendar.setFirstDayOfWeek(Calendar.MONDAY);
-                calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-                String[] days = new String[7];
-                for (int i = 0; i < 7; i++)
-                {
-                    days[i] = format1.format(calendar.getTime());
-                    Log.e("Fechas:",""+days[i]);
-                    calendar.add(Calendar.DAY_OF_MONTH, 1);
-                }
-                desde = ""+days[0];
-                hasta = ""+days[6];
+        //JSON SEND
+        VisitaPedidoModel model = new VisitaPedidoModel();
+        model.setCondicion("c.dia_visita IN (1,2,3,4,5,6)  and e.usuario_id = "+user.getUsuario());
+        model.setFiltro("");
+        model.setMetodo("ListaClientesDireccionesVisita");
 
-                isFlag = false;
-            }
-        }
-
-
-        ClienteVisitaModel model = new ClienteVisitaModel();
-        SesionModel session = Utils.getSession();
-        model.setParametrosSession(session);
-
-        model.setSucursal(session.getCodigoSucursal());
-        model.setBodega(session.getCodigoBodega());
-        model.setCampos(Const.FIELDS_CLIENTES_VISITA);
-        model.setModelo(Const.MODEL_CLIENTE_VISITA);
-        String condicion = "FECHA BETWEEN '"+desde+"' AND '"+hasta+"'";
-        model.setCondicion(condicion);
-        model.setLimite("");
-        model.setId("");
-        model.setFiltro("VENDEDOR = '"+codVendedor+"'");
-        model.setQrderBy("");
         final Gson gson = new Gson();
         String json = gson.toJson(model);
         Log.e("TAG---","json: "+json);
@@ -201,133 +180,86 @@ public class CalendarioFragment extends BaseFragment implements BaseFragment.Bas
 
         try {
 
-            IClienteVisita request = San32Application.getApplication().getRestAdapter().create(IClienteVisita.class);
-            call = request.getClienteVisita(body);
-            call.enqueue(new Callback<IClienteVisita.dataClienteVisita>() {
+            IVisitaPedidos request = DepcApplication.getApplication().getRestAdapter().create(IVisitaPedidos.class);
+            call = request.getVisitas(body);
+            call.enqueue(new Callback<IVisitaPedidos.dataClientes>() {
                 @Override
-                public void onResponse(Call<IClienteVisita.dataClienteVisita> call, Response<IClienteVisita.dataClienteVisita> response) {
+                public void onResponse(Call<IVisitaPedidos.dataClientes> call, Response<IVisitaPedidos.dataClientes> response) {
                     if (response.isSuccessful()) {
 
                         data = response.body();
                         try {
 
+                            //hideProgressWait();
+
                             String mensajeError = Const.ERROR_DEFAULT;
 
-
                             if (data != null) {
-                                if (data.getCodigoError().equals(Const.COD_ERROR_SUCCESS)) {
-                                    if (data.getResultado() != null){
-                                        if (data.getResultado().length() > 0){
-
-                                            final ArrayList<ClientesVisitas> clientes;
-                                            clientes = gson.fromJson(data.getResultado(), new TypeToken<ArrayList<ClientesVisitas>>() {}.getType());
-
-                                            //DataBaseHelper.deleteClientesVisitas(San32Application.getApplication().getClientesVisitasDao());
-
-                                            final List<Integer> ids = new ArrayList<Integer>();
-                                            if (clientes != null){
+                                if (data.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    if (data.getData() != null){
+                                        if (data.getData().getListaClientes() != null) {
+                                            if (data.getData().getListaClientes().size() > 0) {
 
 
-                                                San32Application.getApplication().getClientesVisitasDao().callBatchTasks(new Callable<ClientesVisitas>() {
-                                                    @Override
-                                                    public ClientesVisitas call() throws Exception {
-                                                        for (ClientesVisitas cl : clientes){
+                                                final List<ClientesVisitas> clientesVisitas;
+                                                clientesVisitas = data.getData().getListaClientes().get(0);
 
-                                                            if(!validateDate(cl.getHORA_INICIO())){
-                                                                cl.setHORA_INICIO("00:00");
+                                                if (clientesVisitas != null) {
+                                                    DepcApplication.getApplication().getClientesVisitasDao().callBatchTasks(new Callable<ClientesVisitas>() {
+                                                        @Override
+                                                        public ClientesVisitas call() throws Exception {
+                                                            for (ClientesVisitas cl : clientesVisitas) {
+                                                                DataBaseHelper.saveClientesVisitas(cl, DepcApplication.getApplication().getClientesVisitasDao());
                                                             }
-
-                                                            if(!validateDate(cl.getHORA_FIN())){
-                                                                cl.setHORA_FIN("00:00");
-                                                            }
-
-                                                            int id = DataBaseHelper.saveClientesVisitaByIDs(cl,San32Application.getApplication().getClientesVisitasDao());
-                                                            ids.add(id);
+                                                            return null;
                                                         }
-                                                        return null;
-                                                    }
-                                                });
-
-                                                if (!Utils.isTablet(getActivity())){
-                                                    String month = ""+(mes+1);
-                                                    if ((mes+1) <= 9){
-                                                        month = "0"+(mes+1);
-                                                    }
-
-
-                                                    List<ClientesVisitas> cls = DataBaseHelper.getClienteVisitaByMes(San32Application.getApplication().getClientesVisitasDao(), month,""+yearParam);
-
-                                                    if (cls != null) {
-                                                        final List<Integer> idsBorrar = new ArrayList<Integer>();
-                                                        for (ClientesVisitas cl : cls) {
-                                                            String initial = cl.getCODIGO().substring(0,2);
-                                                            if (!ids.contains(cl.getId()) && !initial.equals("CN") && cl.getPENDIENTE() == 0 && cl.getPENDIENTE_REAGENDAR() == 0 && cl.getIdAgendar() == 0){
-                                                                idsBorrar.add(cl.getId());
-                                                            }
-                                                        }
-
-                                                        San32Application.getApplication().getClientesVisitasDao().callBatchTasks(new Callable<Void>() {
-                                                            @Override
-                                                            public Void call() throws Exception {
-                                                                for (int d : idsBorrar){
-                                                                    DataBaseHelper.deleteClientesVisitas(San32Application.getApplication().getClientesVisitasDao(),d);
-                                                                }
-                                                                return null;
-                                                            }
-                                                        });
-
-
-                                                    }
+                                                    });
                                                 }
 
+                                                showList();
+
+                                                return;
                                             }
-
-
-                                            hideProgressWait();
-                                            showList();
-
-                                            return;
                                         }
                                     }
                                 }else{
-                                    if (data.getMensajeError() != null){
-                                        mensajeError = data.getMensajeError();
+                                    if (data.getStatus_message() != null){
+                                        mensajeError = data.getStatus_message();
                                     }
                                 }
                             }
 
-                            //showAlert(mensajeError);
                             showList();
 
                         } catch (Exception e) {
                             e.printStackTrace();
                             hideProgressWait();
-                            //showAlert(Const.ERROR_DEFAULT);
                             showList();
                         }
 
                     } else {
                         hideProgressWait();
-                        //showAlert(Const.ERROR_DEFAULT);
                         showList();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<IClienteVisita.dataClienteVisita> call, Throwable t) {
+                public void onFailure(Call<IVisitaPedidos.dataClientes> call, Throwable t) {
                     hideProgressWait();
-                    //showAlert(Const.ERROR_DEFAULT);
                     showList();
                 }
             });
 
         }catch (Exception e){
             hideProgressWait();
-            //showAlert(Const.ERROR_DEFAULT);
             showList();
 
         }
-    }*/
+
+
+
+
+    }
 
     private boolean validateDate(String date){
         boolean retorno = false;
@@ -382,7 +314,7 @@ public class CalendarioFragment extends BaseFragment implements BaseFragment.Bas
     @Override
     public void onResume() {
         super.onResume();
-        showList();
+        //showList();
 
     }
 }
