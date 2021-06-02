@@ -545,6 +545,10 @@ public class DataBaseHelper {
                 if (cls.size() > 0) {
                     ClientesVisitas cl = cls.get(0);
                     clientes.setPrimaryKey(cl.getPrimaryKey());
+                    if (clientes.getFecha().equals(cl.getFecha())){
+                        clientes.setHora(cl.getHora());
+                        clientes.setEstado(cl.getEstado());
+                    }
                     clientesDao.update(clientes);
                     return;
 

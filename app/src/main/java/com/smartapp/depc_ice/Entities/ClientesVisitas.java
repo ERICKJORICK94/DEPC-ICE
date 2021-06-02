@@ -86,6 +86,12 @@ public class ClientesVisitas implements Serializable {
     private String sector_id;
     @DatabaseField
     private String pto_vta_id;
+    @DatabaseField
+    private String hora;
+    @DatabaseField
+    private String estado;
+    @DatabaseField
+    private String fecha;
 
     public int getPrimaryKey() {
         return primaryKey;
@@ -397,5 +403,29 @@ public class ClientesVisitas implements Serializable {
 
     public void setPto_vta_id(String pto_vta_id) {
         this.pto_vta_id = pto_vta_id;
+    }
+
+    public String getHora() {
+        return hora;
+    }
+
+    public void setHora(String hora) {
+        this.hora = hora;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
     }
 }

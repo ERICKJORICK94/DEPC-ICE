@@ -16,7 +16,7 @@
             <code>3</code>
             <name>Agenda&#160;Pedidos</name>
             <image>@drawable/ic_baseline_perm_contact_calendar_24</image>
-            <activity>com.smartapp.depc_ice.Activities.Agenda.AgendaActivity</activity>
+            <activity>com.smartapp.depc_ice.Activities.Agenda.PlanficadorPedidosActivity</activity>
         </item>
         <item>
             <code>4</code>

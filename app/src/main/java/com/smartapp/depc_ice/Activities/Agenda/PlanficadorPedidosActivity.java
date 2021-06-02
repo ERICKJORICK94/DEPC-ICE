@@ -37,30 +37,45 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
 import com.smartapp.depc_ice.Activities.Agenda.Adapter.PlanificadorPedidoAdapter;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.ClientesVisitas;
+import com.smartapp.depc_ice.Entities.Usuario;
+import com.smartapp.depc_ice.Interface.IVisitaPedidos;
 import com.smartapp.depc_ice.Models.CordenadasModel;
+import com.smartapp.depc_ice.Models.VisitaPedidoModel;
 import com.smartapp.depc_ice.R;
+import com.smartapp.depc_ice.Utils.Const;
 import com.smartapp.depc_ice.Utils.Utils;
 
 import org.w3c.dom.Text;
 
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.Callable;
 
 import fr.quentinklein.slt.LocationTracker;
 import fr.quentinklein.slt.TrackerSettings;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PlanficadorPedidosActivity extends BaseActitity implements OnMapReadyCallback, BaseActitity.BaseActivityCallbacks {
 
     private View layout;
     private String fecha;
-    private String dia;
+    private int dia;
     private GoogleMap mMap;
     private Marker startPerc = null;
     private ListView lista;
@@ -70,6 +85,9 @@ public class PlanficadorPedidosActivity extends BaseActitity implements OnMapRea
     private LatLng origen = new LatLng(-2.128685, -79.89429666666666);
     private List<List<CordenadasModel>> direcciones = new ArrayList<List<CordenadasModel>>();
     private boolean flag  = true;
+    private Call<IVisitaPedidos.dataClientes> call;
+    private IVisitaPedidos.dataClientes data;
+    private Usuario user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,11 +100,57 @@ public class PlanficadorPedidosActivity extends BaseActitity implements OnMapRea
         }
 
 
+        Calendar calendar = Calendar.getInstance(Locale.US);
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        switch (day) {
+            case Calendar.MONDAY:
+                dia = 1;
+                break;
+            case Calendar.TUESDAY:
+                dia = 2;
+                break;
+            case Calendar.WEDNESDAY:
+                dia = 3;
+                break;
+            case Calendar.THURSDAY:
+                dia = 4;
+                break;
+            case Calendar.FRIDAY:
+                dia = 5;
+                break;
+            case Calendar.SATURDAY:
+                dia = 6;
+                break;
+            case Calendar.SUNDAY:
+                dia = 7;
+                break;
+        }
+
+
+        try {
+            List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
+            if (usuarios != null){
+                if (usuarios.size() > 0){
+                    user = usuarios.get(0);
+                }
+            }
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        fecha = Utils.getFecha();
+        Log.e(TAG,"curret day = "+dia);
+        getVisitaPedidos();
+
+
+
         if (getIntent() != null) {
             if (getIntent().getStringExtra("fecha") != null) {
-                fecha = getIntent().getStringExtra("fecha");
-                dia = getIntent().getStringExtra("dia");
-                Log.e("dia","dia: "+dia);
+                //fecha = getIntent().getStringExtra("fecha");
+                //dia = getIntent().getStringExtra("dia");
                 initView();
             }
         }
@@ -99,7 +163,7 @@ public class PlanficadorPedidosActivity extends BaseActitity implements OnMapRea
         lbl_fecha.setText(""+fecha);
 
         try {
-            List<ClientesVisitas> clientesVisitas = DataBaseHelper.getClienteVisitaDiaVisita(DepcApplication.getApplication().getClientesVisitasDao(),dia);
+            List<ClientesVisitas> clientesVisitas = DataBaseHelper.getClienteVisitaDiaVisita(DepcApplication.getApplication().getClientesVisitasDao(),""+dia);
             if (clientesVisitas != null){
                 if (clientesVisitas.size() > 0){
 
@@ -165,6 +229,104 @@ public class PlanficadorPedidosActivity extends BaseActitity implements OnMapRea
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+    }
+
+    private void getVisitaPedidos() {
+
+        showProgressWait();
+
+
+        //JSON SEND
+        VisitaPedidoModel model = new VisitaPedidoModel();
+        model.setCondicion("c.dia_visita IN (" + dia + ")  and e.usuario_id = " + user.getUsuario());
+        model.setFiltro("");
+        model.setMetodo("ListaClientesDireccionesVisita");
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---", "json: " + json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
+        try {
+
+            IVisitaPedidos request = DepcApplication.getApplication().getRestAdapter().create(IVisitaPedidos.class);
+            call = request.getVisitas(body);
+            call.enqueue(new Callback<IVisitaPedidos.dataClientes>() {
+                @Override
+                public void onResponse(Call<IVisitaPedidos.dataClientes> call, Response<IVisitaPedidos.dataClientes> response) {
+                    if (response.isSuccessful()) {
+
+                        data = response.body();
+                        try {
+
+                            //hideProgressWait();
+
+                            String mensajeError = Const.ERROR_DEFAULT;
+
+                            if (data != null) {
+                                if (data.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    if (data.getData() != null) {
+                                        if (data.getData().getListaClientes() != null) {
+                                            if (data.getData().getListaClientes().size() > 0) {
+
+
+                                                final List<ClientesVisitas> clientesVisitas;
+                                                clientesVisitas = data.getData().getListaClientes().get(0);
+
+                                                if (clientesVisitas != null) {
+                                                    DepcApplication.getApplication().getClientesVisitasDao().callBatchTasks(new Callable<ClientesVisitas>() {
+                                                        @Override
+                                                        public ClientesVisitas call() throws Exception {
+                                                            for (ClientesVisitas cl : clientesVisitas) {
+                                                                cl.setHora("00:00");
+                                                                cl.setEstado("0");
+                                                                cl.setFecha(Utils.getFecha());
+                                                                DataBaseHelper.saveClientesVisitas(cl, DepcApplication.getApplication().getClientesVisitasDao());
+                                                            }
+                                                            return null;
+                                                        }
+                                                    });
+                                                }
+
+                                                initView();
+
+                                                return;
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    if (data.getStatus_message() != null) {
+                                        mensajeError = data.getStatus_message();
+                                    }
+                                }
+                            }
+
+                            initView();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideProgressWait();
+                            initView();
+                        }
+
+                    } else {
+                        hideProgressWait();
+                        initView();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IVisitaPedidos.dataClientes> call, Throwable t) {
+                    hideProgressWait();
+                    initView();
+                }
+            });
+
+        } catch (Exception e) {
+            hideProgressWait();
+            initView();
+
+        }
     }
 
     @Override
