@@ -26,6 +26,7 @@ public class RegistrarClienteModel {
     private String zona_id = "";
     private String metodo = "";
     private String documentopdf = "";
+    private String vendedor_id = "";
 
     public String getTipo_id_tercero() {
         return tipo_id_tercero;
@@ -217,5 +218,13 @@ public class RegistrarClienteModel {
 
     public void setDocumentopdf(String documentopdf) {
         this.documentopdf = documentopdf;
+    }
+
+    public String getVendedor_id() {
+        return vendedor_id;
+    }
+
+    public void setVendedor_id(String vendedor_id) {
+        this.vendedor_id = vendedor_id;
     }
 }

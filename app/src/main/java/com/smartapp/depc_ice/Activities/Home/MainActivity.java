@@ -186,6 +186,7 @@ public class MainActivity extends BaseActitity implements BaseActitity.BaseActiv
                                     DataBaseHelper.deletePedidos(DepcApplication.getApplication().getPedidosDao());
                                     DataBaseHelper.deleteDetallePedido(DepcApplication.getApplication().getDetallePedidoDao());
                                     DataBaseHelper.deleteClientesVisitas(DepcApplication.getApplication().getClientesVisitasDao());
+                                    DataBaseHelper.deletePuntosVenta(DepcApplication.getApplication().getPuntosVentaDao());
 
                                 } catch (SQLException e) {
                                     e.printStackTrace();

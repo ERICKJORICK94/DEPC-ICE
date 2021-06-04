@@ -88,6 +88,9 @@ public class PlanficadorPedidosActivity extends BaseActitity implements OnMapRea
     private Call<IVisitaPedidos.dataClientes> call;
     private IVisitaPedidos.dataClientes data;
     private Usuario user;
+    private boolean isFlag = false;
+    public static  List<ClientesVisitas> clientesVisitas;
+    private PlanificadorPedidoAdapter planificadorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +102,7 @@ public class PlanficadorPedidosActivity extends BaseActitity implements OnMapRea
             getSupportActionBar().hide();
         }
 
-
+        List<ClientesVisitas> clientesVisitas = null;
         Calendar calendar = Calendar.getInstance(Locale.US);
         int day = calendar.get(Calendar.DAY_OF_WEEK);
 
@@ -163,7 +166,7 @@ public class PlanficadorPedidosActivity extends BaseActitity implements OnMapRea
         lbl_fecha.setText(""+fecha);
 
         try {
-            List<ClientesVisitas> clientesVisitas = DataBaseHelper.getClienteVisitaDiaVisita(DepcApplication.getApplication().getClientesVisitasDao(),""+dia);
+            clientesVisitas = DataBaseHelper.getClienteVisitaDiaVisita(DepcApplication.getApplication().getClientesVisitasDao(),""+dia);
             if (clientesVisitas != null){
                 if (clientesVisitas.size() > 0){
 
@@ -201,7 +204,8 @@ public class PlanficadorPedidosActivity extends BaseActitity implements OnMapRea
 
                     }
 
-                    lista.setAdapter(new PlanificadorPedidoAdapter(this, clientesVisitas));
+                    planificadorAdapter = new PlanificadorPedidoAdapter(this);
+                    lista.setAdapter(planificadorAdapter);
                     lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -212,7 +216,11 @@ public class PlanficadorPedidosActivity extends BaseActitity implements OnMapRea
                             intent.putExtra("longitud",""+clientesVisitas.get(position).getLongitud());
                             intent.putExtra("direccionRuta",""+clientesVisitas.get(position).getDireccion());
                             intent.putExtra("cliente_id",""+clientesVisitas.get(position).getCliente_id());
+                            intent.putExtra("estado",""+clientesVisitas.get(position).getEstado());
+                            intent.putExtra("direccion_id",""+clientesVisitas.get(position).getId());
+                            intent.putExtra("clienteVisita",clientesVisitas.get(position));
                             startActivity(intent);
+                            isFlag = true;
 
                         }
                     });
@@ -228,6 +236,44 @@ public class PlanficadorPedidosActivity extends BaseActitity implements OnMapRea
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+    }
+
+    private void reloadList(){
+
+        try {
+            clientesVisitas = DataBaseHelper.getClienteVisitaDiaVisita(DepcApplication.getApplication().getClientesVisitasDao(),""+dia);
+            if (clientesVisitas != null){
+                if (clientesVisitas.size() > 0){
+
+                    planificadorAdapter = new PlanificadorPedidoAdapter(this);
+                    lista.setAdapter(planificadorAdapter);
+                    lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                            Intent intent = new Intent(PlanficadorPedidosActivity.this, DetallePlanificacionActivity.class);
+                            intent.putExtra("fecha",fecha);
+                            intent.putExtra("latitud",""+clientesVisitas.get(position).getLatitud());
+                            intent.putExtra("longitud",""+clientesVisitas.get(position).getLongitud());
+                            intent.putExtra("direccionRuta",""+clientesVisitas.get(position).getDireccion());
+                            intent.putExtra("cliente_id",""+clientesVisitas.get(position).getCliente_id());
+                            intent.putExtra("estado",""+clientesVisitas.get(position).getEstado());
+                            intent.putExtra("direccion_id",""+clientesVisitas.get(position).getId());
+                            intent.putExtra("clienteVisita",clientesVisitas.get(position));
+                            startActivity(intent);
+                            isFlag = true;
+
+                        }
+                    });
+
+                }
+            }
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
     }
 
@@ -384,7 +430,7 @@ public class PlanficadorPedidosActivity extends BaseActitity implements OnMapRea
 
         }
     }
-    
+
     private void getLocationFromGPS(){
         if (    ContextCompat.checkSelfPermission(PlanficadorPedidosActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(PlanficadorPedidosActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -495,6 +541,16 @@ public class PlanficadorPedidosActivity extends BaseActitity implements OnMapRea
 
     private void showSnackbar(String message) {
         //showAlert(message);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isFlag) {
+            reloadList();
+            isFlag = false;
+        }
+
     }
 
     @Override

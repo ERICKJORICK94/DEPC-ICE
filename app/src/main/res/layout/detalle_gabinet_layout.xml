@@ -103,12 +103,11 @@
                         <TextView
                             android:id="@+id/ruc"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/Black"
-                            android:textSize="13sp"
+                            android:layout_height="match_parent"
                             android:layout_marginLeft="10dp"
                             android:text=""
-                            />
+                            android:textColor="@color/Black"
+                            android:textSize="13sp" />
 
                     </LinearLayout>
 
@@ -169,122 +168,172 @@
                     </LinearLayout>
 
 
+                    <Button
+                        android:id="@+id/registrar"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:textColor="@color/White"
+                        android:text="REGISTRAR VISITA"
+                        android:visibility="gone"
+                        android:elevation="4sp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@color/RoyalBlue"
+                        />
+
+
+
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                card_view:cardCornerRadius="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="15dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingStart="5dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="@color/colorPrimary"
+                            android:textStyle="bold"
+                            android:text="INFORMACIÓN DEL GABINET"
+                            android:layout_marginBottom="5dp"/>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.7dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@color/colorPrimary"></View>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
-                        android:visibility="gone"
-                        android:layout_marginBottom="20dp">
+                        android:layout_marginBottom="4dp">
 
                         <TextView
                             android:layout_width="105dp"
                             android:layout_height="wrap_content"
                             android:textColor="@color/Black"
                             android:textSize="13sp"
-                            android:text="ENTREGAR:"
+                            android:text="ID:"
                             android:textStyle="bold"/>
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="45dp"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/Black"
+                            android:textSize="13sp"
                             android:layout_marginLeft="10dp"
-                            android:background="@drawable/border_spinner">
-
-                            <Spinner
-                                android:id="@+id/spinner"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:spinnerMode="dialog"></Spinner>
-
-                        </RelativeLayout>
+                            android:text="ASDVW93-96"
+                            />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="5dp">
 
                         <TextView
-                            android:id="@+id/ver_mapa"
-                            android:layout_width="0dp"
+                            android:layout_width="105dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:drawableTop="@drawable/ic_baseline_map_24"
-                            android:drawableTint="@color/colorPrimary"
-                            android:textColor="@color/colorPrimary"
-                            android:drawablePadding="3dp"
-                            android:text="VER MAPA"/>
+                            android:textColor="@color/Black"
+                            android:textSize="13sp"
+                            android:text="INGRESADO:"
+                            android:textStyle="bold"/>
 
                         <TextView
-                            android:id="@+id/llamar"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:drawableTop="@drawable/ic_baseline_phone_24"
-                            android:drawableTint="@color/colorPrimary"
-                            android:textColor="@color/colorPrimary"
-                            android:drawablePadding="3dp"
-                            android:text="LLAMAR"/>
-
-                        <TextView
-                            android:id="@+id/btn_whatsapp"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:drawableTop="@drawable/whatsapp_black"
-                            android:drawableTint="@color/colorPrimary"
-                            android:textColor="@color/colorPrimary"
-                            android:drawablePadding="3dp"
-                            android:text="WHATSAPP"/>
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:text="JPOLIT"
+                            android:textColor="@color/Black"
+                            android:textSize="13sp" />
 
                     </LinearLayout>
-
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="13sp"
-                        android:layout_marginTop="5dp"
-                        android:textColor="@color/DarkGray"
-                        android:text="PERSONA QUIÉN ATENDIO"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusableInTouchMode="true"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="4dp">
 
-                        <ImageView
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
-                            android:padding="10dp"
-                            android:src="@drawable/ic_baseline_person_24"
-                            android:scaleType="centerCrop"
-                            android:background="@drawable/custom_border"/>
+                        <TextView
+                            android:layout_width="105dp"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/Black"
+                            android:textSize="13sp"
+                            android:text="FECHA:"
+                            android:textStyle="bold"/>
 
-                        <EditText
-                            android:id="@+id/atiende"
-                            android:layout_width="match_parent"
-                            android:layout_height="45dp"
-                            android:hint="Nombre"
-                            android:maxLength="50"
-                            android:digits="0,1,2,3,4,5,6,7,8,9,*,qwe=.@#?()+%:!/\  rtzuiopasdfghjklyxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,_,-"
-                            android:nextFocusDown="@id/direccion"
-                            android:paddingLeft="8dp"
-                            android:paddingRight="8dp"
-                            android:textSize="15sp"
-                            android:inputType="textCapCharacters"
-                            android:background="@drawable/custom_border"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/Black"
+                            android:textSize="13sp"
+                            android:layout_marginLeft="10dp"
+                            android:text="23/05/2021"
+                            />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="4dp">
+
+                        <TextView
+                            android:layout_width="105dp"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/Black"
+                            android:textSize="13sp"
+                            android:text="COMENTARIO:"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/Black"
+                            android:textSize="13sp"
+                            android:layout_marginLeft="10dp"
+                            android:text=""
+                            />
 
                     </LinearLayout>
 
@@ -362,17 +411,17 @@
 
                     </LinearLayout>
 
+
                     <Button
-                        android:id="@+id/registrar"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:textColor="@color/White"
-                        android:text="REGISTRAR VISITA"
+                        android:text="REPORTAR EMERGENCIA"
                         android:elevation="4sp"
                         android:layout_marginBottom="10dp"
                         android:layout_marginTop="20dp"
                         android:layout_gravity="center_horizontal"
-                        android:background="@color/RoyalBlue"
+                        android:background="@color/DarkRed"
                         />
 
 
@@ -383,41 +432,10 @@
             </androidx.cardview.widget.CardView>
 
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="13sp"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:textColor="@color/DarkGray"
-                android:text="LISTADO DE PEDIDOS"/>
-
-            <com.smartapp.depc_ice.Utils.NonScrollListView
-                android:id="@+id/lista"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:divider="@color/transparent"
-                android:dividerHeight="0dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:paddingBottom="100dp"/>
-
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
-
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:backgroundTint="#dc4b3f"
-        android:src="@drawable/fab_add" />
 
 
 

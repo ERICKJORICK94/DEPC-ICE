@@ -364,6 +364,7 @@
                 android:textColor="@color/Black"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
+                android:visibility="gone"
                 android:textSize="12sp" />
 
 
@@ -374,6 +375,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginTop="1dp"
             android:layout_marginLeft="10dp"
+            android:visibility="gone"
             android:layout_marginRight="10dp"
             android:padding="1dp">
 

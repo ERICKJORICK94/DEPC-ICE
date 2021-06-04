@@ -40,5 +40,23 @@
     <string name="vw_no_audio_app">¡No hay aplicación de audio en este teléfono!</string>
     <string name="vw_all">Todas</string>
 
+    <string name="leku_title_activity_location_picker">Seleccione su ubicación</string>
+    <string name="leku_load_location_error">Algo salió mal. Inténtalo de nuevo.</string>
+    <string name="leku_no_search_results">no hay resultados para su búsqueda</string>
+    <string name="leku_unknown_location">ubicación desconocida</string>
+    <string name="leku_voice_search_promp">Búsqueda por voz…</string>
+    <string name="leku_voice_search_extra_language">en-EN</string>
+    <string name="leku_toolbar_action_voice_title">Voz</string>
+    <string name="leku_search_hint">Buscar</string>
+    <string name="leku_no_geocoder_available">v</string>
+    <string name="leku_network_resource">red</string>
+    <string name="leku_longitude">Longitud</string>
+    <string name="leku_latitude">Latitud</string>
+    <string name="leku_coordinates">Coordenadas</string>
+    <string name="leku_use_this_location">Usar esta ubicación</string>
+    <string name="leku_accessibility_remove_current_location">Eliminar ubicación actual</string>
+
+    <string name="YOUR_API_KEY">AIzaSyDKNJ199-qhLByFB6CUCU-M-DHGT7nWADk</string>
+
 
 </resources>

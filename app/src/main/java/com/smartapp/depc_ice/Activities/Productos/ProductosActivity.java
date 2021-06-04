@@ -26,6 +26,7 @@ import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Bodega;
 import com.smartapp.depc_ice.Entities.Productos;
+import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Interface.IBodegas;
 import com.smartapp.depc_ice.Interface.IProducto;
 import com.smartapp.depc_ice.Models.BodegasModel;
@@ -66,6 +67,7 @@ public class ProductosActivity extends BaseActitity implements BaseActitity.Base
     private boolean isCatalogo = true;
     private String buscarBodega = "";
     private String search = "";
+    private Usuario user ;
 
 
     @Override
@@ -83,6 +85,17 @@ public class ProductosActivity extends BaseActitity implements BaseActitity.Base
         check = (CheckBox) layout.findViewById(R.id.check);
         search_product = (EditText) layout.findViewById(R.id.search_product);
 
+
+        try {
+            List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
+            if (usuarios != null){
+                if (usuarios.size() > 0){
+                    user = usuarios.get(0);
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
         search_product.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -235,7 +248,7 @@ public class ProductosActivity extends BaseActitity implements BaseActitity.Base
 
         //JSON SEND
         BodegasModel model = new BodegasModel();
-        model.setCondicion("");
+        model.setCondicion("and d.usuario_id="+user.getUsuario());
         model.setMetodo("ListaBodegas");
 
 

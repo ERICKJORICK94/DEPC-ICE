@@ -841,7 +841,7 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
 
         //JSON SEND
         BodegasModel model = new BodegasModel();
-        model.setCondicion("");
+        model.setCondicion("and d.usuario_id="+user.getUsuario());
         model.setMetodo("ListaBodegas");
 
 

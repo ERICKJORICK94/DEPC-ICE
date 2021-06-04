@@ -92,6 +92,12 @@ public class ClientesVisitas implements Serializable {
     private String estado;
     @DatabaseField
     private String fecha;
+    @DatabaseField
+    private String firma;
+    @DatabaseField
+    private String comentario;
+    @DatabaseField
+    private String atiende;
 
     public int getPrimaryKey() {
         return primaryKey;
@@ -427,5 +433,29 @@ public class ClientesVisitas implements Serializable {
 
     public void setFecha(String fecha) {
         this.fecha = fecha;
+    }
+
+    public String getFirma() {
+        return firma;
+    }
+
+    public void setFirma(String firma) {
+        this.firma = firma;
+    }
+
+    public String getComentario() {
+        return comentario;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
+    }
+
+    public String getAtiende() {
+        return atiende;
+    }
+
+    public void setAtiende(String atiende) {
+        this.atiende = atiende;
     }
 }

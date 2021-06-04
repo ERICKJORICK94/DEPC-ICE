@@ -10,6 +10,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.smartapp.depc_ice.Activities.Agenda.PlanficadorPedidosActivity;
 import com.smartapp.depc_ice.Activities.Cobros.CobrosActivity;
 import com.smartapp.depc_ice.Entities.ClientesVisitas;
 import com.smartapp.depc_ice.R;
@@ -27,10 +28,10 @@ public class PlanificadorPedidoAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private List<ClientesVisitas> clientesVisitas;
 
-    public PlanificadorPedidoAdapter(Context c, List<ClientesVisitas> clientesVisitas) {
+    public PlanificadorPedidoAdapter(Context c) {
         mContext = c;
         mInflater = LayoutInflater.from(mContext);
-        this.clientesVisitas = clientesVisitas;
+        this.clientesVisitas = PlanficadorPedidosActivity.clientesVisitas;
     }
 
     public int getCount() {
@@ -79,11 +80,18 @@ public class PlanificadorPedidoAdapter extends BaseAdapter {
 
 
         ClientesVisitas cl = clientesVisitas.get(position);
-        viewHolder.hora.setText("00:00");
+
+        viewHolder.hora.setText("");
+        if (!cl.getHora().equals("00:00")){
+            viewHolder.hora.setText(""+cl.getHora());
+        }
+
+
+
         viewHolder.direccion.setText(""+cl.getDireccion());
         viewHolder.nombre.setText(""+cl.getNombre_comercial());
 
-        if (position == 0 || position == 1){
+        if (cl.getEstado().equals("1")){
             viewHolder.estado.setText("VISITADO");
             viewHolder.estado.setVisibility(View.VISIBLE);
             viewHolder.estado.setBackgroundColor(mContext.getResources().getColor(R.color.Green));

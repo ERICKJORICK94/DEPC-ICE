@@ -60,6 +60,7 @@ public class DetalleClienteActivity extends BaseActitity implements BaseActitity
     private IClientes.dataClientes data;
     private Call<IBodegas.dataBodega> callBodega;
     private IBodegas.dataBodega dataBodega;
+    private Usuario user ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +73,18 @@ public class DetalleClienteActivity extends BaseActitity implements BaseActitity
         if (getIntent() != null){
             cliente = (Clientes) getIntent().getSerializableExtra(Const.DETALLE_CLIENTE);
             isConsultar = getIntent().getStringExtra("consultar");
+        }
+
+
+        try {
+            List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
+            if (usuarios != null){
+                if (usuarios.size() > 0){
+                    user = usuarios.get(0);
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
 
         cliente_name = (TextView) layout.findViewById(R.id.cliente_name);
@@ -110,11 +123,13 @@ public class DetalleClienteActivity extends BaseActitity implements BaseActitity
 
     private void getBodegas(){
 
-        showProgressWait();
+        if (!isConsultar.equals("1")) {
+            showProgressWait();
+        }
 
         //JSON SEND
         BodegasModel model = new BodegasModel();
-        model.setCondicion("");
+        model.setCondicion("and d.usuario_id="+user.getUsuario());
         model.setMetodo("ListaBodegas");
 
 

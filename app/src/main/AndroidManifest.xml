@@ -22,6 +22,8 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-feature android:name="android.hardware.location.network" android:required="false" />
+    <uses-feature android:name="android.hardware.location.gps" android:required="false"  />
 
     <queries>
         <intent>
@@ -258,6 +260,20 @@
             android:label="Despacho Cliente"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".Activities.Gabinet.GabinietActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:icon="@drawable/back"
+            android:label="Gabinet Cliente"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Activities.Gabinet.DetalleGabinetActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:icon="@drawable/back"
+            android:label="Detalle Gabinet"
+            android:screenOrientation="portrait" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -265,6 +281,22 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <activity
+            android:name="com.schibstedspain.leku.LocationPickerActivity"
+            android:label="@string/leku_title_activity_location_picker"
+            android:theme="@style/AppTheme2"
+            android:windowSoftInputMode="adjustPan"
+            android:parentActivityName=".Activities.DetalleCliente.MantDireccionActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/leku_searchable" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.DetalleCliente.MantDireccionActivity" />
+        </activity>
 
 
     </application>

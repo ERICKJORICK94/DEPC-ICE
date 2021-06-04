@@ -1,6 +1,7 @@
 package com.smartapp.depc_ice.Activities.DetalleCliente;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,12 +38,14 @@ import androidx.core.content.ContextCompat;
 
 import com.google.gson.Gson;
 import com.j256.ormlite.stmt.query.In;
+import com.schibstedspain.leku.LocationPickerActivity;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Activities.ScannerQr.ScanQrActivity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.Direcciones;
+import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Entities.Zonas;
 import com.smartapp.depc_ice.Interface.ICrearDireccion;
 import com.smartapp.depc_ice.Interface.ICrearDireccion;
@@ -78,7 +81,7 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
     EditText correo;
     EditText celular;
     EditText dias;
-    EditText nombre_foto;
+    EditText nombre_foto,congelador;
     ImageButton ibTomarGPS;
     TextView ibVerMapa;
     LinearLayout llLatLon, llNOLatLon;
@@ -105,10 +108,12 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
     private Clientes cliente;
     private TextView qr;
     private final static int MY_PERMISSIONS_REQUEST_CAMARA = 9991;
+    private final static int MAP_BUTTON_REQUEST_CODE = 6324;
     private String congeladorID = "null";
 
     private Call<ICrearDireccion.dataUsuario> callRegistro;
     private ICrearDireccion.dataUsuario dataRegistro;
+    private Usuario user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +122,19 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
         layout = addLayout(R.layout.activity_mant_direccio);
         Utils.SetStyleActionBarTitle(this);
         layoutInflater = LayoutInflater.from(this);
+
+        try {
+            List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
+            if (usuarios != null){
+                if (usuarios.size() > 0){
+                    user = usuarios.get(0);
+                }
+            }
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
         cliente = DepcApplication.getApplication().getCliente();
 
@@ -137,6 +155,7 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
         tvLat = layout.findViewById(R.id.tv_lat);
         tvLon = layout.findViewById(R.id.tv_lon);
         tvRuta = layout.findViewById(R.id.tv_ruta);
+        congelador = layout.findViewById(R.id.congelador);
         qr = layout.findViewById(R.id.qr);
         etDireccion = layout.findViewById(R.id.et_direccion);
         zona = (Spinner) layout.findViewById(R.id.zona);
@@ -197,6 +216,11 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
                 dias.setText(""+temp.getDia_visita());
             }
 
+            if (temp.getCongelador_id() != null){
+                congelador.setText(""+temp.getCongelador_id());
+                congeladorID = ""+temp.getCongelador_id();
+            }
+
             if (temp.getFoto() != null){
                 if (temp.getFoto().length() > 0){
                     if (Utils.convert(temp.getFoto()) != null){
@@ -246,28 +270,87 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
             @Override
             public void onClick(View v) {
 
+                boolean flag = true;
                 if( direccion == null){
-                    Toast.makeText(MantDireccionActivity.this, "Dirección no está sensada aún.", Toast.LENGTH_LONG).show();
-                    return;
+                    //Toast.makeText(MantDireccionActivity.this, "Dirección no está sensada aún.", Toast.LENGTH_LONG).show();
+                    //return;
+                    flag = false;
                 }
 
-                if( direccion.getLatitud() == null){
-                    Toast.makeText(MantDireccionActivity.this, "Dirección no está sensada aún.", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                if( direccion.getLongitud() == null){
-                    Toast.makeText(MantDireccionActivity.this, "Dirección no está sensada aún.", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                    if( direccion.getLatitud().length() != 0 && direccion.getLongitud().length() != 0){
-                                Intent intent = new Intent(MantDireccionActivity.this, MapsActivity.class);
-                                intent.putExtra(Const.DETALLE_CLIENTE, direccion);
-                                startActivity(intent);
+                if( direccion != null) {
+                    if (direccion.getLatitud() == null) {
+                        //Toast.makeText(MantDireccionActivity.this, "Dirección no está sensada aún.", Toast.LENGTH_LONG).show();
+                        //return;
+                        flag = false;
                     }
-                    else
-                        Toast.makeText(MantDireccionActivity.this, "Dirección no está sensada aún.", Toast.LENGTH_LONG).show();
+                }
+
+                if( direccion != null) {
+                    if (direccion.getLongitud() == null) {
+                        //Toast.makeText(MantDireccionActivity.this, "Dirección no está sensada aún.", Toast.LENGTH_LONG).show();
+                        //return;
+                        flag = false;
+                    }
+                }
+
+                if( direccion != null) {
+                    if (direccion.getLatitud() != null) {
+                        if (direccion.getLatitud().length() == 0 && direccion.getLongitud().length() == 0) {
+                                /*Intent intent = new Intent(MantDireccionActivity.this, MapsActivity.class);
+                                intent.putExtra(Const.DETALLE_CLIENTE, direccion);
+                                startActivity(intent);*/
+                            flag = false;
+
+                        }
+                    }
+                }
+
+
+
+                    if (flag){
+
+                        Intent locationPickerIntent = new LocationPickerActivity.Builder()
+                                .withLocation(Double.parseDouble(direccion.getLatitud()), Double.parseDouble(direccion.getLongitud()))
+                                .withGeolocApiKey(getResources().getString(R.string.YOUR_API_KEY))
+                                .withSearchZone("ec_EC")
+                                //.withSearchZone(new SearchZoneRect(new LatLng(26.525467, -18.910366), new LatLng(43.906271, 5.394197)))
+                                .withDefaultLocaleSearchZone()
+                                .shouldReturnOkOnBackPressed()
+                                .withStreetHidden()
+                                .withCityHidden()
+                                .withZipCodeHidden()
+                                .withSatelliteViewHidden()
+                                //.withGooglePlacesEnabled()
+                                .withGooglePlacesApiKey(getResources().getString(R.string.YOUR_API_KEY))
+                                .withGoogleTimeZoneEnabled()
+                                .withVoiceSearchHidden()
+                                .withUnnamedRoadHidden()
+                                .build(MantDireccionActivity.this);
+
+                        startActivityForResult(locationPickerIntent, MAP_BUTTON_REQUEST_CODE);
+
+                    }else {
+
+                        Intent locationPickerIntent = new LocationPickerActivity.Builder()
+                                //.withLocation(Double.parseDouble(direccion.getLatitud()), Double.parseDouble(direccion.getLongitud()))
+                                .withGeolocApiKey(getResources().getString(R.string.YOUR_API_KEY))
+                                .withSearchZone("ec_EC")
+                                //.withSearchZone(new SearchZoneRect(new LatLng(26.525467, -18.910366), new LatLng(43.906271, 5.394197)))
+                                .withDefaultLocaleSearchZone()
+                                .shouldReturnOkOnBackPressed()
+                                .withStreetHidden()
+                                .withCityHidden()
+                                .withZipCodeHidden()
+                                .withSatelliteViewHidden()
+                                //.withGooglePlacesEnabled()
+                                .withGooglePlacesApiKey(getResources().getString(R.string.YOUR_API_KEY))
+                                .withGoogleTimeZoneEnabled()
+                                .withVoiceSearchHidden()
+                                .withUnnamedRoadHidden()
+                                .build(MantDireccionActivity.this);
+
+                        startActivityForResult(locationPickerIntent, MAP_BUTTON_REQUEST_CODE);
+                    }
             }
 
 
@@ -563,7 +646,34 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 2299) {
+        if (requestCode == MAP_BUTTON_REQUEST_CODE && data != null) {
+
+
+
+            if (resultCode == Activity.RESULT_OK) {
+                double latitud = data.getDoubleExtra("latitude", 0.0);
+                double longitud = data.getDoubleExtra("longitude", 0.0);
+
+                tvLat.setText(""+latitud);
+                tvLon.setText(""+longitud);
+                direccion.setLatitud(""+latitud);
+                direccion.setLongitud(""+longitud);
+
+                llLatLon.setVisibility(View.VISIBLE);
+                llNOLatLon.setVisibility(View.GONE);
+                //Toast.makeText(MantDireccionActivity.this, "Senso exitoso.", Toast.LENGTH_LONG).show();
+
+
+            } else if (resultCode == 2) {
+                double latitude = data.getDoubleExtra("latitude", 0.0);
+                double longitude = data.getDoubleExtra("longitude", 0.0);
+
+
+            }
+
+
+
+        }else if (requestCode == 2299) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 if (Environment.isExternalStorageManager()) {
                     checkCameraPermission();
@@ -805,6 +915,12 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
                             return;
                         }
 
+                        if (congelador.getText().length() == 0){
+                            congeladorID = "null";
+                        }else{
+                            congeladorID = congelador.getText().toString();
+                        }
+
                         direccion.setLatitud(tvLat.getText().toString());
                         direccion.setLongitud(tvLon.getText().toString());
                         direccion.setDireccion_envio(etDireccion.getText().toString().toUpperCase());
@@ -842,6 +958,7 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
                         model.setLongitud(""+direccion.getLongitud());
                         model.setTelefono_contacto(""+direccion.getTelefono_contacto());
                         model.setZona_id(""+direccion.getZona_id());
+                        model.setVendedor_id(""+user.getUsuario());
                         model.setMetodo("CrearClientesDirecciones");
 
                         final Gson gson = new Gson();

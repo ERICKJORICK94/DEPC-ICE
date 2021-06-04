@@ -76,6 +76,12 @@
             <image>@drawable/ic_baseline_post_add_24</image>
             <activity></activity>
         </item>
+        <item>
+            <code>7</code>
+            <name>Gabinet</name>
+            <image>@drawable/congelador</image>
+            <activity>com.smartapp.depc_ice.Activities.Gabinet.GabinietActivity</activity>
+        </item>
     </array>
 
 </resources>

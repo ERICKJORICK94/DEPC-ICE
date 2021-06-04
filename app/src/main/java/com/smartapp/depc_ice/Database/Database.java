@@ -13,6 +13,7 @@ import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.Direcciones;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Productos;
+import com.smartapp.depc_ice.Entities.PuntosVenta;
 import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Entities.Zonas;
 import com.smartapp.depc_ice.Utils.Const;
@@ -43,6 +44,7 @@ public class Database extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Pedidos.class);
             TableUtils.createTable(connectionSource, DetallePedido.class);
             TableUtils.createTable(connectionSource, ClientesVisitas.class);
+            TableUtils.createTable(connectionSource, PuntosVenta.class);
 
         } catch (SQLException e) {
             Log.e(Database.class.getName(), "ERROR AL CREAR LA BASE DE DATOS", e);
@@ -65,6 +67,7 @@ public class Database extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, Pedidos.class, true);
             TableUtils.dropTable(connectionSource, DetallePedido.class, true);
             TableUtils.dropTable(connectionSource, ClientesVisitas.class, true);
+            TableUtils.dropTable(connectionSource, PuntosVenta.class, true);
             onCreate(db, connectionSource);
 
         } catch (SQLException e) {

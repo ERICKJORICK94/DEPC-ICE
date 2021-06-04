@@ -10,6 +10,7 @@ import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.Direcciones;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Productos;
+import com.smartapp.depc_ice.Entities.PuntosVenta;
 import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Entities.Zonas;
 import com.smartapp.depc_ice.Utils.Const;
@@ -159,6 +160,31 @@ public class DataBaseHelper {
         List<Bodega> usuarios = null;
         String query = "SELECT * FROM " + Const.TABLE_BODEGAS + " WHERE " + condicion;
         GenericRawResults<Bodega> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+
+    //HELPER PUNTOS DE VENTA
+    public static void savePuntosVenta(PuntosVenta emp, Dao<PuntosVenta, Integer> userDao) {
+        try {
+            userDao.create(emp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deletePuntosVenta(Dao<PuntosVenta, Integer> userDao) throws SQLException {
+        DeleteBuilder<PuntosVenta, Integer> deleteBuilder = userDao.deleteBuilder();
+        deleteBuilder.delete();
+    }
+
+    public static List<PuntosVenta> getPuntosVenta(Dao<PuntosVenta, Integer> userDao) throws SQLException {
+
+        List<PuntosVenta> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_PUNTOS_VENTA;
+        GenericRawResults<PuntosVenta> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
         usuarios = rawResults.getResults();
 
         return usuarios;
@@ -548,6 +574,9 @@ public class DataBaseHelper {
                     if (clientes.getFecha().equals(cl.getFecha())){
                         clientes.setHora(cl.getHora());
                         clientes.setEstado(cl.getEstado());
+                        clientes.setAtiende(cl.getAtiende());
+                        clientes.setComentario(cl.getComentario());
+                        clientes.setFirma(cl.getFirma());
                     }
                     clientesDao.update(clientes);
                     return;

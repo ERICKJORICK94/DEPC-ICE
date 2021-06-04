@@ -36,6 +36,7 @@ import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Bodega;
 import com.smartapp.depc_ice.Entities.Clientes;
+import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Entities.Zonas;
 import com.smartapp.depc_ice.Interface.IRegistrarCliente;
 import com.smartapp.depc_ice.Interface.IZonas;
@@ -105,6 +106,7 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
     private boolean nacionalidad = true;
     private List<Zonas> zonas;
     String PDFbase64String = "null";
+    private Usuario user;
 
 
     @Override
@@ -134,6 +136,20 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
         extranjero = layout.findViewById(R.id.extranjero);
         registrar = (Button) layout.findViewById(R.id.registrar);
         pdf = (Button) layout.findViewById(R.id.pdf);
+
+        try {
+            List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
+            if (usuarios != null){
+                if (usuarios.size() > 0){
+                    user = usuarios.get(0);
+                }
+            }
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
 
         ci.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -642,6 +658,7 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
         model.setTipo_cliente(""+tipoCliente);
         model.setZona_id(""+zonas.get(indexZonas).getZona_id());
         model.setDocumentopdf(PDFbase64String);
+        model.setVendedor_id(""+user.getUsuario());
         model.setMetodo("CrearCliente");
 
         final Gson gson = new Gson();
