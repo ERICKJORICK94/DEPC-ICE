@@ -369,19 +369,23 @@
                         android:padding="3dp"
                         android:background="@drawable/custom_border" />
 
-                    <EditText
-                        android:id="@+id/congelador"
+                    <LinearLayout
+                        android:layout_gravity="center_vertical"
+                        android:layout_height="match_parent"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:nextFocusDown="@id/nombre"
-                        android:hint="Cabinet"
-                        android:minHeight="45dp"
-                        android:inputType="number"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:textSize="15sp"
-                        android:background="@drawable/custom_border"/>
+                        android:orientation="horizontal">
+
+                        <Spinner
+                            android:id="@+id/spinnerCongelador"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:spinnerMode="dialog"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:textSize="15sp" />
+                    </LinearLayout>
 
 
                     <TextView

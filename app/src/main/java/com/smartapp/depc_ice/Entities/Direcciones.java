@@ -44,7 +44,10 @@ public class Direcciones implements Serializable {
     @DatabaseField
     private String foto;
     @DatabaseField
-    private String congelador_id;
+    private String codigo;
+    @DatabaseField
+    private String vendedor_id;
+
 
     public int getPrimaryKey() {
         return primaryKey;
@@ -182,11 +185,19 @@ public class Direcciones implements Serializable {
         this.foto = foto;
     }
 
-    public String getCongelador_id() {
-        return congelador_id;
+    public String getCodigo() {
+        return codigo;
     }
 
-    public void setCongelador_id(String congelador_id) {
-        this.congelador_id = congelador_id;
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public String getVendedor_id() {
+        return vendedor_id;
+    }
+
+    public void setVendedor_id(String vendedor_id) {
+        this.vendedor_id = vendedor_id;
     }
 }

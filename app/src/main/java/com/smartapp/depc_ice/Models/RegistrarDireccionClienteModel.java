@@ -11,9 +11,10 @@ public class RegistrarDireccionClienteModel {
     private String latitud = "";
     private String longitud = "";
     private String foto = "";
-    private String congelador = "";
+    private String congelador_id = "";
     private String cliente_id = "";
     private String vendedor_id = "";
+    private String direccion_id = "";
 
     public String getMetodo() {
         return metodo;
@@ -87,12 +88,12 @@ public class RegistrarDireccionClienteModel {
         this.foto = foto;
     }
 
-    public String getCongelador() {
-        return congelador;
+    public String getCongelador_id() {
+        return congelador_id;
     }
 
-    public void setCongelador(String congelador) {
-        this.congelador = congelador;
+    public void setCongelador_id(String congelador_id) {
+        this.congelador_id = congelador_id;
     }
 
     public String getCliente_id() {
@@ -109,5 +110,13 @@ public class RegistrarDireccionClienteModel {
 
     public void setVendedor_id(String vendedor_id) {
         this.vendedor_id = vendedor_id;
+    }
+
+    public String getDireccion_id() {
+        return direccion_id;
+    }
+
+    public void setDireccion_id(String direccion_id) {
+        this.direccion_id = direccion_id;
     }
 }

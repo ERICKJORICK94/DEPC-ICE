@@ -9,6 +9,7 @@ import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.ClientesVisitas;
 import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.Direcciones;
+import com.smartapp.depc_ice.Entities.Gabinet;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Productos;
 import com.smartapp.depc_ice.Entities.PuntosVenta;
@@ -36,6 +37,7 @@ public class DepcApplication extends Application {
     private Dao<DetallePedido, Integer> detallePedidos = null;
     private Dao<ClientesVisitas, Integer> clientesVisitas = null;
     private Dao<PuntosVenta, Integer> puntosVentas = null;
+    private Dao<Gabinet, Integer> gabinets = null;
     private static String latitud = "";
     private static String longitud = "";
     private static Clientes cliente = null;
@@ -136,6 +138,13 @@ public class DepcApplication extends Application {
             puntosVentas = databaseHelper.getDao(PuntosVenta.class);
         }
         return puntosVentas;
+    }
+
+    public Dao<Gabinet, Integer> getGabinetDao() throws SQLException {
+        if (gabinets == null) {
+            gabinets = databaseHelper.getDao(Gabinet.class);
+        }
+        return gabinets;
     }
 
     public Clientes getCliente() {

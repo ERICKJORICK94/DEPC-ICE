@@ -8,6 +8,7 @@ import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.ClientesVisitas;
 import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.Direcciones;
+import com.smartapp.depc_ice.Entities.Gabinet;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Productos;
 import com.smartapp.depc_ice.Entities.PuntosVenta;
@@ -191,6 +192,41 @@ public class DataBaseHelper {
     }
 
 
+    //HELPER GABINET
+    public static void saveGabinet(Gabinet emp, Dao<Gabinet, Integer> userDao) {
+        try {
+            userDao.create(emp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteGabinet(Dao<Gabinet, Integer> userDao) throws SQLException {
+        DeleteBuilder<Gabinet, Integer> deleteBuilder = userDao.deleteBuilder();
+        deleteBuilder.delete();
+    }
+
+    public static List<Gabinet> getGabinet(Dao<Gabinet, Integer> userDao) throws SQLException {
+
+        List<Gabinet> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_GABINET;
+        GenericRawResults<Gabinet> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    public static List<Gabinet> getGabinetByPtoVta(Dao<Gabinet, Integer> userDao, String pto_vta_id) throws SQLException {
+
+        List<Gabinet> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_GABINET+" pto_vta_id = '"+pto_vta_id+"'";
+        GenericRawResults<Gabinet> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+
     //HELPER PRODUCTO
     public static void saveProduto(Productos producto, Dao<Productos, Integer> proDao) {
         try {
@@ -284,6 +320,14 @@ public class DataBaseHelper {
     public static void saveDirecciones(Direcciones emp, Dao<Direcciones, Integer> userDao) {
         try {
             userDao.create(emp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateDirecciones(Direcciones emp, Dao<Direcciones, Integer> userDao) {
+        try {
+            userDao.update(emp);
         } catch (SQLException e) {
             e.printStackTrace();
         }
