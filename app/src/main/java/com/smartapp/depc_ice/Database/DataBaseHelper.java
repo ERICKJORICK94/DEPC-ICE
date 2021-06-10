@@ -4,6 +4,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.smartapp.depc_ice.Entities.Bodega;
+import com.smartapp.depc_ice.Entities.ClienteGabinet;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.ClientesVisitas;
 import com.smartapp.depc_ice.Entities.DetallePedido;
@@ -227,6 +228,97 @@ public class DataBaseHelper {
     }
 
 
+
+
+
+
+
+    //HELPER CLIENTE GABINET
+    public static void saveClienteGabinet(ClienteGabinet gab, Dao<ClienteGabinet, Integer> userDao) {
+        try {
+
+            List<ClienteGabinet> cls = getClienteGabinetByID(userDao, "" + gab.getId_congelador());
+            if (cls != null) {
+                if (cls.size() > 0) {
+                    ClienteGabinet cl = cls.get(0);
+                    gab.setId(cl.getId());
+                    if (cl.getObservacion() != null) {
+                        gab.setObservacion("" + cl.getObservacion());
+                    }
+                    if (cl.getFoto() != null) {
+                        gab.setFoto("" + cl.getFoto());
+                    }
+                    userDao.update(gab);
+                    return;
+                }
+            }
+            userDao.create(gab);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateClienteGabinet(ClienteGabinet emp, Dao<ClienteGabinet, Integer> userDao) {
+        try {
+            userDao.update(emp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteClienteGabinet(Dao<ClienteGabinet, Integer> userDao) throws SQLException {
+        DeleteBuilder<ClienteGabinet, Integer> deleteBuilder = userDao.deleteBuilder();
+        deleteBuilder.delete();
+    }
+
+    public static void deleteClienteGabinetByCliente(Dao<ClienteGabinet, Integer> detailDao,String id_cliente) throws SQLException {
+        DeleteBuilder<ClienteGabinet, Integer> deleteBuilder = detailDao.deleteBuilder();
+        deleteBuilder.where().eq("id_cliente",id_cliente);
+        deleteBuilder.delete();
+    }
+
+    public static List<ClienteGabinet> getClienteGabinet(Dao<ClienteGabinet, Integer> userDao) throws SQLException {
+
+        List<ClienteGabinet> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_GABINET_CLIENTE;
+        GenericRawResults<ClienteGabinet> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    public static List<ClienteGabinet> getClienteGabinetByCliente(Dao<ClienteGabinet, Integer> userDao, String id_cliente) throws SQLException {
+
+        List<ClienteGabinet> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_GABINET_CLIENTE+" WHERE id_cliente = '"+id_cliente+"'";
+        GenericRawResults<ClienteGabinet> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    public static List<ClienteGabinet> getClienteGabinetByID(Dao<ClienteGabinet, Integer> userDao, String id_congelador) throws SQLException {
+
+        List<ClienteGabinet> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_GABINET_CLIENTE+" WHERE id_congelador = '"+id_congelador+"'";
+        GenericRawResults<ClienteGabinet> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    public static List<ClienteGabinet> getClienteGabinetById(Dao<ClienteGabinet, Integer> userDao, String id) throws SQLException {
+
+        List<ClienteGabinet> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_GABINET_CLIENTE+" WHERE id = "+id;
+        GenericRawResults<ClienteGabinet> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+
     //HELPER PRODUCTO
     public static void saveProduto(Productos producto, Dao<Productos, Integer> proDao) {
         try {
@@ -354,7 +446,17 @@ public class DataBaseHelper {
         return usuarios;
     }
 
-    public static List<Direcciones> getDireccionesBYIdCliente(Dao<Direcciones, Integer> userDao, String idCliente) throws SQLException {
+    public static List<Direcciones> getDireccionesBYIdCliente(Dao<Direcciones, Integer> userDao, String id) throws SQLException {
+
+        List<Direcciones> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_DIRECCIONES+" WHERE id = '"+id+"'";
+        GenericRawResults<Direcciones> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    public static List<Direcciones> getDireccionesBYId(Dao<Direcciones, Integer> userDao, String idCliente) throws SQLException {
 
         List<Direcciones> usuarios = null;
         String query = "SELECT * FROM " + Const.TABLE_DIRECCIONES+" WHERE cliente_id = '"+idCliente+"'";

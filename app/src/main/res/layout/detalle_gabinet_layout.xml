@@ -243,10 +243,11 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/Black"
                             android:textSize="13sp"
-                            android:text="ID:"
+                            android:text="CÓDIGO:"
                             android:textStyle="bold"/>
 
                         <TextView
+                            android:id="@+id/codigo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/Black"
@@ -274,6 +275,7 @@
                             android:textStyle="bold"/>
 
                         <TextView
+                            android:id="@+id/ingresado"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_marginLeft="10dp"
@@ -296,10 +298,11 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/Black"
                             android:textSize="13sp"
-                            android:text="FECHA:"
+                            android:text="FECHA INGRESO:"
                             android:textStyle="bold"/>
 
                         <TextView
+                            android:id="@+id/fecha_ingreso"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/Black"
@@ -309,6 +312,8 @@
                             />
 
                     </LinearLayout>
+
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -323,16 +328,46 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/Black"
                             android:textSize="13sp"
-                            android:text="COMENTARIO:"
+                            android:text="SERIE:"
                             android:textStyle="bold"/>
 
                         <TextView
+                            android:id="@+id/serie"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/Black"
                             android:textSize="13sp"
                             android:layout_marginLeft="10dp"
-                            android:text=""
+                            android:text="23/05/2021"
+                            />
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="4dp">
+
+                        <TextView
+                            android:layout_width="105dp"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/Black"
+                            android:textSize="13sp"
+                            android:text="UBICADO EN:"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/direccion_cliente"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/Black"
+                            android:textSize="13sp"
+                            android:layout_marginLeft="10dp"
+                            android:text="23/05/2021"
                             />
 
                     </LinearLayout>
@@ -341,7 +376,30 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="13sp"
-                        android:layout_marginTop="10dp"
+                        android:textColor="@color/DarkGray"
+                        android:text="ESTADO"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/custom_border">
+
+                        <Spinner
+                            android:id="@+id/spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:spinnerMode="dialog"/>
+
+                    </LinearLayout>
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+
                         android:textColor="@color/DarkGray"
                         android:text="OBSERVACIÓN"/>
 
@@ -413,6 +471,7 @@
 
 
                     <Button
+                        android:id="@+id/registrar_emergencia"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:textColor="@color/White"

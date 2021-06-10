@@ -5,6 +5,7 @@ import android.os.StrictMode;
 import com.j256.ormlite.dao.Dao;
 import com.smartapp.depc_ice.Database.Database;
 import com.smartapp.depc_ice.Entities.Bodega;
+import com.smartapp.depc_ice.Entities.ClienteGabinet;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.ClientesVisitas;
 import com.smartapp.depc_ice.Entities.DetallePedido;
@@ -38,6 +39,7 @@ public class DepcApplication extends Application {
     private Dao<ClientesVisitas, Integer> clientesVisitas = null;
     private Dao<PuntosVenta, Integer> puntosVentas = null;
     private Dao<Gabinet, Integer> gabinets = null;
+    private Dao<ClienteGabinet, Integer> clienteGabinets = null;
     private static String latitud = "";
     private static String longitud = "";
     private static Clientes cliente = null;
@@ -145,6 +147,13 @@ public class DepcApplication extends Application {
             gabinets = databaseHelper.getDao(Gabinet.class);
         }
         return gabinets;
+    }
+
+    public Dao<ClienteGabinet, Integer> getClienteGabinetDao() throws SQLException {
+        if (clienteGabinets == null) {
+            clienteGabinets = databaseHelper.getDao(ClienteGabinet.class);
+        }
+        return clienteGabinets;
     }
 
     public Clientes getCliente() {

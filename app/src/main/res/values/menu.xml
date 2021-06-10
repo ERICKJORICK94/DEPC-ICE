@@ -24,12 +24,12 @@
             <image>@drawable/ic_baseline_pending_actions_24</image>
             <activity>com.smartapp.depc_ice.Activities.Despachos.DespachosActivity</activity>
         </item>
-        <item>
+        <!--<item>
             <code>5</code>
             <name>Agenda&#160;Cobros</name>
             <image>@drawable/ic_baseline_attach_money_24</image>
             <activity></activity>
-        </item>
+        </item>-->
         <item>
             <code>6</code>
             <name>Productos</name>

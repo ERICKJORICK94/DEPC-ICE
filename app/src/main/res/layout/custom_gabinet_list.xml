@@ -27,7 +27,7 @@
 
 
                 <TextView
-                    android:id="@+id/fecha"
+                    android:id="@+id/codigo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorPrimary"
@@ -36,18 +36,19 @@
                     android:textSize="17sp"/>
 
                 <TextView
+                    android:id="@+id/direccion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/Black"
-                    android:text="COMERCIAL CHANITO"
-                    android:textSize="13sp"/>
+                    android:text="DIRECCION"
+                    android:textSize="15sp"/>
 
                 <TextView
-                    android:id="@+id/cliente_name"
+                    android:id="@+id/estado"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/DarkGray"
-                    android:text="GUAYAQUIL SAMANES 4 MZ 30 VI54"
+                    android:text="ESTADO"
                     android:textStyle="italic"
                     android:textSize="13sp"/>
 
