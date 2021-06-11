@@ -44,7 +44,12 @@ import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Clientes;
+import com.smartapp.depc_ice.Entities.EstadoGabinet;
+import com.smartapp.depc_ice.Entities.FormaPago;
 import com.smartapp.depc_ice.Entities.Usuario;
+import com.smartapp.depc_ice.Interface.IFormaPago;
+import com.smartapp.depc_ice.Interface.IFormaPago;
+import com.smartapp.depc_ice.Models.EstadoGabinetModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.BTDeviceList;
 import com.smartapp.depc_ice.Utils.Const;
@@ -80,6 +85,9 @@ import java.util.concurrent.Callable;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CobrosActivity extends BaseActitity implements BaseActitity.BaseActivityCallbacks{
 
@@ -119,6 +127,9 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
     byte FONT_TYPE;
     private static BluetoothSocket btsocket;
     private static OutputStream btoutputstream;
+
+    private Call<IFormaPago.dataBodega> call;
+    private IFormaPago.dataBodega data;
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -169,6 +180,8 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
 
         }
     };
+
+
 
 
 
@@ -236,7 +249,108 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
 
         //DEMO
         showList();
+        getFormaPagos();
     }
+
+    private void getFormaPagos(){
+
+        showProgressWait();
+
+        //JSON SEND
+        EstadoGabinetModel model = new EstadoGabinetModel();
+        model.setMetodo("ListarFormasPago");
+
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
+        try {
+
+            IFormaPago request = DepcApplication.getApplication().getRestAdapter().create(IFormaPago.class);
+            call = request.getBodegas(body);
+            call.enqueue(new Callback<IFormaPago.dataBodega>() {
+                @Override
+                public void onResponse(Call<IFormaPago.dataBodega> call, Response<IFormaPago.dataBodega> response) {
+                    if (response.isSuccessful()) {
+
+                        data = response.body();
+                        try {
+
+                            hideProgressWait();
+
+                            String mensajeError = Const.ERROR_DEFAULT;
+
+                            if (data != null) {
+                                if (data.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    if (data.getData() != null){
+                                        if (data.getData().getListarFormasPago() != null) {
+                                            if (data.getData().getListarFormasPago().size() > 0) {
+
+
+                                                final List<FormaPago> bodegas;
+                                                bodegas = data.getData().getListarFormasPago().get(0);
+
+                                                if (bodegas != null) {
+                                                    DataBaseHelper.deleteFormaPago(DepcApplication.getApplication().getFormaPagoDao());
+                                                    DepcApplication.getApplication().getFormaPagoDao().callBatchTasks(new Callable<FormaPago>() {
+                                                        @Override
+                                                        public FormaPago call() throws Exception {
+                                                            for (FormaPago cl : bodegas) {
+                                                                DataBaseHelper.saveFormaPago(cl, DepcApplication.getApplication().getFormaPagoDao());
+                                                            }
+                                                            return null;
+                                                        }
+                                                    });
+
+
+                                                }
+
+                                                //showListZonas();
+
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    if (data.getStatus_message() != null){
+                                        mensajeError = data.getStatus_message();
+                                    }
+                                }
+                            }
+
+                            //showListZonas();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideProgressWait();
+                            //showListZonas();
+                        }
+
+                    } else {
+                        hideProgressWait();
+                        //showAlert(Const.ERROR_DEFAULT);
+                        //showListZonas();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IFormaPago.dataBodega> call, Throwable t) {
+                    hideProgressWait();
+                    //showAlert(Const.ERROR_DEFAULT);
+                    //showListZonas();
+                }
+            });
+
+        }catch (Exception e){
+            hideProgressWait();
+            //showAlert(Const.ERROR_DEFAULT);
+            //showListZonas();
+
+        }
+    }
+
 
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!Utils.getSinImpresora(CobrosActivity.this)){

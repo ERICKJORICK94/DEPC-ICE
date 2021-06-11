@@ -45,6 +45,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.github.gcacace.signaturepad.views.SignaturePad;
+import com.smartapp.depc_ice.Activities.Cobros.CobrosActivity;
 import com.smartapp.depc_ice.Activities.Despachos.Adapter.ListaDespachoAdapter;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Activities.Pedido.DetallePedidoActivity;
@@ -90,7 +91,7 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
 
     private View layout;
     private String fecha;
-    private Button registrar;
+    private Button registrar,cobrar;
     private NonScrollListView lista;
     private Spinner spinner_despacho;
     private Clientes cliente = null;
@@ -180,10 +181,19 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
         ver_mapa = (TextView) layout.findViewById(R.id.ver_mapa);
         llamar = (TextView) layout.findViewById(R.id.llamar);
         btn_whatsapp = (TextView) layout.findViewById(R.id.btn_whatsapp);
+        cobrar = (Button) layout.findViewById(R.id.cobrar);
         agregar = layout.findViewById(R.id.agregar);
         ver_foto = layout.findViewById(R.id.ver_foto);
 
         Utils.SetStyleActionBarTitle(this);
+
+        cobrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DetalleDespachosPlanificacionActivity.this, CobrosActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
         //Demo

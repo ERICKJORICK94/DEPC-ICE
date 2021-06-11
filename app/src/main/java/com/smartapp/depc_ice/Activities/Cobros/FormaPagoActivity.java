@@ -30,10 +30,18 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
+import com.google.gson.Gson;
 import com.smartapp.depc_ice.Activities.DetalleCliente.MantDireccionActivity;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
+import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
+import com.smartapp.depc_ice.Entities.Bancos;
 import com.smartapp.depc_ice.Entities.Clientes;
+import com.smartapp.depc_ice.Entities.FormaPago;
+import com.smartapp.depc_ice.Entities.Zonas;
+import com.smartapp.depc_ice.Interface.IBancos;
+import com.smartapp.depc_ice.Models.BancoModel;
+import com.smartapp.depc_ice.Models.EstadoGabinetModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Const;
 import com.smartapp.depc_ice.Utils.PhotoViewer;
@@ -49,6 +57,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Callable;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -125,6 +134,10 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
     private static final int MY_CAMERA_REQUEST_CODE = 100;
     private Bitmap bitmap;
     private String fechaVencimiento = "";
+    private Call<IBancos.dataBodega> call;
+    private IBancos.dataBodega data;
+    private List<Bancos> bancos;
+    private int indexBanco = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -291,7 +304,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
         });
 
         showList();
-        showListBanco();
+        getBancos();
         showListTarjetas();
         showListCuenta();
     }
@@ -396,73 +409,211 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
 
     private void showList(){
 
-        String[] FormasPago = {"EFECTIVO", "CHEQUE", "DEPÓSITO", "TRANSFERENCIA","NOTA CRÉDITO","LETRA","TARJETA DE CRÉDITO","PAGARÉ"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item,FormasPago);
+        showhide(Const.FORMA_EF);
+        try {
+            List<FormaPago> formaPagos = DataBaseHelper.getFormaPago(DepcApplication.getApplication().getFormaPagoDao());
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_forma.setAdapter(adapter);
-        spinner_forma.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (formaPagos != null){
+                if (formaPagos.size() > 0){
 
-                switch (position){
-                    case 0:
-                        showhide(Const.FORMA_EF);
-                        break;
-                    case 1:
-                        showhide(Const.FORMA_CHQ);
-                        break;
-                    case 2:
-                        showhide(Const.FORMA_DEP);
-                        break;
-                    case 3:
-                        showhide(Const.FORMA_TRA);
-                        break;
-                    case 4:
-                        showhide(Const.FORMA_NC);
-                        break;
-                    case 5:
-                        showhide(Const.FORMA_LET);
-                        break;
-                    case 6:
-                        showhide(Const.FORMA_TC);
-                        break;
-                    case 7:
-                        showhide(Const.FORMA_PAG);
-                        break;
+                    List<String> items= new ArrayList<String>();
+                    for (FormaPago z : formaPagos){
+                        items.add(z.getDescripcion());
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
+
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinner_forma.setAdapter(adapter);
+                    spinner_forma.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                            int id_forma_pago = Integer.parseInt(formaPagos.get(position).getId_forma_pago());
+                            switch (id_forma_pago){
+                                case 9:
+                                    showhide(Const.FORMA_TRA);
+                                    break;
+                                case 1:
+                                    showhide(Const.FORMA_EF);
+                                    break;
+                                case 2:
+                                    showhide(Const.FORMA_CHQ);
+                                    break;
+                                case 12:
+                                    showhide(Const.FORMA_CHQ);
+                                    break;
+                                case 4:
+                                    showhide(Const.FORMA_NC);
+                                    break;
+                                case 10:
+                                    showhide(Const.FORMA_DEP);
+                                    break;
+                                default:
+                                    showhide(Const.FORMA_EF);
+                                    break;
+
+
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+
+                }
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+    }
+
+    private void getBancos(){
+
+        showProgressWait();
+
+        //JSON SEND
+        BancoModel model = new BancoModel();
+        model.setCondicion("");
+        model.setMetodo("ListarBancos");
+
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
+        try {
+
+            IBancos request = DepcApplication.getApplication().getRestAdapter().create(IBancos.class);
+            call = request.getBodegas(body);
+            call.enqueue(new Callback<IBancos.dataBodega>() {
+                @Override
+                public void onResponse(Call<IBancos.dataBodega> call, Response<IBancos.dataBodega> response) {
+                    if (response.isSuccessful()) {
+
+                        data = response.body();
+                        try {
+
+                            hideProgressWait();
+
+                            String mensajeError = Const.ERROR_DEFAULT;
+
+                            if (data != null) {
+                                if (data.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    if (data.getData() != null){
+                                        if (data.getData().getListarBancos() != null) {
+                                            if (data.getData().getListarBancos().size() > 0) {
+
+
+                                                final List<Bancos> bodegas;
+                                                bodegas = data.getData().getListarBancos().get(0);
+
+                                                if (bodegas != null) {
+                                                    DataBaseHelper.deleteBancos(DepcApplication.getApplication().getBancosDao());
+                                                    DepcApplication.getApplication().getBancosDao().callBatchTasks(new Callable<Bancos>() {
+                                                        @Override
+                                                        public Bancos call() throws Exception {
+                                                            for (Bancos cl : bodegas) {
+                                                                DataBaseHelper.saveBancos(cl, DepcApplication.getApplication().getBancosDao());
+                                                            }
+                                                            return null;
+                                                        }
+                                                    });
+
+
+                                                }
+
+                                                showListBanco();
+
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    if (data.getStatus_message() != null){
+                                        mensajeError = data.getStatus_message();
+                                    }
+                                }
+                            }
+
+                            showListBanco();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideProgressWait();
+                            showListBanco();
+                        }
+
+                    } else {
+                        hideProgressWait();
+                        //showAlert(Const.ERROR_DEFAULT);
+                        showListBanco();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IBancos.dataBodega> call, Throwable t) {
+                    hideProgressWait();
+                    //showAlert(Const.ERROR_DEFAULT);
+                    showListBanco();
+                }
+            });
+
+        }catch (Exception e){
+            hideProgressWait();
+            //showAlert(Const.ERROR_DEFAULT);
+            showListBanco();
+
+        }
+    }
+
+    private void showListBanco(){
+
+        hideProgressWait();
+
+        try {
+
+            bancos = DataBaseHelper.getBancos(DepcApplication.getApplication().getBancosDao());
+            if (bancos != null) {
+                if (bancos.size() > 0) {
+
+                    List<String> items= new ArrayList<String>();
+                    for (Bancos z : bancos){
+
+                        if (z.getNombre_entidad() != null) {
+                            items.add(z.getNombre_entidad());
+                        }else{
+                            items.add("-");
+                        }
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
+                    spinner_banco.setAdapter(adapter);
+                    spinner_banco.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            indexBanco = position;
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
 
 
                 }
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-    }
-
-    private void showListBanco(){
-
-        String[] FormasPago = {"BOLIVARIANO","PICHINCHA","PACÍFICO","INTERNACIONAL","PROINCO","GUAYAQUIL","AMAZONAS","RUMIÑAHUI"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item,FormasPago);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_banco.setAdapter(adapter);
-        spinner_banco.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Log.e("TAG---","error: "+e.toString());
+        }
 
     }
 

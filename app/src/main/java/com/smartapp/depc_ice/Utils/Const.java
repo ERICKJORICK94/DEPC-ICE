@@ -20,6 +20,7 @@ public class Const {
     public static final String TABLE_USUARIO = "Usuario";
     public static final String TABLE_CLIENTES = "Clientes";
     public static final String TABLE_BODEGAS = "Bodegas";
+    public static final String TABLE_ESTADO_GABINET = "EstadosGabinet";
     public static final String TABLE_DIRECCIONES = "DIRECCIONES";
     public static final String TABLE_PRODUCTOS = "Productos";
     public static final String TABLE_ZONAS = "Zonas";
@@ -28,6 +29,8 @@ public class Const {
     public static final String TABLE_GABINET_CLIENTE = "Gabinet_Cliente";
     public static final String TABLE_DETALLE_PEDIDO = "Detalle_pedido";
     public static final String TABLE_PEDIDO = "Pedido";
+    public static final String TABLE_FORMA_PAGO = "Forma_pago";
+    public static final String TABLE_BANCOS = "BANCOS";
     public static final String TABLE_CLIENTE_VISITA = "clientes_visita";
     public static final String ID_PEDIDO = "pedido_id";
     public static final String ID_PEDIDOS = "id_pedidos";
@@ -59,22 +62,5 @@ public class Const {
     public static final String FORMA_TC = "TC";
     public static final String FORMA_PAG = "PAG";
     public static final String FORMA_DB = "DB";
-
-    //ESTADOS GABINETS
-    public static final String ESTADO_0 = "0";
-    public static final String ESTADO_1 = "1";
-    public static final String ESTADO_2 = "2";
-    public static final String ESTADO_3 = "3";
-    public static final String ESTADO_4 = "4";
-    public static final String ESTADO_5 = "-1";
-
-    public static final String ESTADO_DES_0 = "DADO DE BAJA";
-    public static final String ESTADO_DES_1 = "DISPONIBLE";
-    public static final String ESTADO_DES_2 = "CONSIGNADO";
-    public static final String ESTADO_DES_3 = "EN TALLER";
-    public static final String ESTADO_DES_4 = "PENDIENTE DE REPUESTO";
-    public static final String ESTADO_DES_5 = "PERDIDO";
-
-
 
 }

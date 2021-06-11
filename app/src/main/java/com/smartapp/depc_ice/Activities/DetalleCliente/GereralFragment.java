@@ -20,14 +20,30 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+import com.google.gson.Gson;
 import com.smartapp.depc_ice.Activities.Home.Adapter.GridAdapter;
 import com.smartapp.depc_ice.Activities.Home.MainActivity;
+import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Clientes;
+import com.smartapp.depc_ice.Entities.EstadoGabinet;
+import com.smartapp.depc_ice.Entities.Zonas;
 import com.smartapp.depc_ice.Fragments.BaseFragment;
+import com.smartapp.depc_ice.Interface.IEstadoGabinet;
+import com.smartapp.depc_ice.Models.BodegasModel;
+import com.smartapp.depc_ice.Models.EstadoGabinetModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Const;
 import com.smartapp.depc_ice.Utils.Utils;
+
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by RICHARD on 18/11/2017.
@@ -41,6 +57,8 @@ public class GereralFragment extends BaseFragment implements BaseFragment.BaseFr
     private View layout;
     private Clientes cliente = null;
     private View header;
+    private Call<IEstadoGabinet.dataBodega> call;
+    private IEstadoGabinet.dataBodega data;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -85,7 +103,7 @@ public class GereralFragment extends BaseFragment implements BaseFragment.BaseFr
         });
 
 
-
+        getEstadosGabinet();
 
     }
 
@@ -94,6 +112,105 @@ public class GereralFragment extends BaseFragment implements BaseFragment.BaseFr
         super.onResume();
     }
 
+
+    private void getEstadosGabinet(){
+
+        showProgressWait();
+
+        //JSON SEND
+        EstadoGabinetModel model = new EstadoGabinetModel();
+        model.setMetodo("ListarEstadoGabinet");
+
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
+        try {
+
+            IEstadoGabinet request = DepcApplication.getApplication().getRestAdapter().create(IEstadoGabinet.class);
+            call = request.getZonas(body);
+            call.enqueue(new Callback<IEstadoGabinet.dataBodega>() {
+                @Override
+                public void onResponse(Call<IEstadoGabinet.dataBodega> call, Response<IEstadoGabinet.dataBodega> response) {
+                    if (response.isSuccessful()) {
+
+                        data = response.body();
+                        try {
+
+                            hideProgressWait();
+
+                            String mensajeError = Const.ERROR_DEFAULT;
+
+                            if (data != null) {
+                                if (data.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    if (data.getData() != null){
+                                        if (data.getData().getListarEstadoGabinet() != null) {
+                                            if (data.getData().getListarEstadoGabinet().size() > 0) {
+
+
+                                                final List<EstadoGabinet> bodegas;
+                                                bodegas = data.getData().getListarEstadoGabinet().get(0);
+
+                                                if (bodegas != null) {
+                                                    DataBaseHelper.deleteEstadoGabinet(DepcApplication.getApplication().getEstadoGabinetDao());
+                                                    DepcApplication.getApplication().getEstadoGabinetDao().callBatchTasks(new Callable<EstadoGabinet>() {
+                                                        @Override
+                                                        public EstadoGabinet call() throws Exception {
+                                                            for (EstadoGabinet cl : bodegas) {
+                                                                DataBaseHelper.saveEstadoGabinet(cl, DepcApplication.getApplication().getEstadoGabinetDao());
+                                                            }
+                                                            return null;
+                                                        }
+                                                    });
+
+
+                                                }
+
+                                                //showListZonas();
+
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    if (data.getStatus_message() != null){
+                                        mensajeError = data.getStatus_message();
+                                    }
+                                }
+                            }
+
+                            //showListZonas();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideProgressWait();
+                            //showListZonas();
+                        }
+
+                    } else {
+                        hideProgressWait();
+                        //showAlert(Const.ERROR_DEFAULT);
+                        //showListZonas();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IEstadoGabinet.dataBodega> call, Throwable t) {
+                    hideProgressWait();
+                    //showAlert(Const.ERROR_DEFAULT);
+                    //showListZonas();
+                }
+            });
+
+        }catch (Exception e){
+            hideProgressWait();
+            //showAlert(Const.ERROR_DEFAULT);
+            //showListZonas();
+
+        }
+    }
 
 
 

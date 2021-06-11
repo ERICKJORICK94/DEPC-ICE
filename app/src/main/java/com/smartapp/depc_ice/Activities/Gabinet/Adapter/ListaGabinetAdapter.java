@@ -77,22 +77,9 @@ public class ListaGabinetAdapter extends BaseAdapter {
         }
 
         viewHolder.estado.setText("");
-        if (gab.getEstado() != null){
-            if (gab.getEstado().equals(Const.ESTADO_0)){
-                viewHolder.estado.setText(""+Const.ESTADO_DES_0);
-            }else if (gab.getEstado().equals(Const.ESTADO_1)){
-                viewHolder.estado.setText(""+Const.ESTADO_DES_1);
-            }else if (gab.getEstado().equals(Const.ESTADO_2)){
-                viewHolder.estado.setText(""+Const.ESTADO_DES_2);
-            }else if (gab.getEstado().equals(Const.ESTADO_3)){
-                viewHolder.estado.setText(""+Const.ESTADO_DES_3);
-            }else if (gab.getEstado().equals(Const.ESTADO_4)){
-                viewHolder.estado.setText(""+Const.ESTADO_DES_4);
-            }else if (gab.getEstado().equals(Const.ESTADO_5)){
-                viewHolder.estado.setText(""+Const.ESTADO_DES_5);
-            }
+        if (gab.getEstado_descripcion() != null){
+            viewHolder.estado.setText(""+gab.getEstado_descripcion());
         }
-
 
         return convertView;
     }

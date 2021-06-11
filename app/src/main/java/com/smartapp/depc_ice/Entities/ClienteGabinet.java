@@ -47,6 +47,8 @@ public class ClienteGabinet {
     private String observacion;
     @DatabaseField
     private String foto;
+    @DatabaseField
+    private String estado_descripcion;
 
     public int getId() {
         return id;
@@ -207,5 +209,13 @@ public class ClienteGabinet {
 
     public void setFoto(String foto) {
         this.foto = foto;
+    }
+
+    public String getEstado_descripcion() {
+        return estado_descripcion;
+    }
+
+    public void setEstado_descripcion(String estado_descripcion) {
+        this.estado_descripcion = estado_descripcion;
     }
 }

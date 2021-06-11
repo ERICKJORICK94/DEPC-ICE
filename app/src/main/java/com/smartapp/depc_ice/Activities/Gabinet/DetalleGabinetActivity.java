@@ -42,8 +42,10 @@ import com.smartapp.depc_ice.Entities.ClienteGabinet;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.ClientesVisitas;
 import com.smartapp.depc_ice.Entities.Direcciones;
+import com.smartapp.depc_ice.Entities.EstadoGabinet;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Usuario;
+import com.smartapp.depc_ice.Entities.Zonas;
 import com.smartapp.depc_ice.Interface.IClientes;
 import com.smartapp.depc_ice.Interface.ICrearDireccion;
 import com.smartapp.depc_ice.Interface.ICrearVisitaPedidos;
@@ -62,6 +64,7 @@ import com.smartapp.depc_ice.Utils.Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -92,8 +95,9 @@ public class DetalleGabinetActivity extends BaseActitity implements BaseActitity
     private final static int MY_PERMISSIONS_REQUEST_CAMARA = 9991;
     private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
     private static final int MY_CAMERA_REQUEST_CODE = 100;
-    private int indexEstados = 0;
+    private int indexEstados = -1;
     private Usuario user;
+    private List<EstadoGabinet> estadosGabinets;
 
     private Call<IRegistrarEmergencia.dataBodega> callRegistro;
     private IRegistrarEmergencia.dataBodega dataRegistro;
@@ -170,25 +174,40 @@ public class DetalleGabinetActivity extends BaseActitity implements BaseActitity
 
         }
 
+        try {
+            estadosGabinets = DataBaseHelper.getEstadoGabinet(DepcApplication.getApplication().getEstadoGabinetDao());
 
-        String[] arraySpinner = new String[] {
-                Const.ESTADO_DES_0, Const.ESTADO_DES_1, Const.ESTADO_DES_2, Const.ESTADO_DES_3, Const.ESTADO_DES_4, Const.ESTADO_DES_5 };
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, arraySpinner);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setSelection(indexEstados);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                indexEstados = position;
+            if (estadosGabinets != null) {
+                if (estadosGabinets.size() > 0) {
+
+                    indexEstados = 0;
+                    List<String> items= new ArrayList<String>();
+                    for (EstadoGabinet z : estadosGabinets){
+                        items.add(z.getDescripcion());
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
+                    spinner.setAdapter(adapter);
+                    spinner.setSelection(indexEstados);
+                    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            indexEstados = position;
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+
+
+                }
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
         if (clienteGabinet != null){
 
@@ -231,37 +250,34 @@ public class DetalleGabinetActivity extends BaseActitity implements BaseActitity
             }
 
             if (clienteGabinet.getEstado() != null){
-                if (clienteGabinet.getEstado().equals(Const.ESTADO_0)){
-                    indexEstados = 0;
-                }
 
-                if (clienteGabinet.getEstado().equals(Const.ESTADO_1)){
-                    indexEstados = 1;
-                }
 
-                if (clienteGabinet.getEstado().equals(Const.ESTADO_2)){
-                    indexEstados = 2;
-                }
+                if (estadosGabinets != null){
+                    int contador = 0;
+                    for (EstadoGabinet es : estadosGabinets){
+                        if (es.getNum_estado().equals(clienteGabinet.getEstado())){
+                            indexEstados = contador;
+                        }
 
-                if (clienteGabinet.getEstado().equals(Const.ESTADO_3)){
-                    indexEstados = 3;
+                        contador++;
+                    }
+                    if (indexEstados >= 0) {
+                        spinner.setSelection(indexEstados);
+                    }
                 }
-
-                if (clienteGabinet.getEstado().equals(Const.ESTADO_4)){
-                    indexEstados = 4;
-                }
-
-                if (clienteGabinet.getEstado().equals(Const.ESTADO_5)){
-                    indexEstados = 5;
-                }
-
-                spinner.setSelection(indexEstados);
             }
 
             registrar_emergencia.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    sendRegistrarEmergencia();
+                    if (indexEstados >= 0) {
+                        if (estadosGabinets != null) {
+                            sendRegistrarEmergencia();
+                        }
+                        return;
+                    }
+
+                    showAlert("Seleccione estado antes de continuar");
                 }
             });
 
@@ -429,31 +445,7 @@ public class DetalleGabinetActivity extends BaseActitity implements BaseActitity
     private void sendRegistrarEmergencia(){
 
         showProgressWait();
-        String estado = "";
-
-        if (indexEstados == 0){
-            estado = Const.ESTADO_0;
-        }
-        if (indexEstados == 1){
-            estado = Const.ESTADO_1;
-        }
-
-        if (indexEstados == 2){
-            estado = Const.ESTADO_2;
-        }
-        if (indexEstados == 3){
-            estado = Const.ESTADO_3;
-        }
-
-        if (indexEstados == 4){
-            estado = Const.ESTADO_4;
-        }
-
-        if (indexEstados == 5){
-            estado = Const.ESTADO_5;
-        }
-
-
+        String estado = ""+estadosGabinets.get(indexEstados).getNum_estado();
 
         //JSON SEND
         RegistrarEmergenciaModel model = new RegistrarEmergenciaModel();

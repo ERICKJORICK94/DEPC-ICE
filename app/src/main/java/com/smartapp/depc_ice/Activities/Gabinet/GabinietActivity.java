@@ -15,6 +15,7 @@ import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.ClienteGabinet;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.Direcciones;
+import com.smartapp.depc_ice.Entities.EstadoGabinet;
 import com.smartapp.depc_ice.Interface.IClientesGabinet;
 import com.smartapp.depc_ice.Interface.IDirecciones;
 import com.smartapp.depc_ice.Models.ClientesGabinetModel;
@@ -249,6 +250,16 @@ public class GabinietActivity extends BaseActitity implements BaseActitity.BaseA
                                                                 if (direcciones.size() > 0){
                                                                     Direcciones dr = direcciones.get(0);
                                                                     gabinet.setDireccion_cliente_gabinet(""+dr.getDireccion_envio());
+                                                                }
+                                                            }
+
+
+                                                            List<EstadoGabinet> estadoGabinets = DataBaseHelper.getEstadoGabinetByEstado(DepcApplication.getApplication().getEstadoGabinetDao(),""+gabinet.getEstado());
+                                                            gabinet.setEstado_descripcion("");
+                                                            if (estadoGabinets != null){
+                                                                if (estadoGabinets.size() > 0){
+                                                                    EstadoGabinet dr = estadoGabinets.get(0);
+                                                                    gabinet.setEstado_descripcion(""+dr.getDescripcion());
                                                                 }
                                                             }
 

@@ -4,12 +4,15 @@ import android.app.Application;
 import android.os.StrictMode;
 import com.j256.ormlite.dao.Dao;
 import com.smartapp.depc_ice.Database.Database;
+import com.smartapp.depc_ice.Entities.Bancos;
 import com.smartapp.depc_ice.Entities.Bodega;
 import com.smartapp.depc_ice.Entities.ClienteGabinet;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.ClientesVisitas;
 import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.Direcciones;
+import com.smartapp.depc_ice.Entities.EstadoGabinet;
+import com.smartapp.depc_ice.Entities.FormaPago;
 import com.smartapp.depc_ice.Entities.Gabinet;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Productos;
@@ -40,6 +43,9 @@ public class DepcApplication extends Application {
     private Dao<PuntosVenta, Integer> puntosVentas = null;
     private Dao<Gabinet, Integer> gabinets = null;
     private Dao<ClienteGabinet, Integer> clienteGabinets = null;
+    private Dao<EstadoGabinet, Integer> estadoGabinets = null;
+    private Dao<FormaPago, Integer> formaPagos = null;
+    private Dao<Bancos, Integer> bancos = null;
     private static String latitud = "";
     private static String longitud = "";
     private static Clientes cliente = null;
@@ -149,11 +155,32 @@ public class DepcApplication extends Application {
         return gabinets;
     }
 
+    public Dao<Bancos, Integer> getBancosDao() throws SQLException {
+        if (bancos == null) {
+            bancos = databaseHelper.getDao(Bancos.class);
+        }
+        return bancos;
+    }
+
     public Dao<ClienteGabinet, Integer> getClienteGabinetDao() throws SQLException {
         if (clienteGabinets == null) {
             clienteGabinets = databaseHelper.getDao(ClienteGabinet.class);
         }
         return clienteGabinets;
+    }
+
+    public Dao<FormaPago, Integer> getFormaPagoDao() throws SQLException {
+        if (formaPagos == null) {
+            formaPagos = databaseHelper.getDao(FormaPago.class);
+        }
+        return formaPagos;
+    }
+
+    public Dao<EstadoGabinet, Integer> getEstadoGabinetDao() throws SQLException {
+        if (estadoGabinets == null) {
+            estadoGabinets = databaseHelper.getDao(EstadoGabinet.class);
+        }
+        return estadoGabinets;
     }
 
     public Clientes getCliente() {

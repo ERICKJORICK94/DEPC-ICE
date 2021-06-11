@@ -3,12 +3,15 @@ package com.smartapp.depc_ice.Database;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.smartapp.depc_ice.Entities.Bancos;
 import com.smartapp.depc_ice.Entities.Bodega;
 import com.smartapp.depc_ice.Entities.ClienteGabinet;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.ClientesVisitas;
 import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.Direcciones;
+import com.smartapp.depc_ice.Entities.EstadoGabinet;
+import com.smartapp.depc_ice.Entities.FormaPago;
 import com.smartapp.depc_ice.Entities.Gabinet;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Productos;
@@ -42,6 +45,89 @@ public class DataBaseHelper {
         List<Usuario> usuarios = null;
         String query = "SELECT * FROM " + Const.TABLE_USUARIO;
         GenericRawResults<Usuario> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+
+    //HELPER FORMA PAGO
+    public static void saveFormaPago(FormaPago emp, Dao<FormaPago, Integer> userDao) {
+        try {
+            userDao.create(emp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteFormaPago(Dao<FormaPago, Integer> userDao) throws SQLException {
+        DeleteBuilder<FormaPago, Integer> deleteBuilder = userDao.deleteBuilder();
+        deleteBuilder.delete();
+    }
+
+    public static List<FormaPago> getFormaPago(Dao<FormaPago, Integer> userDao) throws SQLException {
+
+        List<FormaPago> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_FORMA_PAGO;
+        GenericRawResults<FormaPago> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    //HELPER FORMA BANCOS
+    public static void saveBancos(Bancos emp, Dao<Bancos, Integer> userDao) {
+        try {
+            userDao.create(emp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteBancos(Dao<Bancos, Integer> userDao) throws SQLException {
+        DeleteBuilder<Bancos, Integer> deleteBuilder = userDao.deleteBuilder();
+        deleteBuilder.delete();
+    }
+
+    public static List<Bancos> getBancos(Dao<Bancos, Integer> userDao) throws SQLException {
+
+        List<Bancos> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_BANCOS;
+        GenericRawResults<Bancos> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    //HELPER ESTADO GABINET
+    public static void saveEstadoGabinet(EstadoGabinet emp, Dao<EstadoGabinet, Integer> userDao) {
+        try {
+            userDao.create(emp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteEstadoGabinet(Dao<EstadoGabinet, Integer> userDao) throws SQLException {
+        DeleteBuilder<EstadoGabinet, Integer> deleteBuilder = userDao.deleteBuilder();
+        deleteBuilder.delete();
+    }
+
+    public static List<EstadoGabinet> getEstadoGabinet(Dao<EstadoGabinet, Integer> userDao) throws SQLException {
+
+        List<EstadoGabinet> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_ESTADO_GABINET;
+        GenericRawResults<EstadoGabinet> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    public static List<EstadoGabinet> getEstadoGabinetByEstado(Dao<EstadoGabinet, Integer> userDao, String num_estado) throws SQLException {
+
+        List<EstadoGabinet> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_ESTADO_GABINET+" WHERE num_estado = '"+num_estado+"'";
+        GenericRawResults<EstadoGabinet> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
         usuarios = rawResults.getResults();
 
         return usuarios;
