@@ -1,8 +1,7 @@
-package com.smartapp.depc_ice.Activities.Gabinet;
+package com.smartapp.depc_ice.Activities.GabinetClientes;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,7 +14,6 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -24,50 +22,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import com.github.gcacace.signaturepad.views.SignaturePad;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
-import com.smartapp.depc_ice.Activities.CrearClientes.CrearClientesActivity;
-import com.smartapp.depc_ice.Activities.DetalleCliente.DetalleClienteActivity;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
-import com.smartapp.depc_ice.Activities.Pedido.Adapter.ListaPedidosAdapter;
-import com.smartapp.depc_ice.Activities.Pedido.DetallePedidoActivity;
-import com.smartapp.depc_ice.Activities.Pedido.RegistroPedidoActivity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.ClienteGabinet;
 import com.smartapp.depc_ice.Entities.Clientes;
-import com.smartapp.depc_ice.Entities.ClientesVisitas;
-import com.smartapp.depc_ice.Entities.Direcciones;
 import com.smartapp.depc_ice.Entities.EstadoGabinet;
-import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Usuario;
-import com.smartapp.depc_ice.Entities.Zonas;
-import com.smartapp.depc_ice.Interface.IClientes;
-import com.smartapp.depc_ice.Interface.ICrearDireccion;
-import com.smartapp.depc_ice.Interface.ICrearVisitaPedidos;
 import com.smartapp.depc_ice.Interface.IRegistrarEmergencia;
-import com.smartapp.depc_ice.Interface.IRegistrarEmergencia;
-import com.smartapp.depc_ice.Mapa.MapsActivity;
-import com.smartapp.depc_ice.Models.ClientesModel;
-import com.smartapp.depc_ice.Models.CrearVisitaModel;
-import com.smartapp.depc_ice.Models.RegistrarClienteModel;
 import com.smartapp.depc_ice.Models.RegistrarEmergenciaModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Const;
-import com.smartapp.depc_ice.Utils.NonScrollListView;
 import com.smartapp.depc_ice.Utils.PhotoViewer;
 import com.smartapp.depc_ice.Utils.Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;

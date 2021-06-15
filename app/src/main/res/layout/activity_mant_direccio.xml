@@ -350,6 +350,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="13sp"
+                    android:visibility="gone"
                     android:layout_marginTop="15dp"
                     android:textColor="@color/DarkGray"
                     android:text="CABINET"/>
@@ -359,6 +360,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/custom_border"
                     android:focusableInTouchMode="true"
+                    android:visibility="gone"
                     android:orientation="horizontal">
 
                     <ImageView

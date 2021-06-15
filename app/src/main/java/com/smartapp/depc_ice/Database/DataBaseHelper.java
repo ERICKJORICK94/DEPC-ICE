@@ -13,6 +13,7 @@ import com.smartapp.depc_ice.Entities.Direcciones;
 import com.smartapp.depc_ice.Entities.EstadoGabinet;
 import com.smartapp.depc_ice.Entities.FormaPago;
 import com.smartapp.depc_ice.Entities.Gabinet;
+import com.smartapp.depc_ice.Entities.GabinetGeneral;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Productos;
 import com.smartapp.depc_ice.Entities.PuntosVenta;
@@ -273,6 +274,79 @@ public class DataBaseHelper {
         List<PuntosVenta> usuarios = null;
         String query = "SELECT * FROM " + Const.TABLE_PUNTOS_VENTA;
         GenericRawResults<PuntosVenta> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+
+    //HELPER GABINET GENERAL
+    public static void saveGabinetGeneral(GabinetGeneral gab, Dao<GabinetGeneral, Integer> userDao) {
+        try {
+
+            List<GabinetGeneral> cls = getGabinetGeneralByID(userDao, "" + gab.getId_congelador());
+            if (cls != null) {
+                if (cls.size() > 0) {
+                    GabinetGeneral cl = cls.get(0);
+                    gab.setId(cl.getId());
+
+                    gab.setId(cl.getId());
+                    if (cl.getObservacion() != null) {
+                        gab.setObservacion("" + cl.getObservacion());
+                    }
+                    if (cl.getFoto() != null) {
+                        gab.setFoto("" + cl.getFoto());
+                    }
+
+                    userDao.update(gab);
+                    return;
+                }
+            }
+
+            userDao.create(gab);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateGabinetGeneral(GabinetGeneral gab, Dao<GabinetGeneral, Integer> userDao) {
+        try {
+            userDao.update(gab);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<GabinetGeneral> getGabinetGeneralByID(Dao<GabinetGeneral, Integer> userDao, String id_congelador) throws SQLException {
+
+        List<GabinetGeneral> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_GABINET_GENERAL+" WHERE id_congelador = '"+id_congelador+"'";
+        GenericRawResults<GabinetGeneral> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    public static List<GabinetGeneral> getGabinetGeneralCondicion(Dao<GabinetGeneral, Integer> clienteDao, String condicion) throws SQLException {
+
+        List<GabinetGeneral> clientes = null;
+        String query = "SELECT * FROM " + Const.TABLE_GABINET_GENERAL+ " WHERE " + condicion + " LIMIT "+Const.PARAM_MAX_ROW;
+        GenericRawResults<GabinetGeneral> rawResults = clienteDao.queryRaw(query, clienteDao.getRawRowMapper());
+        clientes = rawResults.getResults();
+
+        return clientes;
+    }
+
+    public static void deleteGabinetGeneral(Dao<GabinetGeneral, Integer> userDao) throws SQLException {
+        DeleteBuilder<GabinetGeneral, Integer> deleteBuilder = userDao.deleteBuilder();
+        deleteBuilder.delete();
+    }
+
+    public static List<GabinetGeneral> getGabinetGeneral(Dao<GabinetGeneral, Integer> userDao) throws SQLException {
+
+        List<GabinetGeneral> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_GABINET_GENERAL+" LIMIT "+Const.PARAM_MAX_ROW;
+        GenericRawResults<GabinetGeneral> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
         usuarios = rawResults.getResults();
 
         return usuarios;

@@ -261,17 +261,31 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".Activities.Gabinet.GabinietActivity"
+            android:name=".Activities.GabinetClientes.GabinietClientesActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:icon="@drawable/back"
             android:label="Gabinet Cliente"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".Activities.Gabinet.DetalleGabinetActivity"
+            android:name=".Activities.GabinetClientes.DetalleGabinetActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:icon="@drawable/back"
             android:label="Detalle Gabinet"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Activities.GabinetGeneral.GabinetGeneralActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:icon="@drawable/back"
+            android:label="Gabinets Generales"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Activities.GabinetGeneral.DetalleGabinetGeneralActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:icon="@drawable/back"
+            android:label="Detalle Gabinets Generales"
             android:screenOrientation="portrait" />
 
         <meta-data

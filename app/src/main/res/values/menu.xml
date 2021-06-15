@@ -36,6 +36,12 @@
             <image>@drawable/ic_baseline_shopping_basket_24</image>
             <activity>com.smartapp.depc_ice.Activities.Productos.ProductosActivity</activity>
         </item>
+        <item>
+            <code>7</code>
+            <name>Gabinets</name>
+            <image>@drawable/gabinet</image>
+            <activity>com.smartapp.depc_ice.Activities.GabinetGeneral.GabinetGeneralActivity</activity>
+        </item>
     </array>
 
 
@@ -78,9 +84,9 @@
         </item>
         <item>
             <code>7</code>
-            <name>Gabinet</name>
-            <image>@drawable/congelador</image>
-            <activity>com.smartapp.depc_ice.Activities.Gabinet.GabinietActivity</activity>
+            <name>Gabinets</name>
+            <image>@drawable/gabinet</image>
+            <activity>com.smartapp.depc_ice.Activities.GabinetClientes.GabinietClientesActivity</activity>
         </item>
     </array>
 

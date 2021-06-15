@@ -47,6 +47,7 @@ import com.smartapp.depc_ice.Activities.Despachos.Adapter.PlanificadorDespachosA
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Utils;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -66,6 +67,7 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
     private TextView fecha;
     private GoogleMap mMap;
     private ListView lista;
+    private SlidingUpPanelLayout sliding_layout;
 
     private final String serverKey = "AIzaSyAg_dcLJ_XnK3aVtyBiGFTxaVe-XP6zPj0";
     private LatLng park = new LatLng(-2.128685, -79.89429666666666);
@@ -80,6 +82,7 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
         layout = addLayout(R.layout.despachos_layout);
         Utils.SetStyleActionBarTitle(this);
         fecha = (TextView) layout.findViewById(R.id.fecha);
+        sliding_layout = (SlidingUpPanelLayout) layout.findViewById(R.id.sliding_layout);
         fecha.setText(""+Utils.getFecha());
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -98,6 +101,16 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
             }
         });
 
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (sliding_layout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED){
+            sliding_layout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        }else{
+            finish();
+        }
     }
 
     @Override

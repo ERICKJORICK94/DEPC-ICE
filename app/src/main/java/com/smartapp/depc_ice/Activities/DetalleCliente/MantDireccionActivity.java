@@ -401,7 +401,7 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
 
                                                                     llLatLon.setVisibility(View.VISIBLE);
                                                                     llNOLatLon.setVisibility(View.GONE);
-                                                                    Toast.makeText(MantDireccionActivity.this, "Senso exitoso.", Toast.LENGTH_LONG).show();
+                                                                    //Toast.makeText(MantDireccionActivity.this, "Senso exitoso.", Toast.LENGTH_LONG).show();
                                                                     return;
                                                                 }
                                                             }
@@ -440,7 +440,7 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
 
                                                                     llLatLon.setVisibility(View.VISIBLE);
                                                                     llNOLatLon.setVisibility(View.GONE);
-                                                                    Toast.makeText(MantDireccionActivity.this, "Senso exitoso.", Toast.LENGTH_LONG).show();
+                                                                    //Toast.makeText(MantDireccionActivity.this, "Senso exitoso.", Toast.LENGTH_LONG).show();
                                                                 } else {
                                                                     hideProgressWait();
                                                                     showAlert("Baja señal con la antena GPS, por favor intente moverse a un lugar despejado para mayor cobertura");
@@ -805,7 +805,7 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
                 }
             }
 
-            getPuntosVenta();
+            //getPuntosVenta();
 
         } catch (SQLException e) {
             e.printStackTrace();

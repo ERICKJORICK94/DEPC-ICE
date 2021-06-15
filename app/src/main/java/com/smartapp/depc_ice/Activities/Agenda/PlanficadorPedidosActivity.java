@@ -51,6 +51,7 @@ import com.smartapp.depc_ice.Models.VisitaPedidoModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Const;
 import com.smartapp.depc_ice.Utils.Utils;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.w3c.dom.Text;
 
@@ -91,6 +92,7 @@ public class PlanficadorPedidosActivity extends BaseActitity implements OnMapRea
     private boolean isFlag = false;
     public static  List<ClientesVisitas> clientesVisitas;
     private PlanificadorPedidoAdapter planificadorAdapter;
+    private SlidingUpPanelLayout sliding_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,7 +165,9 @@ public class PlanficadorPedidosActivity extends BaseActitity implements OnMapRea
 
         lista = (ListView) layout.findViewById(R.id.lista);
         lbl_fecha = (TextView) layout.findViewById(R.id.lbl_fecha);
+        sliding_layout = (SlidingUpPanelLayout) layout.findViewById(R.id.sliding_layout);
         lbl_fecha.setText(""+fecha);
+
 
         try {
             clientesVisitas = DataBaseHelper.getClienteVisitaDiaVisita(DepcApplication.getApplication().getClientesVisitasDao(),""+dia);
@@ -237,6 +241,15 @@ public class PlanficadorPedidosActivity extends BaseActitity implements OnMapRea
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (sliding_layout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED){
+            sliding_layout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        }else{
+            finish();
+        }
     }
 
     private void reloadList(){

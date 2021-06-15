@@ -1,4 +1,4 @@
-package com.smartapp.depc_ice.Activities.Gabinet.Adapter;
+package com.smartapp.depc_ice.Activities.GabinetClientes.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,17 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.smartapp.depc_ice.Database.DataBaseHelper;
-import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.ClienteGabinet;
-import com.smartapp.depc_ice.Entities.DetallePedido;
-import com.smartapp.depc_ice.Entities.Pedidos;
-import com.smartapp.depc_ice.Models.alphobetics;
 import com.smartapp.depc_ice.R;
-import com.smartapp.depc_ice.Utils.Const;
-import com.smartapp.depc_ice.Utils.Utils;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -65,9 +57,9 @@ public class ListaGabinetAdapter extends BaseAdapter {
         }
 
         ClienteGabinet gab = gabinets.get(position);
-        viewHolder.codigo.setText("COD:");
+        viewHolder.codigo.setText("SERIE:");
         if (gab.getCodigo() != null) {
-            viewHolder.codigo.setText("COD: " + gab.getCodigo());
+            viewHolder.codigo.setText("SERIE: " + gab.getCodigo());
         }
 
 

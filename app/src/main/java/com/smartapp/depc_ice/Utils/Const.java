@@ -26,6 +26,7 @@ public class Const {
     public static final String TABLE_ZONAS = "Zonas";
     public static final String TABLE_PUNTOS_VENTA = "Puntos_Venta";
     public static final String TABLE_GABINET = "Gabinet";
+    public static final String TABLE_GABINET_GENERAL = "GabinetGeneral";
     public static final String TABLE_GABINET_CLIENTE = "Gabinet_Cliente";
     public static final String TABLE_DETALLE_PEDIDO = "Detalle_pedido";
     public static final String TABLE_PEDIDO = "Pedido";

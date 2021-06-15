@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Activities.Despachos.DespachosActivity">
+    <item
+        android:id="@+id/action_select"
+        android:icon="@drawable/ic_baseline_filter_list_24"
+        app:showAsAction="always"
+        android:title="QR"
+        app:iconifiedByDefault="false"/>
+
+    <item
+        android:id="@+id/action_qr"
+        android:icon="@drawable/ic_baseline_qr_code_scanner_white"
+        app:showAsAction="always"
+        android:title="QR"
+        app:iconifiedByDefault="false"/>
+
+</menu>

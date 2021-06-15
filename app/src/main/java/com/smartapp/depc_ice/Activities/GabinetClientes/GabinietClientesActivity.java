@@ -1,4 +1,4 @@
-package com.smartapp.depc_ice.Activities.Gabinet;
+package com.smartapp.depc_ice.Activities.GabinetClientes;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import com.google.gson.Gson;
-import com.smartapp.depc_ice.Activities.Gabinet.Adapter.ListaGabinetAdapter;
+import com.smartapp.depc_ice.Activities.GabinetClientes.Adapter.ListaGabinetAdapter;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
@@ -33,7 +33,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class GabinietActivity extends BaseActitity implements BaseActitity.BaseActivityCallbacks{
+public class GabinietClientesActivity extends BaseActitity implements BaseActitity.BaseActivityCallbacks{
 
     private View layout;
     private ListView lista;
@@ -68,7 +68,7 @@ public class GabinietActivity extends BaseActitity implements BaseActitity.BaseA
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                            Intent intent = new Intent(GabinietActivity.this, DetalleGabinetActivity.class);
+                            Intent intent = new Intent(GabinietClientesActivity.this, DetalleGabinetActivity.class);
                             intent.putExtra("cliente_gabinet_id",""+gabinets.get(position).getId());
                             startActivity(intent);
 
