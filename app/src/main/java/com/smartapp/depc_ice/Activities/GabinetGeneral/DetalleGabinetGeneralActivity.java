@@ -253,7 +253,7 @@ public class DetalleGabinetGeneralActivity extends BaseActitity implements BaseA
                     }
                     if (indexEstados >= 0) {
                         spinner.setSelection(indexEstados);
-                        if (estado.equals("1")){
+                        if (estado.equals("3")){
                             card_cliente.setVisibility(View.VISIBLE);
                         }
                     }

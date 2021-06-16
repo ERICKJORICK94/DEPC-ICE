@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/color_fondo">
 
 
     <ScrollView
@@ -462,6 +463,25 @@
                     </LinearLayout>
 
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/lista_gabinets"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/DarkGray"
+                    android:text="LISTA GABINETS"/>
+
+                <com.smartapp.depc_ice.Utils.NonScrollListView
+                    android:id="@+id/listaGabinet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:divider="@color/Gray"
+                    android:dividerHeight="1dp">
+
+                </com.smartapp.depc_ice.Utils.NonScrollListView>
 
                 <TextView
                     android:layout_width="match_parent"

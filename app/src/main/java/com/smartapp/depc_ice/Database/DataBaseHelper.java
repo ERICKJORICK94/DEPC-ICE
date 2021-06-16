@@ -458,6 +458,16 @@ public class DataBaseHelper {
         return usuarios;
     }
 
+    public static List<ClienteGabinet> getClienteGabinetByClienteAndDireccion(Dao<ClienteGabinet, Integer> userDao, String id_cliente, String id_direccion_cliente) throws SQLException {
+
+        List<ClienteGabinet> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_GABINET_CLIENTE+" WHERE id_cliente = '"+id_cliente+"' AND id_direccion_cliente = '"+id_direccion_cliente+"'";
+        GenericRawResults<ClienteGabinet> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
     public static List<ClienteGabinet> getClienteGabinetByID(Dao<ClienteGabinet, Integer> userDao, String id_congelador) throws SQLException {
 
         List<ClienteGabinet> usuarios = null;

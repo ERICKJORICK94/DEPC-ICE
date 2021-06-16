@@ -16,12 +16,16 @@ import com.google.gson.Gson;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
+import com.smartapp.depc_ice.Entities.ClienteGabinet;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.Direcciones;
+import com.smartapp.depc_ice.Entities.EstadoGabinet;
 import com.smartapp.depc_ice.Entities.Zonas;
+import com.smartapp.depc_ice.Interface.IClientesGabinet;
 import com.smartapp.depc_ice.Interface.IDirecciones;
 import com.smartapp.depc_ice.Interface.IZonas;
 import com.smartapp.depc_ice.Models.BodegasModel;
+import com.smartapp.depc_ice.Models.ClientesGabinetModel;
 import com.smartapp.depc_ice.Models.DireccionesModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Const;
@@ -245,4 +249,7 @@ public class DetalleUbicacionClienteActivity extends BaseActitity implements Bas
 
 
     }
+
+
+
 }
