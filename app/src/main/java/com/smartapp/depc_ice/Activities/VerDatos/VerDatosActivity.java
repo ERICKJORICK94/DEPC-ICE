@@ -1,15 +1,13 @@
 package com.smartapp.depc_ice.Activities.VerDatos;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
@@ -37,11 +35,7 @@ public class VerDatosActivity extends BaseActitity implements BaseActitity.BaseA
     private TextView cobranza;
     private Usuario user;
 
-    private PieChart chart;
-    PieData pieData;
-    PieDataSet pieDataSet;
-    ArrayList pieEntries;
-    ArrayList PieEntryLabels;
+    private BarChart chart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,27 +76,41 @@ public class VerDatosActivity extends BaseActitity implements BaseActitity.BaseA
             throwables.printStackTrace();
         }
 
-        getEntries();
-        pieDataSet = new PieDataSet(pieEntries, "");
-        pieData = new PieData(pieDataSet);
-        chart.setData(pieData);
-        chart.setCenterText("Efectividad");
-        pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
-        pieDataSet.setSliceSpace(2f);
-        pieDataSet.setValueTextColor(Color.BLACK);
-        pieDataSet.setValueTextSize(10f);
-        pieDataSet.setSliceSpace(5f);
+        ArrayList NoOfEmp = new ArrayList();
+
+        NoOfEmp.add(new BarEntry(945f, 0));
+        NoOfEmp.add(new BarEntry(1040f, 1));
+        NoOfEmp.add(new BarEntry(1133f, 2));
+        NoOfEmp.add(new BarEntry(1240f, 3));
+        NoOfEmp.add(new BarEntry(1369f, 4));
+        NoOfEmp.add(new BarEntry(1487f, 5));
+        NoOfEmp.add(new BarEntry(1501f, 6));
+        NoOfEmp.add(new BarEntry(1645f, 7));
+        NoOfEmp.add(new BarEntry(1578f, 8));
+        NoOfEmp.add(new BarEntry(1695f, 9));
+
+        ArrayList year = new ArrayList();
+
+        year.add("2008");
+        year.add("2009");
+        year.add("2010");
+        year.add("2011");
+        year.add("2012");
+        year.add("2013");
+        year.add("2014");
+        year.add("2015");
+        year.add("2016");
+        year.add("2017");
+
+        BarDataSet bardataset = new BarDataSet(NoOfEmp, "Indicadores de rendimientos");
+        chart.animateY(2000);
+        BarData data = new BarData(year, bardataset);
+        bardataset.setColors(ColorTemplate.COLORFUL_COLORS);
+        chart.setData(data);
 
     }
 
-    private void getEntries() {
-        pieEntries = new ArrayList<>();
-        pieEntries.add(new PieEntry(7f, "Clientes"));
-        pieEntries.add(new PieEntry(4f, "Vendidos"));
-        pieEntries.add(new PieEntry(6f, "Presupuesto"));
-        pieEntries.add(new PieEntry(8f, "Cumplimiento"));
-        pieEntries.add(new PieEntry(7f, "Cobranzas"));
-    }
+
 
     @Override
     public void doRetry() {

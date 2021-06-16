@@ -595,14 +595,15 @@ public class BusquedaPedidoActivity extends BaseActitity implements BaseActitity
         grupo.setText("BODEGA: "+producto.getDescripcion_bodega());
 
 
+        stock.setText(""+"0\nCAJAS");
         if (producto.getExistencia() != null) {
             if (Utils.isNumber(""+producto.getExistencia())){
                 int cantidad = Integer.valueOf(""+producto.getExistencia());
-                stock.setText(""+cantidad+"\nUNIDADES");
+                stock.setText(""+cantidad+"\nCAJAS");
             }else{
                 if (Utils.isNumberDecimal(""+producto.getExistencia())){
                     float cantidad = Float.valueOf(""+producto.getExistencia());
-                    stock.setText(""+(int)cantidad+"\nUNIDADES");
+                    stock.setText(""+cantidad+"\nCAJAS");
                 }
             }
 

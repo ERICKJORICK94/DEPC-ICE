@@ -134,8 +134,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
                     if (dt.getCantidad() != null) {
                         float cant = Float.parseFloat(dt.getCantidad());
-                        float x = cant - (int) cant;
-                        unidades.setText((int) cant+" u.");
+                        //float x = cant - (int) cant;
+                        unidades.setText(/*(int)*/ cant+" u.");
 
                     }
 
@@ -209,7 +209,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                                 }else{
                                     if (Utils.isNumberDecimal(""+dt.getCantidad())){
                                         float cantidadNum = Float.valueOf(""+dt.getCantidad());
-                                        cantidad.setText(""+(int)cantidadNum);
+                                        cantidad.setText(""+/*(int)*/cantidadNum);
                                     }
                                 }
                             }
@@ -448,7 +448,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
                 double cantidadPrint = Double.parseDouble(detalleRetorno.getCantidad());
 
-                cantidadEdit.setText("" + (int) cantidadPrint);
+                cantidadEdit.setText("" + /*(int)*/ cantidadPrint);
                 descuentoEdit.setText(""+detalleRetorno.getPorcentajeDescuento());
                 edt_iva.setText(""+ String.format("%.2f", Float.parseFloat(detalleRetorno.getIva())));
                 edt_total.setText(""+String.format("%.2f", Float.parseFloat(detalleRetorno.getTotal())));
@@ -681,14 +681,15 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         name.setText(""+producto.getDescripcion());
         grupo.setText("BODEGA: "+producto.getDescripcion_bodega());
 
+        stock.setText(""+"0\nCAJAS");
         if (producto.getExistencia() != null) {
             if (Utils.isNumber(""+producto.getExistencia())){
                 int cantidad = Integer.valueOf(""+producto.getExistencia());
-                stock.setText(""+cantidad+"\nUNIDADES");
+                stock.setText(""+cantidad+"\nCAJAS");
             }else{
                 if (Utils.isNumberDecimal(""+producto.getExistencia())){
                     float cantidad = Float.valueOf(""+producto.getExistencia());
-                    stock.setText(""+(int)cantidad+"\nUNIDADES");
+                    stock.setText(""+cantidad+"\nCAJAS");
                 }
             }
         }

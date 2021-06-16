@@ -205,10 +205,10 @@
 
                 <TextView
                     android:id="@+id/stock"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text=""
-                    android:gravity="left"
+                    android:gravity="right"
                     android:textSize="15sp"
                     android:paddingRight="5dp"
                     android:paddingLeft="5dp"
@@ -251,7 +251,7 @@
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:hint="0"
-            android:inputType="number"
+            android:inputType="numberDecimal"
             android:background="@drawable/custom_border"
             android:gravity="center" />
 
@@ -319,7 +319,9 @@
                 android:layout_height="45dp"
                 android:hint="0"
                 android:inputType="numberDecimal"
-                android:background="@drawable/custom_border"
+                android:enabled="false"
+                android:textColor="@color/Black"
+                android:background="@drawable/custom_border_gray"
                 android:gravity="center" />
 
 

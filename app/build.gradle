@@ -83,7 +83,7 @@ dependencies {
     implementation 'com.github.chrisbanes:PhotoView:2.0.0'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.github.barteksc:android-pdf-viewer:3.2.0-beta.1'
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.github.PhilJay:MPAndroidChart:v2.2.4'
     implementation 'com.github.jpvs0101:Currencyfy:v1.0.2'
     implementation 'com.budiyev.android:code-scanner:2.1.0'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'

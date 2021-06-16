@@ -186,8 +186,8 @@ public class DetalleGabinetActivity extends BaseActitity implements BaseActitity
         if (clienteGabinet != null){
 
             codigo.setText("");
-            if (clienteGabinet.getCodigo() != null){
-                codigo.setText(""+clienteGabinet.getCodigo());
+            if (clienteGabinet.getCodigo_tipo_congelador() != null){
+                codigo.setText(""+clienteGabinet.getCodigo_tipo_congelador());
             }
 
             ingresado.setText("");

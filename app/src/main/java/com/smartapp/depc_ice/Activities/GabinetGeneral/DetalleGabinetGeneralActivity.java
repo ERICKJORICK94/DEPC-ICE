@@ -200,8 +200,8 @@ public class DetalleGabinetGeneralActivity extends BaseActitity implements BaseA
         if (gabinetGeneral != null){
 
             codigo.setText("");
-            if (gabinetGeneral.getCodigo() != null){
-                codigo.setText(""+gabinetGeneral.getCodigo());
+            if (gabinetGeneral.getCodigo_tipo_congelador() != null){
+                codigo.setText(""+gabinetGeneral.getCodigo_tipo_congelador());
             }
 
             ingresado.setText("");

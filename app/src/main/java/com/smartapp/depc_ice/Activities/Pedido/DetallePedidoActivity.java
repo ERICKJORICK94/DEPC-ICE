@@ -519,7 +519,9 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
             ruc.setText(""+pedido.getRucCliente());
             fecha.setText(""+pedido.getFecha());
             direccion.setText(""+pedido.getDireccionCliente());
-            documento.setText("" + pedido.getCuenta_id());
+            if (pedido.getCuenta_id() != null) {
+                documento.setText("" + pedido.getCuenta_id());
+            }
 
             anular.setVisibility(View.GONE);
             if (pedido.getEstadoPedido().equals("0")){

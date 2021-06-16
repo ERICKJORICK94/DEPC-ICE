@@ -336,7 +336,7 @@
                 android:padding="12dp">
 
 
-                <com.github.mikephil.charting.charts.PieChart
+                <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/chart1"
                     android:layout_width="match_parent"
                     android:layout_height="300dp" />
