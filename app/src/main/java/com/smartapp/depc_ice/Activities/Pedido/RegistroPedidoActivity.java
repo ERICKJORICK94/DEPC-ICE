@@ -28,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.akexorcist.googledirection.model.Line;
 import com.google.gson.Gson;
 import com.smartapp.depc_ice.Activities.DetalleCliente.DetalleUbicacionClienteActivity;
 import com.smartapp.depc_ice.Activities.DetalleCliente.EditarClientesActivity;
@@ -37,13 +38,17 @@ import com.smartapp.depc_ice.Activities.ScannerQr.ScanQrActivity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Bodega;
+import com.smartapp.depc_ice.Entities.ClienteGabinet;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.Direcciones;
+import com.smartapp.depc_ice.Entities.EstadoGabinet;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Interface.IBodegas;
+import com.smartapp.depc_ice.Interface.IClientesGabinet;
 import com.smartapp.depc_ice.Interface.IDirecciones;
 import com.smartapp.depc_ice.Models.BodegasModel;
+import com.smartapp.depc_ice.Models.ClientesGabinetModel;
 import com.smartapp.depc_ice.Models.DireccionesModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Const;
@@ -99,6 +104,9 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
     boolean flagDirecciones = false;
     private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
     private static final int MY_CAMERA_REQUEST_CODE = 100;
+    private Call<IClientesGabinet.dataGabinet> callGabinet;
+    private IClientesGabinet.dataGabinet dataGabinet;
+
 
     private Call<IDirecciones.dataBodega> callDirecciones;
     private IDirecciones.dataBodega dataDirecciones;
@@ -108,6 +116,11 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
     private Bitmap bitmap;
     private TextView qr;
     private final static int MY_PERMISSIONS_REQUEST_CAMARA = 9991;
+    private Spinner spinner_gabinet;
+    private TextView txt_gabinet,txt_error_gabinet;
+    private LinearLayout linear_gabinet;
+    private String id_congelador = "";
+    private String id_pto_vta = "";
 
     String FormaPago[] = {"CONTADO","CRÉDITO"};
 
@@ -120,6 +133,11 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
         layoutInflater = LayoutInflater.from(this);
 
         cliente_name = (EditText) layout.findViewById(R.id.cliente_name);
+
+        txt_gabinet = (TextView) layout.findViewById(R.id.txt_gabinet);
+        linear_gabinet = (LinearLayout) layout.findViewById(R.id.linear_gabinet);
+        txt_error_gabinet = (TextView) layout.findViewById(R.id.txt_error_gabinet);
+
         cupo = (EditText) layout.findViewById(R.id.cupo);
         cupo_mes = (EditText) layout.findViewById(R.id.cupo_mes);
         cupo_mes = (EditText) layout.findViewById(R.id.cupo_mes);
@@ -137,8 +155,15 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
         spinner_direccion = (Spinner) layout.findViewById(R.id.spinner_direccion);
         spinner_forma_pago = (Spinner) layout.findViewById(R.id.spinner_forma_pago);
         crear = (Button) layout.findViewById(R.id.crear);
+        spinner_gabinet = (Spinner) layout.findViewById(R.id.spinner_gabinet);
         qr = layout.findViewById(R.id.qr);
         crear_ubicacion = (ImageButton) layout.findViewById(R.id.crear_ubicacion);
+
+        txt_gabinet.setVisibility(View.GONE);
+        txt_error_gabinet.setVisibility(View.GONE);
+        linear_gabinet.setVisibility(View.GONE);
+        id_congelador = "";
+        id_pto_vta = "";
 
         qr.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -251,7 +276,14 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
             @Override
             public void onClick(View v) {
 
+
+
                 if (isActualizar){
+
+                    if (id_congelador.length() == 0){
+                        Toast.makeText(RegistroPedidoActivity.this, "Seleccione un Gabinet para continuar", Toast.LENGTH_LONG).show();
+                        return;
+                    }
 
                     if (indexBodega == -1){
                         Toast.makeText(RegistroPedidoActivity.this, "Seleccione una bodega para continuar", Toast.LENGTH_LONG).show();
@@ -292,6 +324,9 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
                         pedido.setForma_pago_id("5");
                     }
 
+                    pedido.setId_congelador(""+id_congelador);
+                    pedido.setId_putto_vta(""+id_pto_vta);
+
                     try {
                         DataBaseHelper.updatePedido(pedido,DepcApplication.getApplication().getPedidosDao());
                         finish();
@@ -304,6 +339,13 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
 
                 }else{
                     //CREAR
+
+
+                    if (id_congelador.length() == 0){
+                        Toast.makeText(RegistroPedidoActivity.this, "Seleccione una Gabinet para continuar", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
                     if (indexBodega == -1){
                         Toast.makeText(RegistroPedidoActivity.this, "Seleccione una bodega para continuar", Toast.LENGTH_LONG).show();
                         return;
@@ -355,6 +397,8 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
                         pedido.setIva("0.00");
                         pedido.setTotal("0.00");
                         pedido.setFoto("null");
+                        pedido.setId_congelador(""+id_congelador);
+                        pedido.setId_putto_vta(""+id_pto_vta);
                         if (bitmap != null){
                             pedido.setFoto(""+Utils.convertBase64String(bitmap));
                         }
@@ -648,6 +692,12 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
 
         hideProgressWait();
 
+        txt_gabinet.setVisibility(View.GONE);
+        txt_error_gabinet.setVisibility(View.GONE);
+        linear_gabinet.setVisibility(View.GONE);
+        id_congelador = "";
+        id_pto_vta = "";
+
         try {
 
             direccionesList  = DataBaseHelper.getDireccionesBYIdClienteOrder(DepcApplication.getApplication().getDireccionesDao(),""+cliente.getCodigo_cliente_id());
@@ -685,6 +735,7 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
                             }
 
                             flagDirecciones = true;
+                            getGabinetCliente();
 
 
                         }
@@ -694,8 +745,10 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
 
                         }
                     });
+
                 }
             }
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -704,6 +757,209 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
         }
 
     }
+
+    private void getGabinetCliente(){
+
+        hideProgressWait();
+
+        showProgressWait();
+
+        //JSON SEND
+        ClientesGabinetModel model = new ClientesGabinetModel();
+        model.setCliente_id(""+cliente.getCodigo_cliente_id());
+        model.setMetodo("ListarGabinetCliente");
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
+        try {
+
+            IClientesGabinet request = DepcApplication.getApplication().getRestAdapter().create(IClientesGabinet.class);
+            callGabinet = request.getClientesGabinet(body);
+            callGabinet.enqueue(new Callback<IClientesGabinet.dataGabinet>() {
+                @Override
+                public void onResponse(Call<IClientesGabinet.dataGabinet> call, Response<IClientesGabinet.dataGabinet> response) {
+                    if (response.isSuccessful()) {
+
+                        dataGabinet = response.body();
+                        try {
+
+                            hideProgressWait();
+
+                            String mensajeError = Const.ERROR_DEFAULT;
+
+                            if (dataGabinet != null) {
+                                if (dataGabinet.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    if (dataGabinet.getData() != null){
+                                        if (dataGabinet.getData().getListarGabinetCliente() != null) {
+                                            if (dataGabinet.getData().getListarGabinetCliente().size() > 0) {
+
+                                                final List<ClienteGabinet> gabinets;
+                                                gabinets = dataGabinet.getData().getListarGabinetCliente().get(0);
+
+                                                if (gabinets != null) {
+
+                                                    //DataBaseHelper.deleteClienteGabinetByCliente(DepcApplication.getApplication().getClienteGabinetDao(), ""+cliente.getCodigo_cliente_id());
+                                                    for (ClienteGabinet gabinet : gabinets) {
+                                                        gabinet.setId_cliente(""+cliente.getCodigo_cliente_id());
+                                                        gabinet.setDireccion_cliente_gabinet("");
+                                                        if (gabinet.getId_direccion_cliente() != null){
+                                                            List<Direcciones> direcciones = DataBaseHelper.getDireccionesBYIdCliente(DepcApplication.getApplication().getDireccionesDao(),""+gabinet.getId_direccion_cliente());
+                                                            if (direcciones != null){
+                                                                if (direcciones.size() > 0){
+                                                                    Direcciones dr = direcciones.get(0);
+                                                                    gabinet.setDireccion_cliente_gabinet(""+dr.getDireccion_envio());
+                                                                }
+                                                            }
+
+
+                                                            List<EstadoGabinet> estadoGabinets = DataBaseHelper.getEstadoGabinetByEstado(DepcApplication.getApplication().getEstadoGabinetDao(),""+gabinet.getEstado());
+                                                            gabinet.setEstado_descripcion("");
+                                                            if (estadoGabinets != null){
+                                                                if (estadoGabinets.size() > 0){
+                                                                    EstadoGabinet dr = estadoGabinets.get(0);
+                                                                    gabinet.setEstado_descripcion(""+dr.getDescripcion());
+                                                                }
+                                                            }
+
+                                                        }
+
+                                                        DataBaseHelper.saveClienteGabinet(gabinet,DepcApplication.getApplication().getClienteGabinetDao());
+                                                    }
+                                                }
+
+                                                fillData();
+
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    if (dataGabinet.getStatus_message() != null){
+                                        mensajeError = dataGabinet.getStatus_message();
+                                    }
+                                }
+                            }
+
+                            fillData();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideProgressWait();
+                            fillData();
+                        }
+
+                    } else {
+                        hideProgressWait();
+                        //showAlert(Const.ERROR_DEFAULT);
+                        fillData();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IClientesGabinet.dataGabinet> call, Throwable t) {
+                    hideProgressWait();
+                    //showAlert(Const.ERROR_DEFAULT);
+                    fillData();
+                }
+            });
+
+        }catch (Exception e){
+            hideProgressWait();
+            //showAlert(Const.ERROR_DEFAULT);
+            fillData();
+
+        }
+    }
+
+    private void fillData(){
+
+        txt_gabinet.setVisibility(View.GONE);
+        txt_error_gabinet.setVisibility(View.GONE);
+        linear_gabinet.setVisibility(View.GONE);
+        id_congelador = "";
+        id_pto_vta = "";
+        try {
+
+            boolean flag = true;
+            if (direccionesList != null){
+                if (indexDirecciones >= 0) {
+
+                        List<ClienteGabinet> clienteGabinet = DataBaseHelper.getClienteGabinetByClienteAndDireccion(DepcApplication.getApplication().getClienteGabinetDao(), cliente.getCodigo_cliente_id(),direccionesList.get(indexDirecciones).getId());
+
+                        if (clienteGabinet != null){
+                            if (clienteGabinet.size() > 0){
+                                flag = false;
+
+
+                                int indexCongelador = -1;
+                                int contador = 0;
+                                List<String> items= new ArrayList<String>();
+                                for (ClienteGabinet z : clienteGabinet){
+                                    items.add("SERIE "+z.getSerie());
+
+                                    if (pedido != null){
+                                        if (pedido.getId_congelador() != null){
+                                            if (pedido.getId_congelador().equals(""+z.getId_congelador())){
+                                                indexCongelador = contador;
+                                            }
+                                        }
+                                    }
+                                    contador++;
+                                }
+
+                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
+                                spinner_gabinet.setAdapter(adapter);
+                                if (indexCongelador == -1) {
+                                    indexCongelador = 0;
+                                }else{
+                                    spinner_gabinet.setSelection(indexCongelador);
+                                }
+
+
+                                txt_gabinet.setVisibility(View.VISIBLE);
+                                txt_error_gabinet.setVisibility(View.GONE);
+                                linear_gabinet.setVisibility(View.VISIBLE);
+                                id_congelador = "";
+                                id_pto_vta = "";
+
+                                spinner_gabinet.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                    @Override
+                                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                        id_congelador = ""+clienteGabinet.get(position).getId_congelador();
+                                        id_pto_vta = ""+clienteGabinet.get(position).getPto_vta_id();
+                                    }
+
+                                    @Override
+                                    public void onNothingSelected(AdapterView<?> parent) {
+
+                                    }
+                                });
+
+
+
+
+
+
+                            }
+                        }
+
+                }
+            }
+
+            if (flag){
+                id_congelador = "";
+                id_pto_vta = "";
+                txt_error_gabinet.setVisibility(View.VISIBLE);
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+    }
+
 
 
     private void showFormaPago(){

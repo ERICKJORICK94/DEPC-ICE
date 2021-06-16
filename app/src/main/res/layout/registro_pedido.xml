@@ -213,13 +213,13 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="45dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:paddingLeft="10dp"
@@ -229,7 +229,7 @@
                 <Spinner
                     android:id="@+id/spinner_direccion"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="45dp"
                     android:text=""
                     android:textSize="12sp"
                     android:elevation="1sp"
@@ -238,10 +238,11 @@
 
             </LinearLayout>
 
+
                 <ImageButton
                     android:id="@+id/crear_ubicacion"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="35dp"
                     android:background="@color/colorPrimary"
                     android:textSize="14sp"
                     android:elevation="4sp"
@@ -251,6 +252,64 @@
                     android:src="@drawable/ic_baseline_add_box_24"
                     android:tint="@color/White"
                     android:textColor="@color/White" />
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/txt_error_gabinet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="DIRECCIÓN NO TIENE GABINET ASIGNADO"
+                android:textColor="@color/White"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:padding="10dp"
+                android:gravity="center"
+                android:background="@color/DarkRed"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/txt_gabinet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="GABINETS:"
+                android:textColor="@color/Black"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:textSize="12sp" />
+
+
+            <LinearLayout
+                android:id="@+id/linear_gabinet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginTop="1dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingLeft="10dp"
+                    android:background="@drawable/custom_border">
+                    <Spinner
+                        android:id="@+id/spinner_gabinet"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text=""
+                        android:textSize="12sp"
+                        android:elevation="1sp"
+                        android:enabled="false"
+                        android:spinnerMode="dialog" />
+
+                </LinearLayout>
 
 
             </LinearLayout>

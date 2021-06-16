@@ -18,6 +18,8 @@ public class CrearPreventaModel {
     private String metodo = "";
     private String cuenta_id = "";
     private String foto = "";
+    private String id_congelador = "";
+    private String pto_vta_id = "";
 
     public String getUsuario_id() {
         return usuario_id;
@@ -129,5 +131,21 @@ public class CrearPreventaModel {
 
     public void setFoto(String foto) {
         this.foto = foto;
+    }
+
+    public String getId_congelador() {
+        return id_congelador;
+    }
+
+    public void setId_congelador(String id_congelador) {
+        this.id_congelador = id_congelador;
+    }
+
+    public String getPto_vta_id() {
+        return pto_vta_id;
+    }
+
+    public void setPto_vta_id(String pto_vta_id) {
+        this.pto_vta_id = pto_vta_id;
     }
 }

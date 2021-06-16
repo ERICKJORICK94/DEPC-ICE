@@ -67,7 +67,10 @@ public class Pedidos implements Serializable {
     private String cuenta_id;
     @DatabaseField
     private String foto;
-
+    @DatabaseField
+    private String id_congelador;
+    @DatabaseField
+    private String id_putto_vta;
 
     public int getId() {
         return id;
@@ -299,5 +302,22 @@ public class Pedidos implements Serializable {
 
     public void setFoto(String foto) {
         this.foto = foto;
+    }
+
+
+    public String getId_congelador() {
+        return id_congelador;
+    }
+
+    public void setId_congelador(String id_congelador) {
+        this.id_congelador = id_congelador;
+    }
+
+    public String getId_putto_vta() {
+        return id_putto_vta;
+    }
+
+    public void setId_putto_vta(String id_putto_vta) {
+        this.id_putto_vta = id_putto_vta;
     }
 }
