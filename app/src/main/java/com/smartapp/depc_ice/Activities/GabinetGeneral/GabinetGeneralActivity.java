@@ -491,7 +491,7 @@ public class GabinetGeneralActivity extends BaseActitity implements BaseActitity
         GabinetGeneralModel model = new GabinetGeneralModel();
         model.setPto_vta_id(""+puntosVenta.getPto_vta_id());
         //model.setFiltro("limit "+Const.PARAM_MAX_ROW+" offset 0");
-        model.setCondicion(buscar);
+        model.setCondicion(buscar+" limit "+Const.PARAM_MAX_ROW);
         model.setMetodo("ListarGabinet");
 
         final Gson gson = new Gson();
