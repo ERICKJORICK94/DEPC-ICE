@@ -964,6 +964,7 @@ public class DetallePedidoActivity extends BaseActitity implements BaseActitity.
         model.setFoto(""+pedido.getFoto());
         model.setId_congelador(""+pedido.getId_congelador());
         model.setPto_vta_id(""+pedido.getId_putto_vta());
+        model.setVendedor_id(""+codigoUsuario);
 
         List<DetalleCrearPreventaModel> detalleModel = new ArrayList<DetalleCrearPreventaModel>();
 

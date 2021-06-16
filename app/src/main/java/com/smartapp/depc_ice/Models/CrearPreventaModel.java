@@ -20,6 +20,7 @@ public class CrearPreventaModel {
     private String foto = "";
     private String id_congelador = "";
     private String pto_vta_id = "";
+    private String vendedor_id = "";
 
     public String getUsuario_id() {
         return usuario_id;
@@ -147,5 +148,13 @@ public class CrearPreventaModel {
 
     public void setPto_vta_id(String pto_vta_id) {
         this.pto_vta_id = pto_vta_id;
+    }
+
+    public String getVendedor_id() {
+        return vendedor_id;
+    }
+
+    public void setVendedor_id(String vendedor_id) {
+        this.vendedor_id = vendedor_id;
     }
 }

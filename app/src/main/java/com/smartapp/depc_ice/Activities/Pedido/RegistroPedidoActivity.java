@@ -122,7 +122,7 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
     private String id_congelador = "";
     private String id_pto_vta = "";
 
-    String FormaPago[] = {"CONTADO","CRÉDITO"};
+    String FormaPago[] = {"Contado","Credito"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
