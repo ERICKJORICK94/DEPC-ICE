@@ -10,6 +10,7 @@ import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.ClientesVisitas;
 import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.Direcciones;
+import com.smartapp.depc_ice.Entities.EstadoFacturasDespacho;
 import com.smartapp.depc_ice.Entities.EstadoGabinet;
 import com.smartapp.depc_ice.Entities.FormaPago;
 import com.smartapp.depc_ice.Entities.Gabinet;
@@ -46,6 +47,31 @@ public class DataBaseHelper {
         List<Usuario> usuarios = null;
         String query = "SELECT * FROM " + Const.TABLE_USUARIO;
         GenericRawResults<Usuario> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+
+    //HELPER ESTADO FACTURA DESPACHO
+    public static void saveEstadoFacturasDespacho(EstadoFacturasDespacho emp, Dao<EstadoFacturasDespacho, Integer> userDao) {
+        try {
+            userDao.create(emp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteEstadoFacturasDespacho(Dao<EstadoFacturasDespacho, Integer> userDao) throws SQLException {
+        DeleteBuilder<EstadoFacturasDespacho, Integer> deleteBuilder = userDao.deleteBuilder();
+        deleteBuilder.delete();
+    }
+
+    public static List<EstadoFacturasDespacho> getEstadoFacturasDespacho(Dao<EstadoFacturasDespacho, Integer> userDao) throws SQLException {
+
+        List<EstadoFacturasDespacho> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_ESTADO_FACTURAS_DESPACHO;
+        GenericRawResults<EstadoFacturasDespacho> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
         usuarios = rawResults.getResults();
 
         return usuarios;

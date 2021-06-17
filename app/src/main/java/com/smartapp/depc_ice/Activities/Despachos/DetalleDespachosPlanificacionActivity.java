@@ -45,6 +45,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.github.gcacace.signaturepad.views.SignaturePad;
+import com.google.gson.Gson;
 import com.smartapp.depc_ice.Activities.Cobros.CobrosActivity;
 import com.smartapp.depc_ice.Activities.Despachos.Adapter.ListaDespachoAdapter;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
@@ -55,10 +56,15 @@ import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.Direcciones;
+import com.smartapp.depc_ice.Entities.EstadoFacturasDespacho;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Productos;
+import com.smartapp.depc_ice.Entities.Zonas;
+import com.smartapp.depc_ice.Interface.IEstadoFacturaDespacho;
 import com.smartapp.depc_ice.Mapa.MapsActivity;
+import com.smartapp.depc_ice.Models.BodegasModel;
 import com.smartapp.depc_ice.Models.Device;
+import com.smartapp.depc_ice.Models.EstadoFacturaModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.BTDeviceList;
 import com.smartapp.depc_ice.Utils.Const;
@@ -86,6 +92,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DetalleDespachosPlanificacionActivity extends BaseActitity implements BaseActitity.BaseActivityCallbacks{
 
@@ -118,6 +131,8 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
     private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
     private static final int MY_CAMERA_REQUEST_CODE = 100;
     private Bitmap bitmap;
+    private Call<IEstadoFacturaDespacho.dataBodega> call;
+    private IEstadoFacturaDespacho.dataBodega data;
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -168,7 +183,6 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
 
         }
     };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -380,6 +394,7 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
         });
 
         showMotivosDespachos();
+        getEstadoFacturaDespacho();
     }
 
 
@@ -1267,6 +1282,123 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
         alert.setCanceledOnTouchOutside(false);
         alert.setCancelable(false);
         alert.show();
+
+    }
+
+    private void getEstadoFacturaDespacho(){
+
+        showProgressWait();
+
+        //JSON SEND
+        EstadoFacturaModel model = new EstadoFacturaModel();
+        model.setMetodo("ListarEstadoFacturasDespacho");
+
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
+        try {
+
+            IEstadoFacturaDespacho request = DepcApplication.getApplication().getRestAdapter().create(IEstadoFacturaDespacho.class);
+            call = request.getBodegas(body);
+            call.enqueue(new Callback<IEstadoFacturaDespacho.dataBodega>() {
+                @Override
+                public void onResponse(Call<IEstadoFacturaDespacho.dataBodega> call, Response<IEstadoFacturaDespacho.dataBodega> response) {
+                    if (response.isSuccessful()) {
+
+                        data = response.body();
+                        try {
+
+                            hideProgressWait();
+
+                            String mensajeError = Const.ERROR_DEFAULT;
+
+                            if (data != null) {
+                                if (data.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    if (data.getData() != null){
+                                        if (data.getData().getListarEstadoFacturasDespacho() != null) {
+                                            if (data.getData().getListarEstadoFacturasDespacho().size() > 0) {
+
+
+                                                final List<EstadoFacturasDespacho> bodegas;
+                                                bodegas = data.getData().getListarEstadoFacturasDespacho().get(0);
+
+                                                if (bodegas != null) {
+                                                    DataBaseHelper.deleteEstadoFacturasDespacho(DepcApplication.getApplication().getEstadoFacturasDespachoDao());
+                                                    DepcApplication.getApplication().getEstadoFacturasDespachoDao().callBatchTasks(new Callable<EstadoFacturasDespacho>() {
+                                                        @Override
+                                                        public EstadoFacturasDespacho call() throws Exception {
+                                                            for (EstadoFacturasDespacho cl : bodegas) {
+                                                                DataBaseHelper.saveEstadoFacturasDespacho(cl, DepcApplication.getApplication().getEstadoFacturasDespachoDao());
+                                                            }
+                                                            return null;
+                                                        }
+                                                    });
+
+                                                }
+
+                                                showEstadoFacturaDespacho();
+
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    if (data.getStatus_message() != null){
+                                        mensajeError = data.getStatus_message();
+                                    }
+                                }
+                            }
+
+                            showEstadoFacturaDespacho();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideProgressWait();
+                            showEstadoFacturaDespacho();
+                        }
+
+                    } else {
+                        hideProgressWait();
+                        //showAlert(Const.ERROR_DEFAULT);
+                        showEstadoFacturaDespacho();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IEstadoFacturaDespacho.dataBodega> call, Throwable t) {
+                    hideProgressWait();
+                    //showAlert(Const.ERROR_DEFAULT);
+                    showEstadoFacturaDespacho();
+                }
+            });
+
+        }catch (Exception e){
+            hideProgressWait();
+            //showAlert(Const.ERROR_DEFAULT);
+            showEstadoFacturaDespacho();
+
+        }
+    }
+    
+    private void showEstadoFacturaDespacho(){
+
+        try {
+            List<EstadoFacturasDespacho> estadoFacturasDespachos = DataBaseHelper.getEstadoFacturasDespacho(DepcApplication.getApplication().getEstadoFacturasDespachoDao());
+            if (estadoFacturasDespachos != null){
+                if (estadoFacturasDespachos.size() > 0){
+                    for (EstadoFacturasDespacho estado : estadoFacturasDespachos){
+                        Log.e(TAG,""+estado.getDescripcion());
+                    }
+                }
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
 
     }
 
