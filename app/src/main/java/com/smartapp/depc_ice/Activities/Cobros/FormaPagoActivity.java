@@ -37,10 +37,13 @@ import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Bancos;
 import com.smartapp.depc_ice.Entities.Clientes;
+import com.smartapp.depc_ice.Entities.CuentaBancos;
 import com.smartapp.depc_ice.Entities.FormaPago;
 import com.smartapp.depc_ice.Entities.Zonas;
 import com.smartapp.depc_ice.Interface.IBancos;
+import com.smartapp.depc_ice.Interface.ICuentasBancos;
 import com.smartapp.depc_ice.Models.BancoModel;
+import com.smartapp.depc_ice.Models.CuentaBancoModel;
 import com.smartapp.depc_ice.Models.EstadoGabinetModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Const;
@@ -137,7 +140,11 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
     private Call<IBancos.dataBodega> call;
     private IBancos.dataBodega data;
     private List<Bancos> bancos;
+    private List<CuentaBancos> cuentaBancos;
     private int indexBanco = -1;
+
+    private Call<ICuentasBancos.dataBodega> callCuentasBanco;
+    private ICuentasBancos.dataBodega dataCuentaBanco;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -306,7 +313,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
         showList();
         getBancos();
         showListTarjetas();
-        showListCuenta();
+        //showListCuenta();
     }
 
     private void selectPick(){
@@ -598,6 +605,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                             indexBanco = position;
+                            getCuentasBancos(""+bancos.get(indexBanco).getBanco());
                         }
 
                         @Override
@@ -617,25 +625,149 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
 
     }
 
-    private void showListCuenta(){
 
-        String[] FormasPago = {"CTE. 45XXXXXX0123","CTE. 89XXXXX0022", "AHO. 142XXX001"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item,FormasPago);
+    private void getCuentasBancos(String banco){
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_cuentas.setAdapter(adapter);
-        spinner_cuentas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        showProgressWait();
 
+        //JSON SEND
+        CuentaBancoModel model = new CuentaBancoModel();
+        model.setBanco(""+banco);
+        model.setMetodo("ListarCuentasBancos");
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
+        try {
+
+            ICuentasBancos request = DepcApplication.getApplication().getRestAdapter().create(ICuentasBancos.class);
+            callCuentasBanco = request.getBodegas(body);
+            callCuentasBanco.enqueue(new Callback<ICuentasBancos.dataBodega>() {
+                @Override
+                public void onResponse(Call<ICuentasBancos.dataBodega> call, Response<ICuentasBancos.dataBodega> response) {
+                    if (response.isSuccessful()) {
+
+                        dataCuentaBanco = response.body();
+                        try {
+
+                            hideProgressWait();
+
+                            String mensajeError = Const.ERROR_DEFAULT;
+
+                            if (dataCuentaBanco != null) {
+                                if (dataCuentaBanco.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    if (dataCuentaBanco.getData() != null){
+                                        if (dataCuentaBanco.getData().getListarCuentasBancos() != null) {
+                                            if (dataCuentaBanco.getData().getListarCuentasBancos().size() > 0) {
+
+                                                final List<CuentaBancos> cuentas;
+                                                cuentas = dataCuentaBanco.getData().getListarCuentasBancos().get(0);
+
+                                                if (cuentas != null) {
+                                                    DataBaseHelper.deleteCuentaBancosByBanco(DepcApplication.getApplication().getCuentaBancosDao(), ""+banco);
+                                                    DepcApplication.getApplication().getCuentaBancosDao().callBatchTasks(new Callable<CuentaBancos>() {
+                                                        @Override
+                                                        public CuentaBancos call() throws Exception {
+                                                            for (CuentaBancos cl : cuentas) {
+                                                                DataBaseHelper.saveCuentaBancos(cl, DepcApplication.getApplication().getCuentaBancosDao());
+                                                            }
+                                                            return null;
+                                                        }
+                                                    });
+
+
+                                                }
+
+                                                showListCuenta(""+banco);
+
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    if (data.getStatus_message() != null){
+                                        mensajeError = data.getStatus_message();
+                                    }
+                                }
+                            }
+
+                            showListCuenta(""+banco);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideProgressWait();
+                            showListCuenta(""+banco);
+                        }
+
+                    } else {
+                        hideProgressWait();
+                        //showAlert(Const.ERROR_DEFAULT);
+                        showListCuenta(""+banco);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ICuentasBancos.dataBodega> call, Throwable t) {
+                    hideProgressWait();
+                    //showAlert(Const.ERROR_DEFAULT);
+                    showListCuenta(""+banco);
+                }
+            });
+
+        }catch (Exception e){
+            hideProgressWait();
+            //showAlert(Const.ERROR_DEFAULT);
+            showListCuenta(""+banco);
+
+        }
+    }
+
+    private void showListCuenta(String banco){
+
+        hideProgressWait();
+        spinner_cuentas.setAdapter(null);
+        cuentaBancos = null;
+
+        try {
+
+            cuentaBancos = DataBaseHelper.getCuentaBancosByBanco(DepcApplication.getApplication().getCuentaBancosDao(), ""+banco);
+            if (cuentaBancos != null) {
+                if (cuentaBancos.size() > 0) {
+
+                    List<String> items= new ArrayList<String>();
+                    for (CuentaBancos z : cuentaBancos){
+
+                        if (z.getNum_cuenta() != null) {
+                            items.add(z.getNum_cuenta());
+                        }else{
+                            items.add("-");
+                        }
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
+                    spinner_cuentas.setAdapter(adapter);
+                    spinner_cuentas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+
+
+                }
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Log.e("TAG---","error: "+e.toString());
+        }
 
     }
 
@@ -686,7 +818,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
 
             linear_tarjeta.setVisibility(View.GONE);
             linear_n_tarjeta.setVisibility(View.GONE);
-            linear_banco.setVisibility(View.GONE);
+            linear_banco.setVisibility(View.VISIBLE);
             linear_cuenta_bancaria.setVisibility(View.VISIBLE);
             linear_vencimiento.setVisibility(View.GONE);
             linear_autoriazacion.setVisibility(View.GONE);
@@ -705,7 +837,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
 
             linear_tarjeta.setVisibility(View.GONE);
             linear_n_tarjeta.setVisibility(View.GONE);
-            linear_banco.setVisibility(View.GONE);
+            linear_banco.setVisibility(View.VISIBLE);
             linear_cuenta_bancaria.setVisibility(View.VISIBLE);
             linear_vencimiento.setVisibility(View.GONE);
             linear_autoriazacion.setVisibility(View.GONE);

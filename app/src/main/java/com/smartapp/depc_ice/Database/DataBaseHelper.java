@@ -8,6 +8,7 @@ import com.smartapp.depc_ice.Entities.Bodega;
 import com.smartapp.depc_ice.Entities.ClienteGabinet;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.ClientesVisitas;
+import com.smartapp.depc_ice.Entities.CuentaBancos;
 import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.Direcciones;
 import com.smartapp.depc_ice.Entities.EstadoFacturasDespacho;
@@ -50,6 +51,46 @@ public class DataBaseHelper {
         usuarios = rawResults.getResults();
 
         return usuarios;
+    }
+
+    //HELPER CUENTA BANCOS
+    public static void saveCuentaBancos(CuentaBancos emp, Dao<CuentaBancos, Integer> userDao) {
+        try {
+            userDao.create(emp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteCuentaBancos(Dao<CuentaBancos, Integer> userDao) throws SQLException {
+        DeleteBuilder<CuentaBancos, Integer> deleteBuilder = userDao.deleteBuilder();
+        deleteBuilder.delete();
+    }
+
+    public static List<CuentaBancos> getCuentaBancos(Dao<CuentaBancos, Integer> userDao) throws SQLException {
+
+        List<CuentaBancos> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_CUENTA_BANCOS;
+        GenericRawResults<CuentaBancos> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    public static List<CuentaBancos> getCuentaBancosByBanco(Dao<CuentaBancos, Integer> userDao, String banco) throws SQLException {
+
+        List<CuentaBancos> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_CUENTA_BANCOS+" WHERE banco = '"+banco+"'";
+        GenericRawResults<CuentaBancos> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    public static void deleteCuentaBancosByBanco(Dao<CuentaBancos, Integer> detailDao,String banco) throws SQLException {
+        DeleteBuilder<CuentaBancos, Integer> deleteBuilder = detailDao.deleteBuilder();
+        deleteBuilder.where().eq("banco",banco);
+        deleteBuilder.delete();
     }
 
 

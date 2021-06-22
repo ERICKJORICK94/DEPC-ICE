@@ -9,6 +9,7 @@ import com.smartapp.depc_ice.Entities.Bodega;
 import com.smartapp.depc_ice.Entities.ClienteGabinet;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.ClientesVisitas;
+import com.smartapp.depc_ice.Entities.CuentaBancos;
 import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.Direcciones;
 import com.smartapp.depc_ice.Entities.EstadoFacturasDespacho;
@@ -50,6 +51,7 @@ public class DepcApplication extends Application {
     private Dao<Bancos, Integer> bancos = null;
     private Dao<GabinetGeneral, Integer> gabinetGenerals = null;
     private Dao<EstadoFacturasDespacho, Integer> estadoFacturasDespachos = null;
+    private Dao<CuentaBancos, Integer> cuentaBancos = null;
     private static String latitud = "";
     private static String longitud = "";
     private static Clientes cliente = null;
@@ -199,6 +201,13 @@ public class DepcApplication extends Application {
             estadoFacturasDespachos = databaseHelper.getDao(EstadoFacturasDespacho.class);
         }
         return estadoFacturasDespachos;
+    }
+
+    public Dao<CuentaBancos, Integer> getCuentaBancosDao() throws SQLException {
+        if (cuentaBancos == null) {
+            cuentaBancos = databaseHelper.getDao(CuentaBancos.class);
+        }
+        return cuentaBancos;
     }
 
     public Clientes getCliente() {
