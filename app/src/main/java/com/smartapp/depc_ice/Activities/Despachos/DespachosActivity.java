@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat;
 import com.akexorcist.googledirection.DirectionCallback;
 import com.akexorcist.googledirection.GoogleDirection;
 import com.akexorcist.googledirection.config.GoogleDirectionConfiguration;
+import com.akexorcist.googledirection.constant.Language;
 import com.akexorcist.googledirection.constant.TransportMode;
 import com.akexorcist.googledirection.model.Coordination;
 import com.akexorcist.googledirection.model.Direction;
@@ -42,13 +43,29 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.smartapp.depc_ice.Activities.Agenda.Adapter.PlanificadorPedidoAdapter;
+import com.google.gson.Gson;
 import com.smartapp.depc_ice.Activities.Despachos.Adapter.PlanificadorDespachosAdapter;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
+import com.smartapp.depc_ice.Database.DataBaseHelper;
+import com.smartapp.depc_ice.DepcApplication;
+import com.smartapp.depc_ice.Entities.ClientesVisitas;
+import com.smartapp.depc_ice.Entities.DetalleViaje;
+import com.smartapp.depc_ice.Entities.ListarViajesDia;
+import com.smartapp.depc_ice.Entities.PuntosVenta;
+import com.smartapp.depc_ice.Entities.Usuario;
+import com.smartapp.depc_ice.Interface.IPuntosVentas;
+import com.smartapp.depc_ice.Interface.IListarDepachoDia;
+import com.smartapp.depc_ice.Interface.IVisitaPedidos;
+import com.smartapp.depc_ice.Models.CordenadasModel;
+import com.smartapp.depc_ice.Models.DespachoDiaModelModel;
+import com.smartapp.depc_ice.Models.PuntosVentasModel;
+import com.smartapp.depc_ice.Models.VisitaPedidoModel;
 import com.smartapp.depc_ice.R;
+import com.smartapp.depc_ice.Utils.Const;
 import com.smartapp.depc_ice.Utils.Utils;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,9 +74,15 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Callable;
 
 import fr.quentinklein.slt.LocationTracker;
 import fr.quentinklein.slt.TrackerSettings;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DespachosActivity extends BaseActitity implements OnMapReadyCallback,BaseActitity.BaseActivityCallbacks{
 
@@ -68,12 +91,23 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
     private GoogleMap mMap;
     private ListView lista;
     private SlidingUpPanelLayout sliding_layout;
-
+    public static  List<DetalleViaje> detalleViajes;
+    private int indexViajes = 0;
+    private String fechaBuscar = "";
+    private List<List<CordenadasModel>> direcciones = new ArrayList<List<CordenadasModel>>();
     private final String serverKey = "AIzaSyAg_dcLJ_XnK3aVtyBiGFTxaVe-XP6zPj0";
-    private LatLng park = new LatLng(-2.128685, -79.89429666666666);
+    /*private LatLng park = new LatLng(-2.128685, -79.89429666666666);
     private LatLng shopping = new LatLng(-2.09513578088982, -79.91638178353094);
     private LatLng dinner = new LatLng(-2.1078659777639466, -79.94509791683966);
-    private LatLng gallery = new LatLng(-2.1298057177493757, -79.91702239587498);
+    private LatLng gallery = new LatLng(-2.1298057177493757, -79.91702239587498);*/
+    private Call<IPuntosVentas.dataPuntos> callPuntos;
+    private LatLng origen = new LatLng(-2.128685, -79.89429666666666);
+    private IPuntosVentas.dataPuntos dataPuntos;
+    private Usuario user;
+    private PlanificadorDespachosAdapter listaDespachoAdapter;
+    private String pto_vt_id = "";
+    private Call<IListarDepachoDia.dataClientes> call;
+    private IListarDepachoDia.dataClientes data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,26 +115,323 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
 
         layout = addLayout(R.layout.despachos_layout);
         Utils.SetStyleActionBarTitle(this);
-        fecha = (TextView) layout.findViewById(R.id.fecha);
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        fechaBuscar = sdf.format(c.getTime());
+
+
+        try {
+            List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
+            if (usuarios != null){
+                if (usuarios.size() > 0){
+                    user = usuarios.get(0);
+                }
+            }
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        getPuntosVenta();
+
+    }
+
+
+    private void initView() {
+
+        lista = (ListView) layout.findViewById(R.id.lista);
+        //lbl_fecha = (TextView) layout.findViewById(R.id.lbl_fecha);
         sliding_layout = (SlidingUpPanelLayout) layout.findViewById(R.id.sliding_layout);
+        //lbl_fecha.setText(""+fecha);
+        fecha = (TextView) layout.findViewById(R.id.fecha);
         fecha.setText(""+Utils.getFecha());
+
+        try {
+
+            List<ListarViajesDia> viajes = DataBaseHelper.getListarViajesDiaByDate(DepcApplication.getApplication().getListarViajesDiaDao(),fechaBuscar);
+            if (viajes != null){
+                if (viajes.size() > indexViajes){
+                    ListarViajesDia viaje = viajes.get(indexViajes);
+                    detalleViajes = DataBaseHelper.getDetalleViajeByViaje(DepcApplication.getApplication().getDetalleViajeDao(),""+viaje.getId_viaje());
+                    if (detalleViajes != null){
+                        if (detalleViajes.size() > 0){
+
+                            int max = 22;
+                            int cont = 0;
+
+                            List<CordenadasModel> dir = null;
+                            for (DetalleViaje cl : detalleViajes){
+
+                                if (cl.getLatitud() != null && cl.getLongitud() != null){
+
+                                    double lat = Double.parseDouble(cl.getLatitud());
+                                    double lon = Double.parseDouble(cl.getLongitud());
+                                    //LatLng cordenadas = new LatLng(lat,lon);
+                                    LatLng cordenadas = new LatLng(lat,lon);
+
+                                    if (cont == 0){
+                                        dir = new ArrayList<CordenadasModel>();
+                                        direcciones.add(dir);
+                                    }
+
+                                    CordenadasModel cor = new CordenadasModel();
+                                    cor.setCordenadas(cordenadas);
+                                    cor.setNombre(""+cl.getDireccion_envio());
+                                    dir.add(cor);
+
+                                    if (cont < max) {
+                                        cont++;
+                                    }else {
+                                        cont = 0;
+                                    }
+
+                                }
+
+
+                            }
+
+                            listaDespachoAdapter = new PlanificadorDespachosAdapter(this, detalleViajes);
+                            lista.setAdapter(listaDespachoAdapter);
+                            lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                                    /*Intent intent = new Intent(DespachosActivity.this, DetallePlanificacionActivity.class);
+                                    intent.putExtra("fecha",fecha);
+                                    intent.putExtra("latitud",""+clientesVisitas.get(position).getLatitud());
+                                    intent.putExtra("longitud",""+clientesVisitas.get(position).getLongitud());
+                                    intent.putExtra("direccionRuta",""+clientesVisitas.get(position).getDireccion());
+                                    intent.putExtra("cliente_id",""+clientesVisitas.get(position).getCliente_id());
+                                    intent.putExtra("estado",""+clientesVisitas.get(position).getEstado());
+                                    intent.putExtra("direccion_id",""+clientesVisitas.get(position).getId());
+                                    intent.putExtra("clienteVisita",clientesVisitas.get(position));
+                                    startActivity(intent);
+                                    isFlag = true;*/
+
+                                }
+                            });
+
+                        }
+                    }
+
+                }
+            }
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        lista = (ListView) layout.findViewById(R.id.lista);
-        lista.setAdapter(new PlanificadorDespachosAdapter(this));
-        lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent intent = new Intent(DespachosActivity.this, DetalleDespachosPlanificacionActivity.class);
-                intent.putExtra("fecha",fecha.getText());
-                startActivity(intent);
+    }
 
-            }
-        });
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initView();
 
+    }
+
+    private void getPuntosVenta(){
+
+        showProgressWait();
+
+        //JSON SEND
+        PuntosVentasModel model = new PuntosVentasModel();
+        model.setUsuario_id(""+user.getUsuario());
+        model.setMetodo("ListarPtoVenta");
+
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
+        try {
+
+            IPuntosVentas request = DepcApplication.getApplication().getRestAdapter().create(IPuntosVentas.class);
+            callPuntos = request.getPuntoVentas(body);
+            callPuntos.enqueue(new Callback<IPuntosVentas.dataPuntos>() {
+                @Override
+                public void onResponse(Call<IPuntosVentas.dataPuntos> call, Response<IPuntosVentas.dataPuntos> response) {
+                    if (response.isSuccessful()) {
+
+                        dataPuntos = response.body();
+                        try {
+
+                            hideProgressWait();
+
+                            String mensajeError = Const.ERROR_DEFAULT;
+
+                            if (dataPuntos != null) {
+                                if (dataPuntos.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    if (dataPuntos.getData() != null){
+                                        if (dataPuntos.getData().getListarPuntos() != null) {
+                                            if (dataPuntos.getData().getListarPuntos().size() > 0) {
+
+
+                                                final List<PuntosVenta> puntosVentas;
+                                                puntosVentas = dataPuntos.getData().getListarPuntos().get(0);
+
+                                                if (puntosVentas != null) {
+                                                    DataBaseHelper.deletePuntosVenta(DepcApplication.getApplication().getPuntosVentaDao());
+                                                    DepcApplication.getApplication().getPuntosVentaDao().callBatchTasks(new Callable<PuntosVenta>() {
+                                                        @Override
+                                                        public PuntosVenta call() throws Exception {
+                                                            for (PuntosVenta pto : puntosVentas) {
+                                                                pto_vt_id = pto.getPto_vta_id();
+                                                                DataBaseHelper.savePuntosVenta(pto, DepcApplication.getApplication().getPuntosVentaDao());
+                                                            }
+                                                            return null;
+                                                        }
+                                                    });
+
+
+                                                }
+
+                                                getListDeaspachosDias();
+
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    if (dataPuntos.getStatus_message() != null){
+                                        mensajeError = dataPuntos.getStatus_message();
+                                    }
+                                }
+                            }
+
+                            //showPuntosVentas();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideProgressWait();
+                            //showPuntosVentas();
+                        }
+
+                    } else {
+                        hideProgressWait();
+                        //showPuntosVentas();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IPuntosVentas.dataPuntos> call, Throwable t) {
+                    hideProgressWait();
+                    //showPuntosVentas();
+                }
+            });
+
+        }catch (Exception e){
+            hideProgressWait();
+            //showPuntosVentas();
+
+        }
+    }
+
+    private void getListDeaspachosDias() {
+
+        showProgressWait();
+
+
+        //JSON SEND
+        DespachoDiaModelModel model = new DespachoDiaModelModel();
+        //model.setFecha_inicio(""+fechaBuscar);
+        model.setFecha_inicio("2021-06-15");
+        //model.setPto_vta_id(""+pto_vt_id);
+        model.setPto_vta_id("3");
+        model.setUsuario_id(""+user.getUsuario());
+        model.setMetodo("ListarViajesDia");
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---", "json: " + json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
+        try {
+
+            IListarDepachoDia request = DepcApplication.getApplication().getRestAdapter().create(IListarDepachoDia.class);
+            call = request.getClientes(body);
+            call.enqueue(new Callback<IListarDepachoDia.dataClientes>() {
+                @Override
+                public void onResponse(Call<IListarDepachoDia.dataClientes> call, Response<IListarDepachoDia.dataClientes> response) {
+                    if (response.isSuccessful()) {
+
+                        data = response.body();
+                        try {
+
+                            //hideProgressWait();
+
+                            String mensajeError = Const.ERROR_DEFAULT;
+
+                            if (data != null) {
+                                if (data.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    if (data.getData() != null) {
+                                        if (data.getData().getListarViajesDia() != null) {
+                                            if (data.getData().getListarViajesDia().size() > 0) {
+
+
+                                                final List<ListarViajesDia> viajes;
+                                                viajes = data.getData().getListarViajesDia().get(0);
+
+                                                if (viajes != null) {
+                                                    DepcApplication.getApplication().getListarViajesDiaDao().callBatchTasks(new Callable<ListarViajesDia>() {
+                                                        @Override
+                                                        public ListarViajesDia call() throws Exception {
+                                                            for (ListarViajesDia cl : viajes) {
+
+                                                                DataBaseHelper.saveListarViajesDia(cl, DepcApplication.getApplication().getListarViajesDiaDao());
+                                                            }
+                                                            return null;
+                                                        }
+                                                    });
+                                                }
+
+                                                initView();
+
+                                                return;
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    if (data.getStatus_message() != null) {
+                                        mensajeError = data.getStatus_message();
+                                    }
+                                }
+                            }
+
+                            initView();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideProgressWait();
+                            initView();
+                        }
+
+                    } else {
+                        hideProgressWait();
+                        initView();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IListarDepachoDia.dataClientes> call, Throwable t) {
+                    hideProgressWait();
+                    initView();
+                }
+            });
+
+        } catch (Exception e) {
+            hideProgressWait();
+            initView();
+
+        }
     }
 
 
@@ -118,6 +449,60 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
         mMap = googleMap;
         getLocationFromGPS();
         //requestDirection();
+    }
+
+    @Override
+    public void doRetry() {
+
+    }
+
+    @SuppressLint("WrongConstant")
+    private void requestDirection() {
+
+        for (List<CordenadasModel> direction : direcciones){
+
+            int cont = 0;
+            List<LatLng> loations = new ArrayList<LatLng>();
+            LatLng from = null;
+            LatLng to = null;
+            for (CordenadasModel dir : direction ){
+                if (cont == 0){
+                    if (origen != null){
+                        from = origen;
+                        origen = null;
+                    }else {
+                        from = dir.getCordenadas();
+                    }
+                }
+
+                if (cont == (direction.size() - 1)){
+                    to = dir.getCordenadas();
+                }else {
+                    loations.add(dir.getCordenadas());
+                }
+                cont++;
+            }
+
+            GoogleDirectionConfiguration.getInstance().setLogEnabled(true);
+            GoogleDirection.withServerKey(serverKey)
+                    .from(from)
+                    .and(loations)
+                    .to(to)
+                    .language(Language.SPANISH)
+                    .transportMode(TransportMode.DRIVING)
+                    .execute(new DirectionCallback() {
+                        @Override
+                        public void onDirectionSuccess(@Nullable Direction direction) {
+                            onDirectionSuccessPaint(direction);
+                        }
+
+                        @Override
+                        public void onDirectionFailure(@NonNull Throwable t) {
+                            onDirectionFailureError(t);
+                        }
+                    });
+
+        }
     }
 
     private void getLocationFromGPS(){
@@ -150,16 +535,12 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
 
                             double lat = location.getLatitude();
                             double lng = location.getLongitude();
-
                             LatLng coordinate = new LatLng(lat, lng);
-
-                            /*startPerc = mMap.addMarker(new MarkerOptions()
-                                    .position(coordinate)
-                                    .title("Posición actual")
-                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));*/
-
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinate, 18.0f));
-                            requestDirection();
+                            origen = new LatLng(lat, lng);
+                            if (direcciones.size()  > 0) {
+                                requestDirection();
+                            }
 
                         } else {
                             hideProgressWait();
@@ -188,33 +569,6 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
         }
     }
 
-    @Override
-    public void doRetry() {
-
-    }
-
-
-    private void requestDirection() {
-        GoogleDirectionConfiguration.getInstance().setLogEnabled(true);
-        GoogleDirection.withServerKey(serverKey)
-                .from(park)
-                .and(shopping)
-                .and(dinner)
-                .to(park)
-                .transportMode(TransportMode.DRIVING)
-                .execute(new DirectionCallback() {
-                    @Override
-                    public void onDirectionSuccess(@Nullable Direction direction) {
-                        onDirectionSuccessPaint(direction);
-                    }
-
-                    @Override
-                    public void onDirectionFailure(@NonNull Throwable t) {
-                        onDirectionFailureError(t);
-                    }
-                });
-    }
-
     private void onDirectionSuccessPaint(Direction direction) {
 
         if (direction.isOK()) {
@@ -222,9 +576,9 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
             int legCount = route.getLegList().size();
             for (int index = 0; index < legCount; index ++) {
                 Leg leg = route.getLegList().get(index);
-                mMap.addMarker(new MarkerOptions().position(leg.getStartLocation().getCoordination())).setTitle(""+index);
+                mMap.addMarker(new MarkerOptions().position(leg.getStartLocation().getCoordination())).setTitle(""+leg.getStartAddress());
                 if (index == legCount - 1) {
-                    mMap.addMarker(new MarkerOptions().position(leg.getEndLocation().getCoordination())).setTitle(""+index);
+                    mMap.addMarker(new MarkerOptions().position(leg.getEndLocation().getCoordination())).setTitle(""+leg.getEndAddress());
                 }
                 List<Step> stepList = leg.getStepList();
                 ArrayList<PolylineOptions> polylineOptionList = DirectionConverter.createTransitPolyline(
@@ -260,7 +614,7 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
 
 
     private void showSnackbar(String message) {
-        showAlert(message);
+        //showAlert(message);
     }
 
     @Override

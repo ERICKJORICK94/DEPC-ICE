@@ -9,13 +9,16 @@ import com.smartapp.depc_ice.Entities.ClienteGabinet;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.ClientesVisitas;
 import com.smartapp.depc_ice.Entities.CuentaBancos;
+import com.smartapp.depc_ice.Entities.DetalleFacturas;
 import com.smartapp.depc_ice.Entities.DetallePedido;
+import com.smartapp.depc_ice.Entities.DetalleViaje;
 import com.smartapp.depc_ice.Entities.Direcciones;
 import com.smartapp.depc_ice.Entities.EstadoFacturasDespacho;
 import com.smartapp.depc_ice.Entities.EstadoGabinet;
 import com.smartapp.depc_ice.Entities.FormaPago;
 import com.smartapp.depc_ice.Entities.Gabinet;
 import com.smartapp.depc_ice.Entities.GabinetGeneral;
+import com.smartapp.depc_ice.Entities.ListarViajesDia;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Productos;
 import com.smartapp.depc_ice.Entities.PuntosVenta;
@@ -48,6 +51,163 @@ public class DataBaseHelper {
         List<Usuario> usuarios = null;
         String query = "SELECT * FROM " + Const.TABLE_USUARIO;
         GenericRawResults<Usuario> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    //HELPER LISTAR VIAJE DIA
+    /*public static void saveListarViajesDia(ListarViajesDia emp, Dao<ListarViajesDia, Integer> userDao) {
+        try {
+            userDao.create(emp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }*/
+
+    public static void saveListarViajesDia(ListarViajesDia cliente, Dao<ListarViajesDia, Integer> clienteDao) {
+        try {
+
+            List<ListarViajesDia> cls = getListaViajesDiaByID(clienteDao, "" + cliente.getId_viaje());
+            if (cls != null) {
+                if (cls.size() > 0) {
+                    ListarViajesDia cl = cls.get(0);
+                    cliente.setId(cl.getId());
+                    clienteDao.update(cliente);
+                    return;
+                }
+            }
+            clienteDao.create(cliente);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<ListarViajesDia> getListaViajesDiaByID(Dao<ListarViajesDia, Integer> clienteDao, String id_viaje) throws SQLException {
+
+        List<ListarViajesDia> clientes = null;
+        String query = "SELECT * FROM " + Const.TABLE_LISTAR_VIAJES_DIA + " WHERE id_viaje = '" + id_viaje + "'";
+        GenericRawResults<ListarViajesDia> rawResults = clienteDao.queryRaw(query, clienteDao.getRawRowMapper());
+        clientes = rawResults.getResults();
+
+        return clientes;
+    }
+
+    public static void deleteListarViajesDia(Dao<ListarViajesDia, Integer> userDao) throws SQLException {
+        DeleteBuilder<ListarViajesDia, Integer> deleteBuilder = userDao.deleteBuilder();
+        deleteBuilder.delete();
+    }
+
+    public static List<ListarViajesDia> getListarViajesDia(Dao<ListarViajesDia, Integer> userDao) throws SQLException {
+
+        List<ListarViajesDia> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_LISTAR_VIAJES_DIA;
+        GenericRawResults<ListarViajesDia> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    public static List<ListarViajesDia> getListarViajesDiaByDate(Dao<ListarViajesDia, Integer> userDao, String fecha) throws SQLException {
+
+        List<ListarViajesDia> usuarios = null;
+        String query = "SELECT * FROM "+ Const.TABLE_LISTAR_VIAJES_DIA+" WHERE fecha_inicio LIKE '%"+fecha+"%'";
+        GenericRawResults<ListarViajesDia> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    //HELPER DETALLE VIAJE
+    /*public static void saveListarViajesDia(ListarViajesDia emp, Dao<ListarViajesDia, Integer> userDao) {
+        try {
+            userDao.create(emp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }*/
+
+    public static void saveDetalleViaje(DetalleViaje cliente, Dao<DetalleViaje, Integer> clienteDao) {
+        try {
+
+            List<DetalleViaje> cls = getDetalleViajeByID(clienteDao, "" + cliente.getFactura_id());
+            if (cls != null) {
+                if (cls.size() > 0) {
+                    DetalleViaje cl = cls.get(0);
+                    cliente.setPrimary(cl.getPrimary());
+                    clienteDao.update(cliente);
+                    return;
+                }
+            }
+            clienteDao.create(cliente);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<DetalleViaje> getDetalleViajeByID(Dao<DetalleViaje, Integer> clienteDao, String factura_id) throws SQLException {
+
+        List<DetalleViaje> clientes = null;
+        String query = "SELECT * FROM " + Const.TABLE_DETALLE_VIAJE + " WHERE factura_id = '" + factura_id + "'";
+        GenericRawResults<DetalleViaje> rawResults = clienteDao.queryRaw(query, clienteDao.getRawRowMapper());
+        clientes = rawResults.getResults();
+
+        return clientes;
+    }
+
+    public static List<DetalleViaje> getDetalleViajeByViaje(Dao<DetalleViaje, Integer> clienteDao, String id_viaje) throws SQLException {
+
+        List<DetalleViaje> clientes = null;
+        String query = "SELECT * FROM " + Const.TABLE_DETALLE_VIAJE + " WHERE id_viaje = '" + id_viaje + "'";
+        GenericRawResults<DetalleViaje> rawResults = clienteDao.queryRaw(query, clienteDao.getRawRowMapper());
+        clientes = rawResults.getResults();
+
+        return clientes;
+    }
+
+
+    public static void deleteDetalleViaje(Dao<DetalleViaje, Integer> userDao) throws SQLException {
+        DeleteBuilder<DetalleViaje, Integer> deleteBuilder = userDao.deleteBuilder();
+        deleteBuilder.delete();
+    }
+
+    public static List<DetalleViaje> getDetalleViaje(Dao<DetalleViaje, Integer> userDao) throws SQLException {
+
+        List<DetalleViaje> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_DETALLE_VIAJE;
+        GenericRawResults<DetalleViaje> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    //HELPER DETALLE FACTURAS
+    public static void saveDetalleFacturas(DetalleFacturas emp, Dao<DetalleFacturas, Integer> userDao) {
+        try {
+            userDao.create(emp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteDetalleFacturas(Dao<DetalleFacturas, Integer> userDao) throws SQLException {
+        DeleteBuilder<DetalleFacturas, Integer> deleteBuilder = userDao.deleteBuilder();
+        deleteBuilder.delete();
+    }
+
+    public static void deleteDetalleFacturasByIDFactura(Dao<DetalleFacturas, Integer> detailDao,String factura_id) throws SQLException {
+        DeleteBuilder<DetalleFacturas, Integer> deleteBuilder = detailDao.deleteBuilder();
+        deleteBuilder.where().eq("factura_id",factura_id);
+        deleteBuilder.delete();
+    }
+
+    public static List<DetalleFacturas> getDetalleFacturas(Dao<DetalleFacturas, Integer> userDao) throws SQLException {
+
+        List<DetalleFacturas> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_DETALLE_FACTURAS;
+        GenericRawResults<DetalleFacturas> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
         usuarios = rawResults.getResults();
 
         return usuarios;

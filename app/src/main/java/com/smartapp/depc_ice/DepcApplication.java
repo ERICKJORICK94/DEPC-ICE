@@ -10,13 +10,16 @@ import com.smartapp.depc_ice.Entities.ClienteGabinet;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.ClientesVisitas;
 import com.smartapp.depc_ice.Entities.CuentaBancos;
+import com.smartapp.depc_ice.Entities.DetalleFacturas;
 import com.smartapp.depc_ice.Entities.DetallePedido;
+import com.smartapp.depc_ice.Entities.DetalleViaje;
 import com.smartapp.depc_ice.Entities.Direcciones;
 import com.smartapp.depc_ice.Entities.EstadoFacturasDespacho;
 import com.smartapp.depc_ice.Entities.EstadoGabinet;
 import com.smartapp.depc_ice.Entities.FormaPago;
 import com.smartapp.depc_ice.Entities.Gabinet;
 import com.smartapp.depc_ice.Entities.GabinetGeneral;
+import com.smartapp.depc_ice.Entities.ListarViajesDia;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Productos;
 import com.smartapp.depc_ice.Entities.PuntosVenta;
@@ -52,6 +55,9 @@ public class DepcApplication extends Application {
     private Dao<GabinetGeneral, Integer> gabinetGenerals = null;
     private Dao<EstadoFacturasDespacho, Integer> estadoFacturasDespachos = null;
     private Dao<CuentaBancos, Integer> cuentaBancos = null;
+    private Dao<ListarViajesDia, Integer> listarViajesDias = null;
+    private Dao<DetalleViaje, Integer> detalleViajes = null;
+    private Dao<DetalleFacturas, Integer> detalleFacturas = null;
     private static String latitud = "";
     private static String longitud = "";
     private static Clientes cliente = null;
@@ -208,6 +214,27 @@ public class DepcApplication extends Application {
             cuentaBancos = databaseHelper.getDao(CuentaBancos.class);
         }
         return cuentaBancos;
+    }
+
+    public Dao<ListarViajesDia, Integer> getListarViajesDiaDao() throws SQLException {
+        if (listarViajesDias == null) {
+            listarViajesDias = databaseHelper.getDao(ListarViajesDia.class);
+        }
+        return listarViajesDias;
+    }
+
+    public Dao<DetalleViaje, Integer> getDetalleViajeDao() throws SQLException {
+        if (detalleViajes == null) {
+            detalleViajes = databaseHelper.getDao(DetalleViaje.class);
+        }
+        return detalleViajes;
+    }
+
+    public Dao<DetalleFacturas, Integer> getDetalleFacturasDao() throws SQLException {
+        if (detalleFacturas == null) {
+            detalleFacturas = databaseHelper.getDao(DetalleFacturas.class);
+        }
+        return detalleFacturas;
     }
 
     public Clientes getCliente() {

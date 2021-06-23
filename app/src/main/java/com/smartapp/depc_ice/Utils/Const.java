@@ -33,6 +33,9 @@ public class Const {
     public static final String TABLE_FORMA_PAGO = "Forma_pago";
     public static final String TABLE_CUENTA_BANCOS = "cuenta_bancos";
     public static final String TABLE_BANCOS = "BANCOS";
+    public static final String TABLE_DETALLE_FACTURAS = "DetalleFacturas";
+    public static final String TABLE_DETALLE_VIAJE = "DetalleViaje";
+    public static final String TABLE_LISTAR_VIAJES_DIA = "ListarViajesDia";
     public static final String TABLE_ESTADO_FACTURAS_DESPACHO = "ESTADO_FACTURA_DESPACHO";
     public static final String TABLE_CLIENTE_VISITA = "clientes_visita";
     public static final String ID_PEDIDO = "pedido_id";

@@ -12,13 +12,16 @@ import com.smartapp.depc_ice.Entities.ClienteGabinet;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.ClientesVisitas;
 import com.smartapp.depc_ice.Entities.CuentaBancos;
+import com.smartapp.depc_ice.Entities.DetalleFacturas;
 import com.smartapp.depc_ice.Entities.DetallePedido;
+import com.smartapp.depc_ice.Entities.DetalleViaje;
 import com.smartapp.depc_ice.Entities.Direcciones;
 import com.smartapp.depc_ice.Entities.EstadoFacturasDespacho;
 import com.smartapp.depc_ice.Entities.EstadoGabinet;
 import com.smartapp.depc_ice.Entities.FormaPago;
 import com.smartapp.depc_ice.Entities.Gabinet;
 import com.smartapp.depc_ice.Entities.GabinetGeneral;
+import com.smartapp.depc_ice.Entities.ListarViajesDia;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Productos;
 import com.smartapp.depc_ice.Entities.PuntosVenta;
@@ -61,6 +64,9 @@ public class Database extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, GabinetGeneral.class);
             TableUtils.createTable(connectionSource, EstadoFacturasDespacho.class);
             TableUtils.createTable(connectionSource, CuentaBancos.class);
+            TableUtils.createTable(connectionSource, ListarViajesDia.class);
+            TableUtils.createTable(connectionSource, DetalleViaje.class);
+            TableUtils.createTable(connectionSource, DetalleFacturas.class);
 
         } catch (SQLException e) {
             Log.e(Database.class.getName(), "ERROR AL CREAR LA BASE DE DATOS", e);
@@ -92,6 +98,9 @@ public class Database extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, GabinetGeneral.class, true);
             TableUtils.dropTable(connectionSource, EstadoFacturasDespacho.class, true);
             TableUtils.dropTable(connectionSource, CuentaBancos.class, true);
+            TableUtils.dropTable(connectionSource, ListarViajesDia.class, true);
+            TableUtils.dropTable(connectionSource, DetalleViaje.class, true);
+            TableUtils.dropTable(connectionSource, DetalleFacturas.class, true);
             onCreate(db, connectionSource);
 
         } catch (SQLException e) {
