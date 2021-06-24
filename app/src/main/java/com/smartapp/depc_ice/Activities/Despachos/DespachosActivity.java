@@ -49,15 +49,19 @@ import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.ClientesVisitas;
+import com.smartapp.depc_ice.Entities.DetalleFacturas;
 import com.smartapp.depc_ice.Entities.DetalleViaje;
+import com.smartapp.depc_ice.Entities.EstadoFacturasDespacho;
 import com.smartapp.depc_ice.Entities.ListarViajesDia;
 import com.smartapp.depc_ice.Entities.PuntosVenta;
 import com.smartapp.depc_ice.Entities.Usuario;
+import com.smartapp.depc_ice.Interface.IEstadoFacturaDespacho;
 import com.smartapp.depc_ice.Interface.IPuntosVentas;
 import com.smartapp.depc_ice.Interface.IListarDepachoDia;
 import com.smartapp.depc_ice.Interface.IVisitaPedidos;
 import com.smartapp.depc_ice.Models.CordenadasModel;
 import com.smartapp.depc_ice.Models.DespachoDiaModelModel;
+import com.smartapp.depc_ice.Models.EstadoFacturaModel;
 import com.smartapp.depc_ice.Models.PuntosVentasModel;
 import com.smartapp.depc_ice.Models.VisitaPedidoModel;
 import com.smartapp.depc_ice.R;
@@ -87,7 +91,7 @@ import retrofit2.Response;
 public class DespachosActivity extends BaseActitity implements OnMapReadyCallback,BaseActitity.BaseActivityCallbacks{
 
     private View layout;
-    private TextView fecha;
+    private TextView fecha,lbl_fecha;
     private GoogleMap mMap;
     private ListView lista;
     private SlidingUpPanelLayout sliding_layout;
@@ -106,8 +110,12 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
     private Usuario user;
     private PlanificadorDespachosAdapter listaDespachoAdapter;
     private String pto_vt_id = "";
+    private List<EstadoFacturasDespacho> estadosFacturas;
     private Call<IListarDepachoDia.dataClientes> call;
     private IListarDepachoDia.dataClientes data;
+    private Call<IEstadoFacturaDespacho.dataBodega> callEstados;
+    private IEstadoFacturaDespacho.dataBodega dataEstados;
+    private Date dateChosee;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +142,49 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
             throwables.printStackTrace();
         }
 
-        getPuntosVenta();
+        validateData();
+
+    }
+
+    private void validateData(){
+
+        try {
+
+            boolean flagPuntos = true;
+            List<PuntosVenta> puntos = DataBaseHelper.getPuntosVenta(DepcApplication.getApplication().getPuntosVentaDao());
+            if (puntos != null){
+                if (puntos.size() > 0){
+                    flagPuntos = false;
+                    PuntosVenta pto = puntos.get(0);
+                    pto_vt_id = pto.getPto_vta_id();
+
+                }
+            }
+
+            if (flagPuntos){
+                getPuntosVenta();
+            }else{
+
+                boolean flagEstados = true;
+                estadosFacturas = DataBaseHelper.getEstadoFacturasDespacho(DepcApplication.getApplication().getEstadoFacturasDespachoDao());
+                if (estadosFacturas != null){
+                    if (estadosFacturas.size() > 0){
+                        flagEstados = false;
+                    }
+                }
+
+                if (flagEstados){
+                    getEstadoFacturaDespacho();
+                }else{
+                    getListDeaspachosDias();
+                }
+
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
     }
 
@@ -142,11 +192,11 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
     private void initView() {
 
         lista = (ListView) layout.findViewById(R.id.lista);
-        //lbl_fecha = (TextView) layout.findViewById(R.id.lbl_fecha);
+        lbl_fecha = (TextView) layout.findViewById(R.id.lbl_fecha);
         sliding_layout = (SlidingUpPanelLayout) layout.findViewById(R.id.sliding_layout);
-        //lbl_fecha.setText(""+fecha);
+        lbl_fecha.setText(""+fechaBuscar);
         fecha = (TextView) layout.findViewById(R.id.fecha);
-        fecha.setText(""+Utils.getFecha());
+        fecha.setText(""+fechaBuscar);
 
         try {
 
@@ -233,8 +283,129 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
     @Override
     protected void onResume() {
         super.onResume();
-        initView();
+        //initView();
 
+    }
+
+    private void getEstadoFacturaDespacho(){
+
+        showProgressWait();
+
+        //JSON SEND
+        EstadoFacturaModel model = new EstadoFacturaModel();
+        model.setMetodo("ListarEstadoFacturasDespacho");
+
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
+        try {
+
+            IEstadoFacturaDespacho request = DepcApplication.getApplication().getRestAdapter().create(IEstadoFacturaDespacho.class);
+            callEstados = request.getBodegas(body);
+            callEstados.enqueue(new Callback<IEstadoFacturaDespacho.dataBodega>() {
+                @Override
+                public void onResponse(Call<IEstadoFacturaDespacho.dataBodega> call, Response<IEstadoFacturaDespacho.dataBodega> response) {
+                    if (response.isSuccessful()) {
+
+                        dataEstados = response.body();
+                        try {
+
+                            hideProgressWait();
+
+                            String mensajeError = Const.ERROR_DEFAULT;
+
+                            if (dataEstados != null) {
+                                if (dataEstados.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    if (dataEstados.getData() != null){
+                                        if (dataEstados.getData().getListarEstadoFacturasDespacho() != null) {
+                                            if (dataEstados.getData().getListarEstadoFacturasDespacho().size() > 0) {
+
+
+                                                final List<EstadoFacturasDespacho> bodegas;
+                                                bodegas = dataEstados.getData().getListarEstadoFacturasDespacho().get(0);
+
+                                                if (bodegas != null) {
+                                                    DataBaseHelper.deleteEstadoFacturasDespacho(DepcApplication.getApplication().getEstadoFacturasDespachoDao());
+                                                    DepcApplication.getApplication().getEstadoFacturasDespachoDao().callBatchTasks(new Callable<EstadoFacturasDespacho>() {
+                                                        @Override
+                                                        public EstadoFacturasDespacho call() throws Exception {
+                                                            for (EstadoFacturasDespacho cl : bodegas) {
+                                                                DataBaseHelper.saveEstadoFacturasDespacho(cl, DepcApplication.getApplication().getEstadoFacturasDespachoDao());
+                                                            }
+                                                            return null;
+                                                        }
+                                                    });
+
+                                                }
+
+                                                showEstadoFacturaDespacho();
+
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    if (dataEstados.getStatus_message() != null){
+                                        mensajeError = dataEstados.getStatus_message();
+                                    }
+                                }
+                            }
+
+                            showEstadoFacturaDespacho();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideProgressWait();
+                            showEstadoFacturaDespacho();
+                        }
+
+                    } else {
+                        hideProgressWait();
+                        //showAlert(Const.ERROR_DEFAULT);
+                        showEstadoFacturaDespacho();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IEstadoFacturaDespacho.dataBodega> call, Throwable t) {
+                    hideProgressWait();
+                    //showAlert(Const.ERROR_DEFAULT);
+                    showEstadoFacturaDespacho();
+                }
+            });
+
+        }catch (Exception e){
+            hideProgressWait();
+            //showAlert(Const.ERROR_DEFAULT);
+            showEstadoFacturaDespacho();
+
+        }
+    }
+
+    private void showEstadoFacturaDespacho() {
+
+        try {
+
+            boolean flagEstados = true;
+            estadosFacturas = DataBaseHelper.getEstadoFacturasDespacho(DepcApplication.getApplication().getEstadoFacturasDespachoDao());
+            if (estadosFacturas != null){
+                if (estadosFacturas.size() > 0){
+                    flagEstados = false;
+                }
+            }
+
+            if (flagEstados){
+                initView();
+            }else{
+                getListDeaspachosDias();
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     private void getPuntosVenta(){
@@ -283,9 +454,13 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
                                                     DepcApplication.getApplication().getPuntosVentaDao().callBatchTasks(new Callable<PuntosVenta>() {
                                                         @Override
                                                         public PuntosVenta call() throws Exception {
+                                                            int contador = 0;
                                                             for (PuntosVenta pto : puntosVentas) {
-                                                                pto_vt_id = pto.getPto_vta_id();
+                                                                if (contador == 0) {
+                                                                    pto_vt_id = pto.getPto_vta_id();
+                                                                }
                                                                 DataBaseHelper.savePuntosVenta(pto, DepcApplication.getApplication().getPuntosVentaDao());
+                                                                contador++;
                                                             }
                                                             return null;
                                                         }
@@ -294,7 +469,7 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
 
                                                 }
 
-                                                getListDeaspachosDias();
+                                                showPuntosVentas();
 
                                                 return;
                                             }
@@ -307,32 +482,74 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
                                 }
                             }
 
-                            //showPuntosVentas();
+                            showPuntosVentas();
 
                         } catch (Exception e) {
                             e.printStackTrace();
                             hideProgressWait();
-                            //showPuntosVentas();
+                            showPuntosVentas();
                         }
 
                     } else {
                         hideProgressWait();
-                        //showPuntosVentas();
+                        showPuntosVentas();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<IPuntosVentas.dataPuntos> call, Throwable t) {
                     hideProgressWait();
-                    //showPuntosVentas();
+                    showPuntosVentas();
                 }
             });
 
         }catch (Exception e){
             hideProgressWait();
-            //showPuntosVentas();
+            showPuntosVentas();
 
         }
+    }
+
+    private void showPuntosVentas(){
+
+        try {
+
+            boolean flagPuntos = true;
+            List<PuntosVenta> puntos = DataBaseHelper.getPuntosVenta(DepcApplication.getApplication().getPuntosVentaDao());
+            if (puntos != null){
+                if (puntos.size() > 0){
+                    flagPuntos = false;
+                    PuntosVenta pto = puntos.get(0);
+                    pto_vt_id = pto.getPto_vta_id();
+
+                }
+            }
+
+            if (flagPuntos){
+                initView();
+            }else{
+
+                boolean flagEstados = true;
+                estadosFacturas = DataBaseHelper.getEstadoFacturasDespacho(DepcApplication.getApplication().getEstadoFacturasDespachoDao());
+                if (estadosFacturas != null){
+                    if (estadosFacturas.size() > 0){
+                        flagEstados = false;
+                    }
+                }
+
+                if (flagEstados){
+                    getEstadoFacturaDespacho();
+                }else{
+                    getListDeaspachosDias();
+                }
+
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
     }
 
     private void getListDeaspachosDias() {
@@ -342,10 +559,9 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
 
         //JSON SEND
         DespachoDiaModelModel model = new DespachoDiaModelModel();
-        //model.setFecha_inicio(""+fechaBuscar);
-        model.setFecha_inicio("2021-06-15");
+        model.setFecha_inicio(""+fechaBuscar);
         //model.setPto_vta_id(""+pto_vt_id);
-        model.setPto_vta_id("3");
+        model.setPto_vta_id("1");
         model.setUsuario_id(""+user.getUsuario());
         model.setMetodo("ListarViajesDia");
 
@@ -378,19 +594,42 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
 
 
                                                 final List<ListarViajesDia> viajes;
-                                                viajes = data.getData().getListarViajesDia().get(0);
+                                                viajes = data.getData().getListarViajesDia();
 
                                                 if (viajes != null) {
-                                                    DepcApplication.getApplication().getListarViajesDiaDao().callBatchTasks(new Callable<ListarViajesDia>() {
-                                                        @Override
-                                                        public ListarViajesDia call() throws Exception {
-                                                            for (ListarViajesDia cl : viajes) {
+                                                    for (ListarViajesDia cl : viajes) {
 
-                                                                DataBaseHelper.saveListarViajesDia(cl, DepcApplication.getApplication().getListarViajesDiaDao());
+                                                        DataBaseHelper.saveListarViajesDia(cl, DepcApplication.getApplication().getListarViajesDiaDao());
+
+                                                        if (cl.getDetalleViaje() != null){
+                                                            for (DetalleViaje detalleViaje : cl.getDetalleViaje() ) {
+                                                                detalleViaje.setNombre_estado("");
+                                                                if (estadosFacturas != null){
+                                                                    for (EstadoFacturasDespacho est : estadosFacturas){
+                                                                        if (detalleViaje.getEstado() != null){
+                                                                            if (est.getNum_estado().equals(detalleViaje.getEstado())){
+                                                                                detalleViaje.setNombre_estado(""+est.getDescripcion());
+                                                                                break;
+                                                                            }
+                                                                        }
+                                                                    }
+
+                                                                }
+
+                                                                DataBaseHelper.saveDetalleViaje(detalleViaje,DepcApplication.getApplication().getDetalleViajeDao());
+
+                                                                if (detalleViaje.getDetalleFacturas() != null){
+                                                                    DataBaseHelper.deleteDetalleFacturasByIDFactura(DepcApplication.getApplication().getDetalleFacturasDao(),""+detalleViaje.getFactura_id());
+                                                                    for (DetalleFacturas detalleFactura : detalleViaje.getDetalleFacturas() ) {
+                                                                        DataBaseHelper.saveDetalleFacturas(detalleFactura,DepcApplication.getApplication().getDetalleFacturasDao());
+
+                                                                    }
+                                                                }
+
                                                             }
-                                                            return null;
                                                         }
-                                                    });
+
+                                                    }
                                                 }
 
                                                 initView();
@@ -423,6 +662,7 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
                 @Override
                 public void onFailure(Call<IListarDepachoDia.dataClientes> call, Throwable t) {
                     hideProgressWait();
+                    Log.e(TAG,"error: "+t.toString());
                     initView();
                 }
             });
@@ -663,9 +903,13 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
 
     private void showCalendar(){
 
-        Date date = new Date();
+        if (dateChosee == null) {
+            dateChosee = new Date();
+        }
+
         Calendar calendar = new GregorianCalendar();
-        calendar.setTime(date);
+        calendar.setTime(dateChosee);
+
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH) + 1;
         int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -679,11 +923,15 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
 
                 SimpleDateFormat format = new SimpleDateFormat("d/M/yyyy");
                 try {
-                    Date date = format.parse(dayOfMonth+"/"+monthOfYear+"/"+year);
+                    dateChosee = format.parse(dayOfMonth+"/"+monthOfYear+"/"+year);
                     Calendar cal = Calendar.getInstance();
-                    cal.setTime(date);
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                    fecha.setText(sdf.format(cal.getTime()));
+                    cal.setTime(dateChosee);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    fechaBuscar = sdf.format(cal.getTime());
+                    fecha.setText(""+fechaBuscar);
+                    lbl_fecha.setText(""+fechaBuscar);
+                    validateData();
+
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

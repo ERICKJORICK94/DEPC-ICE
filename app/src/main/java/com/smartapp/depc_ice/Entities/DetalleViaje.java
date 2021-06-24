@@ -38,6 +38,8 @@ public class DetalleViaje {
     @DatabaseField
     private String estado;
     @DatabaseField
+    private String nombre_estado;
+    @DatabaseField
     private String usuario_crea;
     @DatabaseField
     private String fecha_crea;
@@ -69,6 +71,14 @@ public class DetalleViaje {
     private String latitud;
     @DatabaseField
     private String longitud;
+
+    public String getNombre_estado() {
+        return nombre_estado;
+    }
+
+    public void setNombre_estado(String nombre_estado) {
+        this.nombre_estado = nombre_estado;
+    }
 
     private List<DetalleFacturas> DetalleFacturas;
 

@@ -80,9 +80,12 @@ public class PlanificadorDespachosAdapter extends BaseAdapter {
 
         DetalleViaje item = detalleViajes.get(position);
 
-        viewHolder.estado.setText("VISITADO");
-        viewHolder.estado.setVisibility(View.GONE);
+        viewHolder.estado.setText("");
+        //viewHolder.estado.setVisibility(View.GONE);
         viewHolder.estado.setBackgroundColor(mContext.getResources().getColor(R.color.Green));
+        if (item.getNombre_estado() != null){
+            viewHolder.estado.setText(""+item.getNombre_estado());
+        }
 
         viewHolder.hora.setText("00:00");
         viewHolder.direccion.setText(""+item.getDireccion_envio());
