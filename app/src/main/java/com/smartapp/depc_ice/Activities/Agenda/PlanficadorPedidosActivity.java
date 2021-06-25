@@ -184,8 +184,8 @@ public class PlanficadorPedidosActivity extends BaseActitity implements OnMapRea
 
                             double lat = Double.parseDouble(cl.getLatitud());
                             double lon = Double.parseDouble(cl.getLongitud());
-                            //LatLng cordenadas = new LatLng(lat,lon);
-                            LatLng cordenadas = new LatLng(lon,lat);//ESTAN AL REVEZ
+                            LatLng cordenadas = new LatLng(lat,lon);
+                            //LatLng cordenadas = new LatLng(lon,lat);
 
                             if (cont == 0){
                               dir = new ArrayList<CordenadasModel>();

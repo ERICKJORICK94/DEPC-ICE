@@ -283,7 +283,6 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
                                     double lat = Double.parseDouble(cl.getLatitud());
                                     double lon = Double.parseDouble(cl.getLongitud());
                                     LatLng cordenadas = new LatLng(lat, lon);
-                                    //LatLng cordenadas = new LatLng(lon,lat);
                                     if (cont == 0) {
                                         dir = new ArrayList<CordenadasModel>();
                                         direcciones.add(dir);
