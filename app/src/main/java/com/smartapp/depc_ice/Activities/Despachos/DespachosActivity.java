@@ -15,8 +15,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -55,6 +57,7 @@ import com.smartapp.depc_ice.Entities.EstadoFacturasDespacho;
 import com.smartapp.depc_ice.Entities.ListarViajesDia;
 import com.smartapp.depc_ice.Entities.PuntosVenta;
 import com.smartapp.depc_ice.Entities.Usuario;
+import com.smartapp.depc_ice.Entities.Zonas;
 import com.smartapp.depc_ice.Interface.IEstadoFacturaDespacho;
 import com.smartapp.depc_ice.Interface.IPuntosVentas;
 import com.smartapp.depc_ice.Interface.IListarDepachoDia;
@@ -98,12 +101,9 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
     public static  List<DetalleViaje> detalleViajes;
     private int indexViajes = 0;
     private String fechaBuscar = "";
+    private Spinner spinner_ruta;
     private List<List<CordenadasModel>> direcciones = new ArrayList<List<CordenadasModel>>();
     private final String serverKey = "AIzaSyAg_dcLJ_XnK3aVtyBiGFTxaVe-XP6zPj0";
-    /*private LatLng park = new LatLng(-2.128685, -79.89429666666666);
-    private LatLng shopping = new LatLng(-2.09513578088982, -79.91638178353094);
-    private LatLng dinner = new LatLng(-2.1078659777639466, -79.94509791683966);
-    private LatLng gallery = new LatLng(-2.1298057177493757, -79.91702239587498);*/
     private Call<IPuntosVentas.dataPuntos> callPuntos;
     private LatLng origen = new LatLng(-2.128685, -79.89429666666666);
     private IPuntosVentas.dataPuntos dataPuntos;
@@ -116,6 +116,7 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
     private Call<IEstadoFacturaDespacho.dataBodega> callEstados;
     private IEstadoFacturaDespacho.dataBodega dataEstados;
     private Date dateChosee;
+    private boolean isInitMap = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,80 +193,68 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
     private void initView() {
 
         lista = (ListView) layout.findViewById(R.id.lista);
+        spinner_ruta = (Spinner) layout.findViewById(R.id.spinner_ruta);
         lbl_fecha = (TextView) layout.findViewById(R.id.lbl_fecha);
         sliding_layout = (SlidingUpPanelLayout) layout.findViewById(R.id.sliding_layout);
         lbl_fecha.setText(""+fechaBuscar);
         fecha = (TextView) layout.findViewById(R.id.fecha);
         fecha.setText(""+fechaBuscar);
+        lista.setAdapter(null);
+        spinner_ruta.setAdapter(null);
+        indexViajes = 0;
+        direcciones.clear();
 
         try {
 
+            hideProgressWait();
             List<ListarViajesDia> viajes = DataBaseHelper.getListarViajesDiaByDate(DepcApplication.getApplication().getListarViajesDiaDao(),fechaBuscar);
             if (viajes != null){
                 if (viajes.size() > indexViajes){
-                    ListarViajesDia viaje = viajes.get(indexViajes);
-                    detalleViajes = DataBaseHelper.getDetalleViajeByViaje(DepcApplication.getApplication().getDetalleViajeDao(),""+viaje.getId_viaje());
-                    if (detalleViajes != null){
-                        if (detalleViajes.size() > 0){
-
-                            int max = 22;
-                            int cont = 0;
-
-                            List<CordenadasModel> dir = null;
-                            for (DetalleViaje cl : detalleViajes){
-
-                                if (cl.getLatitud() != null && cl.getLongitud() != null){
-
-                                    double lat = Double.parseDouble(cl.getLatitud());
-                                    double lon = Double.parseDouble(cl.getLongitud());
-                                    //LatLng cordenadas = new LatLng(lat,lon);
-                                    LatLng cordenadas = new LatLng(lat,lon);
-
-                                    if (cont == 0){
-                                        dir = new ArrayList<CordenadasModel>();
-                                        direcciones.add(dir);
-                                    }
-
-                                    CordenadasModel cor = new CordenadasModel();
-                                    cor.setCordenadas(cordenadas);
-                                    cor.setNombre(""+cl.getDireccion_envio());
-                                    dir.add(cor);
-
-                                    if (cont < max) {
-                                        cont++;
-                                    }else {
-                                        cont = 0;
-                                    }
-
-                                }
-
-
-                            }
-
-                            listaDespachoAdapter = new PlanificadorDespachosAdapter(this, detalleViajes);
-                            lista.setAdapter(listaDespachoAdapter);
-                            lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                                    /*Intent intent = new Intent(DespachosActivity.this, DetallePlanificacionActivity.class);
-                                    intent.putExtra("fecha",fecha);
-                                    intent.putExtra("latitud",""+clientesVisitas.get(position).getLatitud());
-                                    intent.putExtra("longitud",""+clientesVisitas.get(position).getLongitud());
-                                    intent.putExtra("direccionRuta",""+clientesVisitas.get(position).getDireccion());
-                                    intent.putExtra("cliente_id",""+clientesVisitas.get(position).getCliente_id());
-                                    intent.putExtra("estado",""+clientesVisitas.get(position).getEstado());
-                                    intent.putExtra("direccion_id",""+clientesVisitas.get(position).getId());
-                                    intent.putExtra("clienteVisita",clientesVisitas.get(position));
-                                    startActivity(intent);
-                                    isFlag = true;*/
-
-                                }
-                            });
-
-                        }
+                    List<String> items= new ArrayList<String>();
+                    int cont = 1;
+                    for (ListarViajesDia z : viajes){
+                        items.add("RUTA "+cont);
+                        cont++;
                     }
 
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
+                    spinner_ruta.setAdapter(adapter);
+                    spinner_ruta.setSelection(indexViajes);
+                    spinner_ruta.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            indexViajes = position;
+                            selection(viajes.get(indexViajes));
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+
+
+
+                }else{
+                    if (!isInitMap) {
+                        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                        mapFragment.getMapAsync(this);
+                    }else{
+                        if (mMap != null){
+                            mMap.clear();
+                        }
+                        getLocationFromGPS();
+                    }
+                }
+            }else{
+                if (!isInitMap) {
+                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                    mapFragment.getMapAsync(this);
+                }else{
+                    if (mMap != null){
+                        mMap.clear();
+                    }
+                    getLocationFromGPS();
                 }
             }
 
@@ -274,9 +263,84 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
             throwables.printStackTrace();
         }
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+    }
+
+    private void selection(ListarViajesDia viaje){
+
+        try{
+                detalleViajes = DataBaseHelper.getDetalleViajeByViaje(DepcApplication.getApplication().getDetalleViajeDao(),""+viaje.getId_viaje());
+                if (detalleViajes != null){
+                    if (detalleViajes.size() > 0){
+
+                        int max = 22;
+                        int cont = 0;
+
+                        List<CordenadasModel> dir = null;
+
+                        for (DetalleViaje cl : detalleViajes){
+                                if (cl.getLatitud() != null && cl.getLongitud() != null) {
+
+                                    double lat = Double.parseDouble(cl.getLatitud());
+                                    double lon = Double.parseDouble(cl.getLongitud());
+                                    LatLng cordenadas = new LatLng(lat, lon);
+                                    //LatLng cordenadas = new LatLng(lon,lat);
+                                    if (cont == 0) {
+                                        dir = new ArrayList<CordenadasModel>();
+                                        direcciones.add(dir);
+                                    }
+
+                                    CordenadasModel cor = new CordenadasModel();
+                                    cor.setCordenadas(cordenadas);
+                                    cor.setNombre("" + cl.getDireccion_envio());
+                                    dir.add(cor);
+
+                                    if (cont < max) {
+                                        cont++;
+                                    } else {
+                                        cont = 0;
+                                    }
+
+                                }
+
+                        }
+
+                        listaDespachoAdapter = new PlanificadorDespachosAdapter(this, detalleViajes);
+                        lista.setAdapter(listaDespachoAdapter);
+                        lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                                            /*Intent intent = new Intent(DespachosActivity.this, DetallePlanificacionActivity.class);
+                                            intent.putExtra("fecha",fecha);
+                                            intent.putExtra("latitud",""+clientesVisitas.get(position).getLatitud());
+                                            intent.putExtra("longitud",""+clientesVisitas.get(position).getLongitud());
+                                            intent.putExtra("direccionRuta",""+clientesVisitas.get(position).getDireccion());
+                                            intent.putExtra("cliente_id",""+clientesVisitas.get(position).getCliente_id());
+                                            intent.putExtra("estado",""+clientesVisitas.get(position).getEstado());
+                                            intent.putExtra("direccion_id",""+clientesVisitas.get(position).getId());
+                                            intent.putExtra("clienteVisita",clientesVisitas.get(position));
+                                            startActivity(intent);
+                                            isFlag = true;*/
+
+                            }
+                        });
+
+                    }
+                }
+
+            if (!isInitMap) {
+                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                mapFragment.getMapAsync(this);
+            }else{
+                if (mMap != null){
+                    mMap.clear();
+                }
+                getLocationFromGPS();
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
     }
 
@@ -597,6 +661,11 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
                                                 viajes = data.getData().getListarViajesDia();
 
                                                 if (viajes != null) {
+
+                                                    DataBaseHelper.deleteListarViajesDia(DepcApplication.getApplication().getListarViajesDiaDao());
+                                                    DataBaseHelper.deleteDetalleViaje(DepcApplication.getApplication().getDetalleViajeDao());
+                                                    DataBaseHelper.deleteDetalleFacturas(DepcApplication.getApplication().getDetalleFacturasDao());
+
                                                     for (ListarViajesDia cl : viajes) {
 
                                                         DataBaseHelper.saveListarViajesDia(cl, DepcApplication.getApplication().getListarViajesDiaDao());
@@ -688,6 +757,7 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         getLocationFromGPS();
+        isInitMap = true;
         //requestDirection();
     }
 
@@ -746,6 +816,7 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
     }
 
     private void getLocationFromGPS(){
+
         if (    ContextCompat.checkSelfPermission(DespachosActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(DespachosActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // You need to ask the user to enable the permissions
