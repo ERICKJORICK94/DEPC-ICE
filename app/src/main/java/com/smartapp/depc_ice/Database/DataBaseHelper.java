@@ -213,6 +213,16 @@ public class DataBaseHelper {
         return usuarios;
     }
 
+    public static List<DetalleFacturas> getDetalleFacturasByIDFactura(Dao<DetalleFacturas, Integer> userDao, String factura_id) throws SQLException {
+
+        List<DetalleFacturas> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_DETALLE_FACTURAS+" WHERE factura_id = '"+factura_id+"'";
+        GenericRawResults<DetalleFacturas> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
     //HELPER CUENTA BANCOS
     public static void saveCuentaBancos(CuentaBancos emp, Dao<CuentaBancos, Integer> userDao) {
         try {

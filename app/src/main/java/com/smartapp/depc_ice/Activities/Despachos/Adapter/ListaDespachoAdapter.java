@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
+import com.smartapp.depc_ice.Entities.DetalleFacturas;
 import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Models.alphobetics;
@@ -26,15 +27,16 @@ public class ListaDespachoAdapter extends BaseAdapter {
 
     private Context mContext;
     private LayoutInflater mInflater;
-    //private List<Pedidos> pedidos;
+    List<DetalleFacturas> detalleFacturas;
 
-    public ListaDespachoAdapter(Context c /*,List<Pedidos> cl*/) {
+    public ListaDespachoAdapter(Context c , List<DetalleFacturas> detalleFacturas) {
         mContext = c;
+        this.detalleFacturas = detalleFacturas;
         mInflater = LayoutInflater.from(mContext);
     }
 
     public int getCount() {
-        return 3;
+        return this.detalleFacturas.size();
     }
 
     public Object getItem(int position) {
@@ -62,15 +64,17 @@ public class ListaDespachoAdapter extends BaseAdapter {
             viewHolder= (ViewHolder)convertView.getTag();
         }
 
-        if (position == 0){
-            viewHolder.item.setText("PINGUINO HEL CORNETTO HERSHEYS2");
-            viewHolder.cantidad.setText("5/5");
-        } else if (position == 1){
-            viewHolder.item.setText("PINGUINO POLITO VAINILLA 75X55ML");
-            viewHolder.cantidad.setText("3/6");
-        }else if (position == 2){
-            viewHolder.item.setText("PINGUINO CASERO BANANO CHOCOLATE");
-            viewHolder.cantidad.setText("8/9");
+
+        DetalleFacturas df = this.detalleFacturas.get(position);
+
+        viewHolder.item.setText("");
+        if (df.getDescripcion() != null){
+            viewHolder.item.setText(""+df.getDescripcion());
+        }
+
+        viewHolder.cantidad.setText("");
+        if (df.getCantidad() != null){
+            viewHolder.cantidad.setText(""+df.getCantidad());
         }
 
 

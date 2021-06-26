@@ -4,10 +4,11 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.smartapp.depc_ice.Utils.Const;
 
+import java.io.Serializable;
 import java.util.List;
 
 @DatabaseTable(tableName = Const.TABLE_DETALLE_VIAJE)
-public class DetalleViaje {
+public class DetalleViaje implements Serializable {
 
     @DatabaseField(generatedId = true)
     private int primary;

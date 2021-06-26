@@ -40,10 +40,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.smartapp.depc_ice.Activities.Cobros.Adapter.ListaCobrosAdapter;
+import com.smartapp.depc_ice.Activities.Despachos.Adapter.ListaDespachoAdapter;
+import com.smartapp.depc_ice.Activities.Despachos.DetalleDespachosPlanificacionActivity;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Clientes;
+import com.smartapp.depc_ice.Entities.DetalleFacturas;
 import com.smartapp.depc_ice.Entities.EstadoGabinet;
 import com.smartapp.depc_ice.Entities.FormaPago;
 import com.smartapp.depc_ice.Entities.Usuario;
@@ -93,7 +96,6 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
 
     private View layout;
     private LayoutInflater layoutInflater;
-    private Clientes cliente;
     private NonScrollListView lista;
     private Button cancela;
     private Button cobro_rapido;
@@ -121,6 +123,8 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
     private double ingreso = 0;
     private EditText edt_referencia;
     private EditText edit_numero_ingreso;
+    private String factura_id = "";
+    private List<DetalleFacturas> detalleFacturas;
 
     private List<String> listaVentas = new ArrayList<String>();
 
@@ -223,8 +227,6 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
             }
         }
 
-        cliente = DepcApplication.getApplication().getCliente();
-
         cancela.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -247,7 +249,10 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
         });
 
 
-        //DEMO
+
+        if (getIntent() != null){
+            factura_id = getIntent().getStringExtra("factura_id");
+        }
         showList();
         getFormaPagos();
     }
@@ -613,8 +618,7 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
 
     private void showList(){
 
-        //DEMO
-        edt_vencido.setText(""+ Utils.foramatearMiles(String.format("%.2f", 123.32)));
+        /*edt_vencido.setText(""+ Utils.foramatearMiles(String.format("%.2f", 123.32)));
         edt_por_vencer.setText(""+Utils.foramatearMiles(String.format("%.2f", 23.32)));
         edt_total.setText(""+Utils.foramatearMiles(String.format("%.2f", 123.32 + 23.32)));
         totalPagar = 123.32 + 23.32;
@@ -624,10 +628,20 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
         let.setText(""+Utils.foramatearMiles(String.format("%.2f", 89.10)));
         nd.setText(""+Utils.foramatearMiles(String.format("%.2f", 24.39)));
         pag.setText(""+Utils.foramatearMiles(String.format("%.2f", 11.31)));
-        valor_total.setText(""+Utils.roundFloat(totalPagar, 2));
+        valor_total.setText(""+Utils.roundFloat(totalPagar, 2));*/
 
-        lista.setAdapter(new ListaCobrosAdapter(CobrosActivity.this));
-        scroll.smoothScrollTo(0,0);
+        try {
+            detalleFacturas = DataBaseHelper.getDetalleFacturasByIDFactura(DepcApplication.getApplication().getDetalleFacturasDao(), ""+factura_id);
+            if(detalleFacturas != null){
+
+                lista.setAdapter(new ListaCobrosAdapter(CobrosActivity.this, detalleFacturas));
+                scroll.smoothScrollTo(0,0);
+
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
 
         /*try {

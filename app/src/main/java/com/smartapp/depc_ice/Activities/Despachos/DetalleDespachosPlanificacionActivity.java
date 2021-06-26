@@ -54,15 +54,21 @@ import com.smartapp.depc_ice.Activities.Productos.Detalle.DetalleProductoActivit
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Clientes;
+import com.smartapp.depc_ice.Entities.DetalleFacturas;
 import com.smartapp.depc_ice.Entities.DetallePedido;
+import com.smartapp.depc_ice.Entities.DetalleViaje;
 import com.smartapp.depc_ice.Entities.Direcciones;
 import com.smartapp.depc_ice.Entities.EstadoFacturasDespacho;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Productos;
+import com.smartapp.depc_ice.Entities.PuntosVenta;
+import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Entities.Zonas;
+import com.smartapp.depc_ice.Interface.IClientes;
 import com.smartapp.depc_ice.Interface.IEstadoFacturaDespacho;
 import com.smartapp.depc_ice.Mapa.MapsActivity;
 import com.smartapp.depc_ice.Models.BodegasModel;
+import com.smartapp.depc_ice.Models.ClientesModel;
 import com.smartapp.depc_ice.Models.Device;
 import com.smartapp.depc_ice.Models.EstadoFacturaModel;
 import com.smartapp.depc_ice.R;
@@ -107,9 +113,8 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
     private Button registrar,cobrar;
     private NonScrollListView lista;
     private Spinner spinner_despacho;
-    private Clientes cliente = null;
-    private int indexDespachos = 0;
-    String motivosDeapachos[] = {"ENTREGA TOTAL","ENTREGA PARCIAL","RECHAZADO","NO ACEPTACIÓN","CERRADO"};
+    private int indexEstadoFacturaDespachos = 0;
+    private List<DetalleFacturas> detalleFacturas;
 
     private Connection connection = null;
     private UIHelper helper = new UIHelper(this);
@@ -125,7 +130,7 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
     private static OutputStream btoutputstream;
 
     private TextView ver_mapa;
-    private TextView llamar;
+    private TextView llamar,clienteName,ruc,lbl_fecha, direccion;
     private TextView btn_whatsapp;
     private TextView agregar,ver_foto;
     private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
@@ -133,12 +138,14 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
     private Bitmap bitmap;
     private Call<IEstadoFacturaDespacho.dataBodega> call;
     private IEstadoFacturaDespacho.dataBodega data;
+    private DetalleViaje detalleViaje;
+    private Call<IClientes.dataClientes> callCliente;
+    private IClientes.dataClientes dataCliente;
+    private Clientes cliente;
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-
-
 
             // When discovery finds a new device
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
@@ -194,6 +201,10 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
 
         ver_mapa = (TextView) layout.findViewById(R.id.ver_mapa);
         llamar = (TextView) layout.findViewById(R.id.llamar);
+        clienteName = (TextView) layout.findViewById(R.id.clienteName);
+        ruc = (TextView) layout.findViewById(R.id.ruc);
+        lbl_fecha = (TextView) layout.findViewById(R.id.lbl_fecha);
+        direccion = (TextView) layout.findViewById(R.id.direccion);
         btn_whatsapp = (TextView) layout.findViewById(R.id.btn_whatsapp);
         cobrar = (Button) layout.findViewById(R.id.cobrar);
         agregar = layout.findViewById(R.id.agregar);
@@ -201,28 +212,23 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
 
         Utils.SetStyleActionBarTitle(this);
 
+        if (getIntent() != null){
+            detalleViaje = (DetalleViaje) getIntent().getSerializableExtra("detalle_viaje");
+        }
+
         cobrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DetalleDespachosPlanificacionActivity.this, CobrosActivity.class);
-                startActivity(intent);
+                if (detalleViaje != null){
+                    if (detalleViaje.getFactura_id() != null){
+                        Intent intent = new Intent(DetalleDespachosPlanificacionActivity.this, CobrosActivity.class);
+                        intent.putExtra("factura_id",detalleViaje.getFactura_id());
+                        startActivity(intent);
+                    }
+                }
+
             }
         });
-
-
-        //Demo
-        try {
-            List<Clientes> clientes = DataBaseHelper.getClientesByCODCLiente(DepcApplication.getApplication().getClientesDao(), "201");
-            if (clientes !=  null){
-                if (clientes.size() > 0){
-                    cliente = clientes.get(0);
-                    DepcApplication.getApplication().setCliente(cliente);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        //
 
         impresora.setVisibility(View.GONE);
 
@@ -247,7 +253,8 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
         llamar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cliente.getTelefono1() != null){
+                if (cliente != null){
+                      if (cliente.getTelefono1() != null){
                     if (cliente.getTelefono1().length() > 0) {
 
                         int permissionCheck = ContextCompat.checkSelfPermission(DetalleDespachosPlanificacionActivity.this, Manifest.permission.CALL_PHONE);
@@ -268,20 +275,28 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
                 }
 
                 showAlert("Lo sentimos no existe número al cual contactar");
+                }
+
             }
         });
 
         ver_mapa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (detalleViaje != null){
+                    if (detalleViaje.getLatitud() != null && detalleViaje.getLongitud() != null){
+                        Direcciones direccion = new Direcciones();
+                        direccion.setLatitud(detalleViaje.getLatitud());
+                        direccion.setLongitud(detalleViaje.getLongitud());
+                        direccion.setDireccion_envio(""+detalleViaje.getDireccion_envio());
+                        Intent intent = new Intent(DetalleDespachosPlanificacionActivity.this, MapsActivity.class);
+                        intent.putExtra(Const.DETALLE_CLIENTE, direccion);
+                        startActivity(intent);
+                    }
+                }
 
-                Direcciones direccion = new Direcciones();
-                direccion.setLatitud("-2.128685");
-                direccion.setLongitud("-79.89429666666666");
-                direccion.setDireccion_envio("SAUCES 4 TIENDA ANGEL");
-                Intent intent = new Intent(DetalleDespachosPlanificacionActivity.this, MapsActivity.class);
-                intent.putExtra(Const.DETALLE_CLIENTE, direccion);
-                startActivity(intent);
+
+
 
             }
         });
@@ -289,22 +304,25 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
         btn_whatsapp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cliente.getTelefono1() != null){
-                    if (cliente.getTelefono1().length() > 0) {
+                if (cliente != null){
+                    if (cliente.getTelefono1() != null){
+                        if (cliente.getTelefono1().length() > 0) {
 
-                        try {
-                            getPackageManager().getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
-                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/" + cliente.getTelefono1()));
-                            startActivity(intent);
-                        } catch (PackageManager.NameNotFoundException e) {
-                            Toast.makeText(DetalleDespachosPlanificacionActivity.this, "WhatsApp no instalado", Toast.LENGTH_SHORT).show();
+                            try {
+                                getPackageManager().getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/" + cliente.getTelefono1()));
+                                startActivity(intent);
+                            } catch (PackageManager.NameNotFoundException e) {
+                                Toast.makeText(DetalleDespachosPlanificacionActivity.this, "WhatsApp no instalado", Toast.LENGTH_SHORT).show();
+                            }
+
+                            return;
                         }
-
-                        return;
                     }
+
+                    showAlert("Lo sentimos no existe número al cual contactar");
                 }
 
-                showAlert("Lo sentimos no existe número al cual contactar");
             }
         });
 
@@ -393,7 +411,6 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
             }
         });
 
-        showMotivosDespachos();
         getEstadoFacturaDespacho();
     }
 
@@ -416,8 +433,8 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
 
             case 3621:
                 if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + cliente.getTelefono1()));
-                    startActivity(intent);
+                    /*Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + cliente.getTelefono1()));
+                    startActivity(intent);*/
                 } else {
                     Log.d("TAG", "Call Permission Not Granted");
                 }
@@ -1146,62 +1163,77 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
         });
     }
 
-        private void showMotivosDespachos(){
 
-        indexDespachos = 0;
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, motivosDeapachos);
-        spinner_despacho.setAdapter(adapter);
-        spinner_despacho.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                indexDespachos = position;
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-    }
 
     private void fillData(){
 
-        lista.setAdapter(new ListaDespachoAdapter(DetalleDespachosPlanificacionActivity.this));
-        lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                editar();
+        if (cliente != null){
+            if (cliente.getNombre_tercero() != null){
+                clienteName.setText(""+cliente.getNombre_tercero());
             }
-        });
 
-        /*try {
-
-            if (cliente != null){
-                if(DataBaseHelper.getPedidosByCliente(DepcApplication.getApplication().getPedidosDao(),cliente.getCodigo_cliente_id()) != null){
-                    final List<Pedidos> pedidos = DataBaseHelper.getPedidosByCliente(DepcApplication.getApplication().getPedidosDao(), cliente.getCodigo_cliente_id());
-                    Collections.reverse(pedidos);
-                    lista.setAdapter(new ListaPedidosAdapter(DetalleDespachosPlanificacionActivity.this, pedidos));
-
-                    lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                            Intent intent = new Intent(DetalleDespachosPlanificacionActivity.this, DetallePedidoActivity.class);
-                            intent.putExtra(Const.ID_PEDIDOS,""+pedidos.get(position).getId());
-                            startActivity(intent);
-
-
-                        }
-                    });
+            if (detalleViaje != null){
+                if (detalleViaje.getFecha_crea() != null){
+                    lbl_fecha.setText(""+detalleViaje.getFecha_crea());
                 }
             }
 
+            if (cliente.getTercero_id() != null){
+                ruc.setText(""+cliente.getTercero_id());
+            }
+
+            if (cliente.getDireccion() != null){
+                direccion.setText(""+cliente.getDireccion());
+            }
+            
+        }
+
+
+        try {
+
+
+            if (detalleViaje != null){
+                if (detalleViaje.getFactura_id() != null){
+
+                    detalleFacturas = DataBaseHelper.getDetalleFacturasByIDFactura(DepcApplication.getApplication().getDetalleFacturasDao(), ""+detalleViaje.getFactura_id());
+                    if (cliente != null){
+                        if(detalleFacturas != null){
+
+                            lista.setAdapter(new ListaDespachoAdapter(DetalleDespachosPlanificacionActivity.this, detalleFacturas));
+                            lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    editar(detalleFacturas.get(position));
+                                }
+                            });
+
+                        }
+                    }
+
+                }
+            }
+
+
+
+
         } catch (SQLException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
-    private void editar(){
+    private void editar(DetalleFacturas df){
+
+        String pto_vt = "";
+        try {
+            List<PuntosVenta> puntos = DataBaseHelper.getPuntosVenta(DepcApplication.getApplication().getPuntosVentaDao());
+            if (puntos != null){
+                if (puntos.size() > 0){
+                    pto_vt = puntos.get(0).getNombre();
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
 
         LayoutInflater layoutInflater;
@@ -1213,14 +1245,16 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
         ImageView back = (ImageView) comprarProduct.findViewById(R.id.back);
         ImageView info_product = (ImageView) comprarProduct.findViewById(R.id.info_product);
         TextView codigo = (TextView) comprarProduct.findViewById(R.id.codigo);
+        TextView cantidad = (TextView) comprarProduct.findViewById(R.id.cantidad);
         TextView name = (TextView) comprarProduct.findViewById(R.id.name);
         TextView grupo = (TextView) comprarProduct.findViewById(R.id.grupo);
         AppCompatImageView agregar = comprarProduct.findViewById(R.id.agregar);
         AppCompatImageView ver_foto = comprarProduct.findViewById(R.id.ver_foto);
 
-        codigo.setText("236454");
-        name.setText("PINGUINO HEL CORNETTO HERSHEYS2");
-        grupo.setText("SANTA ROSA");
+        codigo.setText(""+df.getCodigo_item());
+        name.setText(""+df.getDescripcion());
+        grupo.setText(""+pto_vt);
+        cantidad.setText(""+df.getCantidad()+" / "+df.getCantidad());
 
         agregar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1389,9 +1423,45 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
             List<EstadoFacturasDespacho> estadoFacturasDespachos = DataBaseHelper.getEstadoFacturasDespacho(DepcApplication.getApplication().getEstadoFacturasDespachoDao());
             if (estadoFacturasDespachos != null){
                 if (estadoFacturasDespachos.size() > 0){
-                    for (EstadoFacturasDespacho estado : estadoFacturasDespachos){
-                        Log.e(TAG,""+estado.getDescripcion());
+
+                    indexEstadoFacturaDespachos = 0;
+                    int contador = 0;
+                    List<String> items= new ArrayList<String>();
+                    for (EstadoFacturasDespacho z : estadoFacturasDespachos){
+                        items.add(z.getDescripcion());
+                        if (z.getNum_estado() != null){
+                            if (detalleViaje != null){
+                            if (detalleViaje.getEstado() != null) {
+                                if (detalleViaje.getEstado().equals("" + z.getNum_estado())) {
+                                    indexEstadoFacturaDespachos = contador;
+                                }
+                            }
+                            }
+                        }
+                        contador++;
                     }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
+                    spinner_despacho.setAdapter(adapter);
+                    spinner_despacho.setSelection(indexEstadoFacturaDespachos);
+                    spinner_despacho.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            indexEstadoFacturaDespachos = position;
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+
+                }
+            }
+
+            if (detalleViaje != null) {
+                if (detalleViaje.getCuenta_id() != null) {
+                    condition(""+detalleViaje.getCuenta_id());
                 }
             }
 
@@ -1401,6 +1471,142 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
 
 
     }
+
+
+    private void condition(String search){
+        search.trim();
+        search = search.replace(" ","%").toUpperCase();
+        String condition = "and a.codigo_cliente_id = '"+search+"'";
+        getClientes(condition);
+    }
+
+    private void getClientes(String search){
+
+        showProgressWait();
+
+        int limit = Const.PARAM_MAX_ROW;
+
+        String buscar = "";
+        if (search.length() > 0){
+            buscar = buscar+" "+search;
+        }
+        //JSON SEND
+        ClientesModel model = new ClientesModel();
+        model.setCondicion(buscar);
+        model.setFiltro("limit "+Const.PARAM_MAX_ROW+" offset 0");
+        model.setMetodo("ListaClientes");
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+        try {
+            IClientes request = DepcApplication.getApplication().getRestAdapter().create(IClientes.class);
+            callCliente = request.getClientes(body);
+            callCliente.enqueue(new Callback<IClientes.dataClientes>() {
+                @Override
+                public void onResponse(Call<IClientes.dataClientes> call, Response<IClientes.dataClientes> response) {
+                    if (response.isSuccessful()) {
+
+                        dataCliente = response.body();
+                        try {
+
+                            hideProgressWait();
+
+                            if (dataCliente != null) {
+                                if (dataCliente.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    if (dataCliente.getData() != null)
+                                        if (dataCliente.getData().getListaClientes() != null){
+                                            if (dataCliente.getData().getListaClientes().size() > 0){
+
+                                                final List<Clientes> clientes;
+                                                clientes = dataCliente.getData().getListaClientes().get(0);
+
+                                                if (clientes != null){
+                                                    DepcApplication.getApplication().getClientesDao().callBatchTasks(new Callable<Clientes>() {
+                                                        @Override
+                                                        public Clientes call() throws Exception {
+
+                                                            for (Clientes cl : clientes){
+                                                                boolean isFlag = true;
+                                                                if (cl.getNombre_comercial() != null){
+                                                                    if (cl.getNombre_comercial().length() > 0) {
+                                                                        if (cl.getNombre_tercero() == null) {
+                                                                            cl.setNombre_tercero("" + cl.getNombre_comercial());
+                                                                            isFlag = false;
+                                                                        }else if (cl.getNombre_tercero().length() == 0) {
+                                                                            cl.setNombre_tercero("" + cl.getNombre_comercial());
+                                                                            isFlag = false;
+                                                                        }
+                                                                    }
+                                                                }
+
+                                                                if (cl.getNombre_tercero() != null){
+                                                                    if (cl.getNombre_tercero().length() > 0) {
+                                                                        if (cl.getNombre_comercial() == null) {
+                                                                            cl.setNombre_comercial("" + cl.getNombre_tercero());
+                                                                            isFlag = false;
+                                                                        }else if (cl.getNombre_comercial().length() == 0) {
+                                                                            cl.setNombre_comercial("" + cl.getNombre_tercero());
+                                                                            isFlag = false;
+                                                                        }
+                                                                    }
+                                                                }
+
+                                                                if (cl.getNombre_comercial() != null && cl.getNombre_tercero() != null){
+                                                                    isFlag = false;
+                                                                }
+
+                                                                if (isFlag) {
+                                                                    cl.setNombre_tercero("SIN NOMBRE");
+                                                                    cl.setNombre_comercial("SIN NOMBRE ASIGNADO");
+                                                                }
+
+                                                                cliente = cl;
+                                                            }
+
+                                                            return null;
+                                                        }
+                                                    });
+
+
+                                                }
+
+                                                fillData();
+
+                                                return;
+                                            }
+                                        }
+                                }else{
+                                    //Error
+                                }
+                            }
+                            fillData();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            fillData();
+                        }
+
+                    } else {
+                        fillData();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IClientes.dataClientes> call, Throwable t) {
+                    fillData();
+                }
+            });
+
+        }catch (Exception e){
+            hideProgressWait();
+            fillData();
+
+        }
+
+    }
+
 
     @Override
     protected void onResume() {

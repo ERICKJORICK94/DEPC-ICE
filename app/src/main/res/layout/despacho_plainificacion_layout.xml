@@ -89,7 +89,7 @@
                             android:textColor="@color/Black"
                             android:textSize="13sp"
                             android:layout_marginLeft="10dp"
-                            android:text="RICHARD ASENCIO VARGAS"
+                            android:text=""
                             />
 
                     </LinearLayout>
@@ -117,7 +117,7 @@
                             android:textColor="@color/Black"
                             android:textSize="13sp"
                             android:layout_marginLeft="10dp"
-                            android:text="0930536115001"
+                            android:text=""
                             />
 
                     </LinearLayout>
@@ -139,13 +139,13 @@
                             android:textStyle="bold"/>
 
                         <TextView
-                            android:id="@+id/fecha"
+                            android:id="@+id/lbl_fecha"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/Black"
                             android:textSize="13sp"
                             android:layout_marginLeft="10dp"
-                            android:text="22/05/2021"
+                            android:text=""
                             />
 
                     </LinearLayout>
@@ -173,7 +173,7 @@
                             android:textColor="@color/Black"
                             android:textSize="13sp"
                             android:layout_marginLeft="10dp"
-                            android:text="SAUCES 4 MZ 369 VILLA 54"
+                            android:text=""
                             />
 
                     </LinearLayout>

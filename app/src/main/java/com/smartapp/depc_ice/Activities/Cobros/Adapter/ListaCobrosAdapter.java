@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.smartapp.depc_ice.Activities.Cobros.CobrosActivity;
+import com.smartapp.depc_ice.Entities.DetalleFacturas;
 import com.smartapp.depc_ice.R;
 
 import java.util.ArrayList;
@@ -28,18 +29,19 @@ public class ListaCobrosAdapter extends BaseAdapter {
     private CobrosActivity mContext;
     private LayoutInflater mInflater;
     private List<Integer> positionCheck;
+    private List<DetalleFacturas> detalleFacturas;
 
-    public ListaCobrosAdapter(CobrosActivity c) {
+    public ListaCobrosAdapter(CobrosActivity c, List<DetalleFacturas> detalleFacturas) {
         mContext = c;
         mInflater = LayoutInflater.from(mContext);
         positionCheck = new ArrayList<Integer>();
+        this.detalleFacturas = detalleFacturas;
     }
 
     public int getCount() {
 
-        //return mContext.cobroList.size();
+        return detalleFacturas.size();
 
-        return 20;
     }
 
     public Object getItem(int position) {
@@ -70,7 +72,7 @@ public class ListaCobrosAdapter extends BaseAdapter {
             viewHolder= (ViewHolder)convertView.getTag();
         }
 
-        //Cobro item = mContext.cobroList.get(position);
+        DetalleFacturas item = detalleFacturas.get(position);
 
         viewHolder.cuota.setText(""+(position + 1));
 
@@ -124,11 +126,11 @@ public class ListaCobrosAdapter extends BaseAdapter {
 
 
         int fact = 3569;
-        viewHolder.numero.setText("FAC #"+(3569+position)+"  8/12");
-        viewHolder.fecha_vencida.setText("20/05/2021");
-        viewHolder.valor_vendido.setText("$ 16.36");
+        viewHolder.numero.setText("FAC # "+item.getFactura_id());
+        viewHolder.fecha_vencida.setText(""+item.getFecha_vencimiento());
+        viewHolder.valor_vendido.setText(""+item.getSaldo());
 
-        if (position%2 == 0){
+        /*if (position%2 == 0){
             viewHolder.numero.setTextColor(mContext.getResources().getColor(R.color.Red));
             viewHolder.fecha_vencida.setTextColor(mContext.getResources().getColor(R.color.Red));
             viewHolder.valor_vendido.setTextColor(mContext.getResources().getColor(R.color.Red));
@@ -136,7 +138,7 @@ public class ListaCobrosAdapter extends BaseAdapter {
             viewHolder.numero.setTextColor(mContext.getResources().getColor(R.color.Gray));
             viewHolder.fecha_vencida.setTextColor(mContext.getResources().getColor(R.color.Gray));
             viewHolder.valor_vendido.setTextColor(mContext.getResources().getColor(R.color.Black));
-        }
+        }*/
 
 
         return convertView;

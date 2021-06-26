@@ -46,6 +46,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
+import com.smartapp.depc_ice.Activities.Agenda.DetallePlanificacionActivity;
 import com.smartapp.depc_ice.Activities.Despachos.Adapter.PlanificadorDespachosAdapter;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
@@ -309,17 +310,9 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                                            /*Intent intent = new Intent(DespachosActivity.this, DetallePlanificacionActivity.class);
-                                            intent.putExtra("fecha",fecha);
-                                            intent.putExtra("latitud",""+clientesVisitas.get(position).getLatitud());
-                                            intent.putExtra("longitud",""+clientesVisitas.get(position).getLongitud());
-                                            intent.putExtra("direccionRuta",""+clientesVisitas.get(position).getDireccion());
-                                            intent.putExtra("cliente_id",""+clientesVisitas.get(position).getCliente_id());
-                                            intent.putExtra("estado",""+clientesVisitas.get(position).getEstado());
-                                            intent.putExtra("direccion_id",""+clientesVisitas.get(position).getId());
-                                            intent.putExtra("clienteVisita",clientesVisitas.get(position));
+                                            Intent intent = new Intent(DespachosActivity.this, DetalleDespachosPlanificacionActivity.class);
+                                            intent.putExtra("detalle_viaje",detalleViajes.get(position));
                                             startActivity(intent);
-                                            isFlag = true;*/
 
                             }
                         });
@@ -931,7 +924,7 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
     public boolean onCreateOptionsMenu( Menu menu) {
         getMenuInflater().inflate( R.menu.buscar, menu);
 
-        MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
+        /*MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
         final SearchView searchView = (SearchView) myActionMenuItem.getActionView();
         searchView.setQueryHint("Buscar");
 
@@ -953,7 +946,7 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
                 }
                 return true;
             }
-        });
+        });*/
 
         return true;
     }

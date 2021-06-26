@@ -2,14 +2,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Activities.Despachos.DespachosActivity">
-    <item
+    <!--<item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_baseline_search_24"
         app:showAsAction="always"
         android:theme="@style/WhiteCursorSearchView"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         android:title="Buscar"
-        app:iconifiedByDefault="false"/>
+        app:iconifiedByDefault="false"/>-->
 
 
     <item
