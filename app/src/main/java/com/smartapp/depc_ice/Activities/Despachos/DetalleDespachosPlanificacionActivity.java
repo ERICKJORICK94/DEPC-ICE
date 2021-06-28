@@ -1459,11 +1459,27 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
                 }
             }
 
-            if (detalleViaje != null) {
+            /*if (detalleViaje != null) {
                 if (detalleViaje.getCuenta_id() != null) {
                     condition(""+detalleViaje.getCuenta_id());
                 }
+            }*/
+
+            if (detalleViaje != null){
+                if (detalleViaje.getFactura_id() != null){
+                    String cliente_id = "";
+                    detalleFacturas = DataBaseHelper.getDetalleFacturasByIDFactura(DepcApplication.getApplication().getDetalleFacturasDao(), ""+detalleViaje.getFactura_id());
+                    if(detalleFacturas != null){
+                        for (DetalleFacturas df: detalleFacturas) {
+                            cliente_id = df.getCliente_id();
+                        }
+                    }
+
+                    condition(""+cliente_id);
+
+                }
             }
+
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
