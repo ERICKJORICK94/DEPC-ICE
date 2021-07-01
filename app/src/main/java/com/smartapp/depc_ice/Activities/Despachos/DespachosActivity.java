@@ -970,12 +970,13 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
             dateChosee = new Date();
         }
 
-        Calendar calendar = new GregorianCalendar();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime(dateChosee);
 
         int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH) + 1;
+        int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
+
 
         Locale locale = new Locale ( "es" , "ES" );
         Locale.setDefault(locale);
@@ -986,7 +987,7 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
 
                 SimpleDateFormat format = new SimpleDateFormat("d/M/yyyy");
                 try {
-                    dateChosee = format.parse(dayOfMonth+"/"+monthOfYear+"/"+year);
+                    dateChosee = format.parse(dayOfMonth+"/"+(monthOfYear + 1)+"/"+year);
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(dateChosee);
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -1009,7 +1010,8 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
                 dialog.dismiss();
             }
         });
-        datePickerDialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
+       // datePickerDialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
+        datePickerDialog.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis());
         datePickerDialog.setButton(DatePickerDialog.BUTTON_NEGATIVE, "CANCELAR", datePickerDialog);
         datePickerDialog.setButton(DatePickerDialog.BUTTON_POSITIVE, "OK", datePickerDialog);
         datePickerDialog.show();

@@ -302,7 +302,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="MOTIVO DESPACHO"
+                        android:text="ESTADO DESPACHO"
                         android:layout_marginTop="10dp"
                         android:textSize="12sp" />
 
@@ -323,6 +323,45 @@
                             android:spinnerMode="dialog" />
 
                     </LinearLayout>
+
+                     <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="MOTIVOS NO ENTREGA"
+            android:textColor="@color/DarkGray"
+            android:textSize="13sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="true"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_baseline_report_gmailerrorred_24"
+                android:scaleType="centerInside"
+                android:background="@drawable/custom_border"/>
+
+            <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:layout_height="45dp"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:background="@drawable/custom_border">
+
+
+               <Spinner
+                   android:id="@+id/spinner_noentrega"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:spinnerMode="dialog"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
                     <TextView
                         android:layout_width="match_parent"

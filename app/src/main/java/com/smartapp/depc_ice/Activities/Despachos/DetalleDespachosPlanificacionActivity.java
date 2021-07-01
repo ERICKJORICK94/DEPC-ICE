@@ -59,18 +59,24 @@ import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.DetalleViaje;
 import com.smartapp.depc_ice.Entities.Direcciones;
 import com.smartapp.depc_ice.Entities.EstadoFacturasDespacho;
+import com.smartapp.depc_ice.Entities.MotivosNoEntrega;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Productos;
 import com.smartapp.depc_ice.Entities.PuntosVenta;
 import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Entities.Zonas;
 import com.smartapp.depc_ice.Interface.IClientes;
+import com.smartapp.depc_ice.Interface.IDespachoItemFactura;
 import com.smartapp.depc_ice.Interface.IEstadoFacturaDespacho;
+import com.smartapp.depc_ice.Interface.IMotivosNoEntrega;
+import com.smartapp.depc_ice.Interface.IZonas;
 import com.smartapp.depc_ice.Mapa.MapsActivity;
 import com.smartapp.depc_ice.Models.BodegasModel;
 import com.smartapp.depc_ice.Models.ClientesModel;
+import com.smartapp.depc_ice.Models.DespachoItemFactura;
 import com.smartapp.depc_ice.Models.Device;
 import com.smartapp.depc_ice.Models.EstadoFacturaModel;
+import com.smartapp.depc_ice.Models.MotivoNoEntregaModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.BTDeviceList;
 import com.smartapp.depc_ice.Utils.Const;
@@ -115,7 +121,7 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
     private Spinner spinner_despacho;
     private int indexEstadoFacturaDespachos = 0;
     private List<DetalleFacturas> detalleFacturas;
-
+    float cant = 0;
     private Connection connection = null;
     private UIHelper helper = new UIHelper(this);
     private int selectPrinter = -1;
@@ -142,6 +148,16 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
     private Call<IClientes.dataClientes> callCliente;
     private IClientes.dataClientes dataCliente;
     private Clientes cliente;
+    private Spinner spinner_noentrega;
+    private int indexMotivoNoEntrega = -1;
+    Bitmap fotItem = null;
+    boolean fotoItem = false;
+
+    private Call<IMotivosNoEntrega.dataBodega> callMotivos;
+    private IMotivosNoEntrega.dataBodega dataMotvos;
+    private Call<IDespachoItemFactura.dataBodega> callItem;
+    private IDespachoItemFactura.dataBodega dataItem;
+    private List<MotivosNoEntrega> motivosNoEntrega;
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -205,6 +221,7 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
         ruc = (TextView) layout.findViewById(R.id.ruc);
         lbl_fecha = (TextView) layout.findViewById(R.id.lbl_fecha);
         direccion = (TextView) layout.findViewById(R.id.direccion);
+        spinner_noentrega = (Spinner) layout.findViewById(R.id.spinner_noentrega);
         btn_whatsapp = (TextView) layout.findViewById(R.id.btn_whatsapp);
         cobrar = (Button) layout.findViewById(R.id.cobrar);
         agregar = layout.findViewById(R.id.agregar);
@@ -659,10 +676,22 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
         } else if (requestCode == PICK_IMAGE_CAMERA) {
             try {
                 Uri selectedImage = data.getData();
-                bitmap = (Bitmap) data.getExtras().get("data");
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes);
-                Log.e(TAG,"Base64: "+Utils.convertBase64String(bitmap));
+
+
+                if (fotoItem) {
+
+                    fotItem = (Bitmap) data.getExtras().get("data");
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    fotItem.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+                    Log.e(TAG, "Base64: " + Utils.convertBase64String(fotItem));
+                }else{
+                    bitmap = (Bitmap) data.getExtras().get("data");
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+                    Log.e(TAG, "Base64: " + Utils.convertBase64String(bitmap));
+                }
+
+                fotoItem = false;
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -672,10 +701,19 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
         } else if (requestCode == PICK_IMAGE_GALLERY) {
             Uri selectedImage = data.getData();
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes);
-                Log.e(TAG,"Base64: "+Utils.convertBase64String(bitmap));
+
+                if (fotoItem) {
+                    fotItem = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    fotItem.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+                    Log.e(TAG,"Base64: "+Utils.convertBase64String(fotItem));
+                }else{
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+                    Log.e(TAG,"Base64: "+Utils.convertBase64String(bitmap));
+                }
+                fotoItem = false;
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1207,6 +1245,8 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
                                 }
                             });
 
+                            getMotivosNoEntrega();
+
                         }
                     }
 
@@ -1218,6 +1258,170 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+
+    private void getMotivosNoEntrega(){
+
+        showProgressWait();
+
+        //JSON SEND
+        MotivoNoEntregaModel model = new MotivoNoEntregaModel();
+        model.setMetodo("ObtenerMotivosNoEntrega");
+
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
+        try {
+
+            IMotivosNoEntrega request = DepcApplication.getApplication().getRestAdapter().create(IMotivosNoEntrega.class);
+            callMotivos = request.getBodegas(body);
+            callMotivos.enqueue(new Callback<IMotivosNoEntrega.dataBodega>() {
+                @Override
+                public void onResponse(Call<IMotivosNoEntrega.dataBodega> call, Response<IMotivosNoEntrega.dataBodega> response) {
+                    if (response.isSuccessful()) {
+
+                        dataMotvos = response.body();
+                        try {
+
+                            hideProgressWait();
+
+                            String mensajeError = Const.ERROR_DEFAULT;
+
+                            if (dataMotvos != null) {
+                                if (dataMotvos.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    if (dataMotvos.getData() != null){
+                                        if (dataMotvos.getData().getListarMotivosNoEntrega() != null) {
+                                            if (dataMotvos.getData().getListarMotivosNoEntrega().size() > 0) {
+
+
+                                                final List<MotivosNoEntrega> bodegas;
+                                                bodegas = dataMotvos.getData().getListarMotivosNoEntrega().get(0);
+
+                                                if (bodegas != null) {
+                                                    DataBaseHelper.deleteMotivosNoEntrega(DepcApplication.getApplication().getMotivosNoEntregaDao());
+                                                    DepcApplication.getApplication().getMotivosNoEntregaDao().callBatchTasks(new Callable<MotivosNoEntrega>() {
+                                                        @Override
+                                                        public MotivosNoEntrega call() throws Exception {
+                                                            for (MotivosNoEntrega cl : bodegas) {
+                                                                DataBaseHelper.saveMotivosNoEntrega(cl, DepcApplication.getApplication().getMotivosNoEntregaDao());
+                                                            }
+                                                            return null;
+                                                        }
+                                                    });
+
+
+                                                }
+
+                                                showMotivosNoentrega();
+
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    if (data.getStatus_message() != null){
+                                        mensajeError = data.getStatus_message();
+                                    }
+                                }
+                            }
+
+                            showMotivosNoentrega();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideProgressWait();
+                            showMotivosNoentrega();
+                        }
+
+                    } else {
+                        hideProgressWait();
+                        //showAlert(Const.ERROR_DEFAULT);
+                        showMotivosNoentrega();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IMotivosNoEntrega.dataBodega> call, Throwable t) {
+                    hideProgressWait();
+                    //showAlert(Const.ERROR_DEFAULT);
+                    showMotivosNoentrega();
+                }
+            });
+
+        }catch (Exception e){
+            hideProgressWait();
+            //showAlert(Const.ERROR_DEFAULT);
+            showMotivosNoentrega();
+
+        }
+    }
+
+    private void showMotivosNoentrega(){
+
+        indexMotivoNoEntrega = -1;
+        try {
+
+            motivosNoEntrega = DataBaseHelper.getMotivosNoEntrega(DepcApplication.getApplication().getMotivosNoEntregaDao());
+
+             if (motivosNoEntrega != null) {
+            if (motivosNoEntrega.size() > 0) {
+
+                List<String> items= new ArrayList<String>();
+                int indexMoti = -1;
+                int contador = 0;
+                for (MotivosNoEntrega z : motivosNoEntrega){
+                    if (z.getDescripcion() != null) {
+                        if (detalleViaje.getId_motivo_noentrega() != null){
+                            if (z.getNum_motivo().equals(detalleViaje.getId_motivo_noentrega())){
+                                indexMoti = contador;
+                            }
+                        }
+                        items.add(z.getDescripcion());
+                    }else{
+                        items.add("SIN DESCRIPCIÓN");
+                    }
+
+                    contador++;
+                }
+                items.add("SELECCIONE MOTIVO NO ENTREGA");
+                final int listsize = items.size() - 1;
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item, items) {
+                    @Override
+                    public int getCount() {
+                        return(listsize); // Truncate the list
+                    }
+                };
+                spinner_noentrega.setAdapter(adapter);
+                if (indexMoti != -1){
+                    spinner_noentrega.setSelection(indexMoti);
+                }else{
+                    spinner_noentrega.setSelection(listsize);
+                }
+
+                spinner_noentrega.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        indexMotivoNoEntrega = position;
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+
+
+            }
+        }
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
@@ -1244,23 +1448,45 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
 
         ImageView back = (ImageView) comprarProduct.findViewById(R.id.back);
         ImageView info_product = (ImageView) comprarProduct.findViewById(R.id.info_product);
+        //Spinner spinner_noentrega = (Spinner) comprarProduct.findViewById(R.id.spinner_noentrega);
         TextView codigo = (TextView) comprarProduct.findViewById(R.id.codigo);
         TextView cantidad = (TextView) comprarProduct.findViewById(R.id.cantidad);
         TextView name = (TextView) comprarProduct.findViewById(R.id.name);
+        TextView comentario = (TextView) comprarProduct.findViewById(R.id.comentario);
         TextView grupo = (TextView) comprarProduct.findViewById(R.id.grupo);
+        ImageView menos = (ImageView) comprarProduct.findViewById(R.id.menos);
+        ImageView mas = (ImageView) comprarProduct.findViewById(R.id.mas);
         AppCompatImageView agregar = comprarProduct.findViewById(R.id.agregar);
         AppCompatImageView ver_foto = comprarProduct.findViewById(R.id.ver_foto);
+        Button guardar = comprarProduct.findViewById(R.id.guardar);
+        fotItem = null;
+        fotoItem = false;
 
         codigo.setText(""+df.getCodigo_item());
         name.setText(""+df.getDescripcion());
         grupo.setText(""+pto_vt);
         cantidad.setText(""+df.getCantidad()+" / "+df.getCantidad());
 
+        if (df.getObservacion_noentrega() != null){
+            comentario.setText(""+df.getObservacion_noentrega());
+        }
+
+        if (df.getFoto_noentrega() != null){
+            if (df.getFoto_noentrega().length() > 0) {
+                if (!df.getFoto_noentrega().equals("null")) {
+                    fotItem = Utils.convert(df.getFoto_noentrega());
+                }
+            }
+        }
+
         agregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                fotoItem = true;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     if (!Environment.isExternalStorageManager()) {
+
 
                         try {
                             Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
@@ -1288,13 +1514,41 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
             }
         });
 
+        cant = 0;
+        if (df.getCantidad() != null){
+            cant = Float.parseFloat(df.getCantidad());
+        }
+        menos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (cant > 0){
+                    cant--;
+                    cantidad.setText(""+cant+" / "+df.getCantidad());
+                }
+
+            }
+        });
+
+        mas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (cant < Float.parseFloat(df.getCantidad())){
+                    cant++;
+                    cantidad.setText(""+cant+" / "+df.getCantidad());
+                }
+
+            }
+        });
+
         ver_foto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (bitmap != null){
-                    if (Utils.convertBase64String(bitmap) != null) {
+                if (fotItem != null){
+                    if (Utils.convertBase64String(fotItem) != null) {
                         Intent intent = new Intent(DetalleDespachosPlanificacionActivity.this, PhotoViewer.class);
-                        intent.putExtra("imageString64", "" +Utils.convertBase64String(bitmap));
+                        intent.putExtra("imageString64", "" +Utils.convertBase64String(fotItem));
                         startActivity(intent);
                     }
 
@@ -1304,6 +1558,12 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
             }
         });
 
+        guardar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cambiaestoItemDespacho(alert, comentario.getText().toString(),""+df.getFct_det_id());
+            }
+        });
 
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -1317,6 +1577,96 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
         alert.setCancelable(false);
         alert.show();
 
+    }
+
+
+    private void cambiaestoItemDespacho(AlertDialog alert, String comentario, String fct_det_id){
+
+        showProgressWait();
+
+        //JSON SEND
+        DespachoItemFactura model = new DespachoItemFactura();
+        model.setObservacion_noentrega(comentario);
+        model.setFoto_noentrega("");
+        if (fotItem != null){
+            model.setFoto_noentrega(""+Utils.convertBase64String(fotItem));
+        }
+        model.setCntdespacho(""+cant);
+        model.setFct_det_id(fct_det_id);
+        model.setMetodo("RegistrarItemDespacho");
+
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
+        try {
+
+            IDespachoItemFactura request = DepcApplication.getApplication().getRestAdapter().create(IDespachoItemFactura.class);
+            callItem = request.getBodegas(body);
+            callItem.enqueue(new Callback<IDespachoItemFactura.dataBodega>() {
+                @Override
+                public void onResponse(Call<IDespachoItemFactura.dataBodega> call, Response<IDespachoItemFactura.dataBodega> response) {
+                    if (response.isSuccessful()) {
+
+                        dataItem = response.body();
+                        try {
+
+                            hideProgressWait();
+
+                            String mensajeError = Const.ERROR_DEFAULT;
+
+                            if (dataItem != null) {
+                                if (dataItem.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            alert.dismiss();
+
+                                            showAlert("ACTUALIZACIÓN REALIZADA");
+                                            return;
+                                        }
+                                    });
+
+                                    return;
+                                }else{
+                                    if (dataItem.getStatus_message() != null){
+                                        mensajeError = data.getStatus_message();
+                                    }
+
+                                }
+                            }
+
+                            showAlert(mensajeError);
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideProgressWait();
+                            showAlert(Const.ERROR_DEFAULT);
+                        }
+
+                    } else {
+                        hideProgressWait();
+                        showAlert(Const.ERROR_DEFAULT);
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IDespachoItemFactura.dataBodega> call, Throwable t) {
+                    hideProgressWait();
+                    showAlert(Const.ERROR_DEFAULT);
+
+                }
+            });
+
+        }catch (Exception e){
+            hideProgressWait();
+            showAlert(Const.ERROR_DEFAULT);
+
+        }
     }
 
     private void getEstadoFacturaDespacho(){

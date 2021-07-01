@@ -70,7 +70,7 @@
             <image>@drawable/ic_baseline_playlist_add_check_24</image>
             <activity>com.smartapp.depc_ice.Activities.Pedido.ListaPredidosActivity</activity>
         </item>
-        <item>
+       <!-- <item>
             <code>5</code>
             <name>Cobros</name>
             <image>@drawable/ic_baseline_attach_money_24</image>
@@ -81,7 +81,7 @@
             <name>Historial&#160;de&#160;Cobros</name>
             <image>@drawable/ic_baseline_post_add_24</image>
             <activity></activity>
-        </item>
+        </item>-->
         <item>
             <code>7</code>
             <name>Gabinets</name>

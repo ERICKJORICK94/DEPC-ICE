@@ -31,6 +31,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:gravity="center">
 
                 <ImageView
@@ -61,7 +62,6 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:visibility="gone"
                         android:id="@+id/cant_sincro"
                         android:layout_width="22dp"
                         android:layout_height="22dp"
@@ -71,7 +71,8 @@
                         android:maxLines="1"
                         android:text="0"
                         android:textColor="@color/White"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 

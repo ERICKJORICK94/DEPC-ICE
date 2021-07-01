@@ -19,6 +19,7 @@ import com.smartapp.depc_ice.Entities.FormaPago;
 import com.smartapp.depc_ice.Entities.Gabinet;
 import com.smartapp.depc_ice.Entities.GabinetGeneral;
 import com.smartapp.depc_ice.Entities.ListarViajesDia;
+import com.smartapp.depc_ice.Entities.MotivosNoEntrega;
 import com.smartapp.depc_ice.Entities.Pedidos;
 import com.smartapp.depc_ice.Entities.Productos;
 import com.smartapp.depc_ice.Entities.PuntosVenta;
@@ -51,6 +52,31 @@ public class DataBaseHelper {
         List<Usuario> usuarios = null;
         String query = "SELECT * FROM " + Const.TABLE_USUARIO;
         GenericRawResults<Usuario> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+
+    //HELPER MOTIVO NO ENTREGA
+    public static void saveMotivosNoEntrega(MotivosNoEntrega emp, Dao<MotivosNoEntrega, Integer> userDao) {
+        try {
+            userDao.create(emp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteMotivosNoEntrega(Dao<MotivosNoEntrega, Integer> userDao) throws SQLException {
+        DeleteBuilder<MotivosNoEntrega, Integer> deleteBuilder = userDao.deleteBuilder();
+        deleteBuilder.delete();
+    }
+
+    public static List<MotivosNoEntrega> getMotivosNoEntrega(Dao<MotivosNoEntrega, Integer> userDao) throws SQLException {
+
+        List<MotivosNoEntrega> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_MOTIVOSNO_ENTREGA;
+        GenericRawResults<MotivosNoEntrega> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
         usuarios = rawResults.getResults();
 
         return usuarios;
