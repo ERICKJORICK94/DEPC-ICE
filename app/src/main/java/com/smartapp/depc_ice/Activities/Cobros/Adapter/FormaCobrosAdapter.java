@@ -10,6 +10,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.smartapp.depc_ice.Database.DataBaseHelper;
+import com.smartapp.depc_ice.DepcApplication;
+import com.smartapp.depc_ice.Entities.DetalleFacturas;
+import com.smartapp.depc_ice.Entities.DetalleFormaPago;
 import com.smartapp.depc_ice.R;
 
 import java.sql.SQLException;
@@ -24,18 +28,22 @@ public class FormaCobrosAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
     private boolean isShowing = true;
+    List<DetalleFormaPago> detalleFormaPagos;
+    private String factura_id;
 
 
-    public FormaCobrosAdapter(Context c, boolean isShowing) {
+    public FormaCobrosAdapter(Context c, boolean isShowing, List<DetalleFormaPago> detalleFormaPagos, String factura_id) {
         mContext = c;
         mInflater = LayoutInflater.from(mContext);
         this.isShowing = isShowing;
+        this.detalleFormaPagos = detalleFormaPagos;
+        this.factura_id = factura_id;
 
     }
 
     public int getCount() {
 
-        return 2;
+        return detalleFormaPagos.size();
     }
 
     public Object getItem(int position) {
@@ -80,13 +88,17 @@ public class FormaCobrosAdapter extends BaseAdapter {
             viewHolder.status.setText("PAGO EN CHEQUE");
         }
 
+        DetalleFormaPago df = this.detalleFormaPagos.get(position);
+        viewHolder.name.setText("$ "+df.getValor());
+        viewHolder.status.setText(""+df.getNombre_forma_de_pago());
+
 
         viewHolder.close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
 
-                /*new AlertDialog.Builder(mContext)
+                new AlertDialog.Builder(mContext)
                         .setTitle("ATENCIÓN")
                         .setMessage("¿Está seguro que desea eliminar la forma de pago?")
                         .setIcon(android.R.drawable.ic_dialog_alert)
@@ -96,10 +108,10 @@ public class FormaCobrosAdapter extends BaseAdapter {
 
 
                                 try {
-                                    DataBaseHelper.deleteDetallePagoByID(San32Application.getApplication().getDetallePagoDao(),""+item.getId());
+                                    DataBaseHelper.deleteDetalleFormaPago(DepcApplication.getApplication().getDetalleFormaPagoDao(),df.getId());
 
-                                    if (DataBaseHelper.getDetallePagoByIdPago(San32Application.getApplication().getDetallePagoDao(), idPago) != null){
-                                        lista = DataBaseHelper.getDetallePagoByIdPago(San32Application.getApplication().getDetallePagoDao(), idPago);
+                                    if (DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), factura_id) != null){
+                                        detalleFormaPagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), factura_id);
                                     }
 
                                     notifyDataSetChanged();
@@ -109,7 +121,7 @@ public class FormaCobrosAdapter extends BaseAdapter {
 
 
                             }})
-                        .setNegativeButton("NO", null).show();*/
+                        .setNegativeButton("NO", null).show();
 
 
             }

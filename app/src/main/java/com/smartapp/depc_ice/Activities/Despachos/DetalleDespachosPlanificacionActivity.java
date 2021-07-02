@@ -77,6 +77,7 @@ import com.smartapp.depc_ice.Models.DespachoItemFactura;
 import com.smartapp.depc_ice.Models.Device;
 import com.smartapp.depc_ice.Models.EstadoFacturaModel;
 import com.smartapp.depc_ice.Models.MotivoNoEntregaModel;
+import com.smartapp.depc_ice.Models.RegistrarDespachoModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.BTDeviceList;
 import com.smartapp.depc_ice.Utils.Const;
@@ -152,12 +153,16 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
     private int indexMotivoNoEntrega = -1;
     Bitmap fotItem = null;
     boolean fotoItem = false;
-
+    private Bitmap bitmapFirma;
+    private EditText recibe;
+    private Usuario user;
     private Call<IMotivosNoEntrega.dataBodega> callMotivos;
     private IMotivosNoEntrega.dataBodega dataMotvos;
     private Call<IDespachoItemFactura.dataBodega> callItem;
     private IDespachoItemFactura.dataBodega dataItem;
     private List<MotivosNoEntrega> motivosNoEntrega;
+    private EditText observacio;
+    List<EstadoFacturasDespacho> estadoFacturasDespachos;
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -211,6 +216,8 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        DepcApplication.getApplication().isReload = false;
+
         layout = addLayout(R.layout.despacho_plainificacion_layout);
         spinner_despacho = (Spinner) layout.findViewById(R.id.spinner_despacho);
         impresora = (TextView) layout.findViewById(R.id.impresora);
@@ -221,6 +228,8 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
         ruc = (TextView) layout.findViewById(R.id.ruc);
         lbl_fecha = (TextView) layout.findViewById(R.id.lbl_fecha);
         direccion = (TextView) layout.findViewById(R.id.direccion);
+        recibe = (EditText) layout.findViewById(R.id.recibe);
+        observacio = (EditText) layout.findViewById(R.id.comentario);
         spinner_noentrega = (Spinner) layout.findViewById(R.id.spinner_noentrega);
         btn_whatsapp = (TextView) layout.findViewById(R.id.btn_whatsapp);
         cobrar = (Button) layout.findViewById(R.id.cobrar);
@@ -233,6 +242,19 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
             detalleViaje = (DetalleViaje) getIntent().getSerializableExtra("detalle_viaje");
         }
 
+        try {
+            List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
+            if (usuarios != null){
+                if (usuarios.size() > 0){
+                    user = usuarios.get(0);
+                }
+            }
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
         cobrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -240,6 +262,8 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
                     if (detalleViaje.getFactura_id() != null){
                         Intent intent = new Intent(DetalleDespachosPlanificacionActivity.this, CobrosActivity.class);
                         intent.putExtra("factura_id",detalleViaje.getFactura_id());
+                        intent.putExtra("id_vaje",detalleViaje.getId_viaje());
+                        intent.putExtra("cuenta_id",detalleViaje.getCuenta_id());
                         startActivity(intent);
                     }
                 }
@@ -418,6 +442,8 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
                 aceptar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        bitmapFirma = signature_pad.getSignatureBitmap();
+                        registrarDespacho();
                         MyDialog.dismiss();
                     }
                 });
@@ -1632,7 +1658,7 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
                                     return;
                                 }else{
                                     if (dataItem.getStatus_message() != null){
-                                        mensajeError = data.getStatus_message();
+                                        mensajeError = dataItem.getStatus_message();
                                     }
 
                                 }
@@ -1770,7 +1796,7 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
     private void showEstadoFacturaDespacho(){
 
         try {
-            List<EstadoFacturasDespacho> estadoFacturasDespachos = DataBaseHelper.getEstadoFacturasDespacho(DepcApplication.getApplication().getEstadoFacturasDespachoDao());
+            estadoFacturasDespachos = DataBaseHelper.getEstadoFacturasDespacho(DepcApplication.getApplication().getEstadoFacturasDespachoDao());
             if (estadoFacturasDespachos != null){
                 if (estadoFacturasDespachos.size() > 0){
 
@@ -1827,6 +1853,14 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
 
                     condition(""+cliente_id);
 
+                }
+
+                if (detalleViaje.getFoto_entrega() != null){
+                    if (detalleViaje.getFoto_entrega().length() > 0) {
+                        if (!detalleViaje.getFoto_entrega().equals("null")) {
+                            bitmap = Utils.convert(detalleViaje.getFoto_entrega());
+                        }
+                    }
                 }
             }
 
@@ -1971,6 +2005,132 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
 
         }
 
+    }
+
+
+
+
+    private void registrarDespacho(){
+
+        if (indexMotivoNoEntrega == -1){
+            showAlert("Seleccione motivo de no entrega");
+            return;
+        }
+
+        if (motivosNoEntrega.size() == indexMotivoNoEntrega){
+            showAlert("Seleccione motivo de no entrega");
+            return;
+        }
+
+        if (indexEstadoFacturaDespachos == -1){
+            showAlert("Seleccione estado de factura");
+            return;
+        }
+
+        showProgressWait();
+
+
+        //JSON SEND
+        RegistrarDespachoModel model = new RegistrarDespachoModel();
+        model.setFactura_id(""+detalleViaje.getFactura_id());
+        model.setFoto_entrega("null");
+        if (bitmap != null){
+            model.setFoto_entrega(""+Utils.convertBase64String(bitmap));
+        }
+        model.setId_motivo_noentrega(""+motivosNoEntrega.get(indexMotivoNoEntrega).getNum_motivo());
+        model.setFirma_persona_recibe("null");
+        if (bitmapFirma != null){
+            model.setFirma_persona_recibe(""+Utils.convertBase64String(bitmapFirma));
+        }
+        model.setNombre_persona_recibe(""+recibe.getText().toString());
+        model.setUsuario_procesa(""+user.getUsuario());
+        model.setObservacion_entrega(""+observacio.getText().toString());
+        model.setEstado(""+estadoFacturasDespachos.get(indexEstadoFacturaDespachos).getNum_estado());
+        model.setMetodo("RegistrarDespachoFactura");
+
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
+        try {
+
+            IDespachoItemFactura request = DepcApplication.getApplication().getRestAdapter().create(IDespachoItemFactura.class);
+            callItem = request.getBodegas(body);
+            callItem.enqueue(new Callback<IDespachoItemFactura.dataBodega>() {
+                @Override
+                public void onResponse(Call<IDespachoItemFactura.dataBodega> call, Response<IDespachoItemFactura.dataBodega> response) {
+                    if (response.isSuccessful()) {
+
+                        dataItem = response.body();
+                        try {
+
+                            hideProgressWait();
+
+                            String mensajeError = Const.ERROR_DEFAULT;
+
+                            if (dataItem != null) {
+                                if (dataItem.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                            AlertDialog alertDialog = new AlertDialog.Builder(DetalleDespachosPlanificacionActivity.this).create();
+                                            alertDialog.setTitle("Atención");
+                                            alertDialog.setMessage("ACTUALIZACIÓN REALIZADA");
+                                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            dialog.dismiss();
+                                                            DepcApplication.getApplication().isReload = true;
+                                                            finish();
+                                                        }
+                                                    });
+                                            alertDialog.show();
+
+                                            return;
+                                        }
+                                    });
+
+                                    return;
+                                }else{
+                                    if (dataItem.getStatus_message() != null){
+                                        mensajeError = dataItem.getStatus_message();
+                                    }
+
+                                }
+                            }
+
+                            showAlert(mensajeError);
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideProgressWait();
+                            showAlert(Const.ERROR_DEFAULT);
+                        }
+
+                    } else {
+                        hideProgressWait();
+                        showAlert(Const.ERROR_DEFAULT);
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IDespachoItemFactura.dataBodega> call, Throwable t) {
+                    hideProgressWait();
+                    showAlert(Const.ERROR_DEFAULT);
+
+                }
+            });
+
+        }catch (Exception e){
+            hideProgressWait();
+            showAlert(Const.ERROR_DEFAULT);
+
+        }
     }
 
 

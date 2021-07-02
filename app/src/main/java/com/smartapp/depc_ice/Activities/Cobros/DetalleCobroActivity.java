@@ -41,6 +41,8 @@ import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Clientes;
+import com.smartapp.depc_ice.Entities.DetalleFacturas;
+import com.smartapp.depc_ice.Entities.DetalleFormaPago;
 import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Models.Device;
 import com.smartapp.depc_ice.R;
@@ -105,7 +107,10 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
     private double ingreso = 0;
     private double totalPagar = 0;
     private double totalPagarDEbitar = 0;
-
+    private DetalleFacturas detalleFactura;
+    private String id_vaje = "";
+    private  Usuario user;
+    private String cuenta_id = "";
     byte FONT_TYPE;
     private static BluetoothSocket btsocket;
     private static OutputStream btoutputstream;
@@ -176,6 +181,35 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
         edt_referencia = (EditText) layout.findViewById(R.id.edt_referencia);
         edt_nro_ingreso = (EditText) layout.findViewById(R.id.edt_nro_ingreso);
         listview = (NonScrollListView) layout.findViewById(R.id.listview);
+
+        if (getIntent() != null){
+            detalleFactura = (DetalleFacturas) getIntent().getSerializableExtra("detalle_factura");
+            id_vaje = getIntent().getStringExtra("id_vaje");
+            cuenta_id = getIntent().getStringExtra("cuenta_id");
+
+            if (detalleFactura != null){
+                if (detalleFactura.getSaldo() != null){
+                    total_facturas.setText("$ "+detalleFactura.getSaldo());
+                }
+            }
+        }
+
+        String recaudadorString = "";
+        try {
+            List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
+            if (usuarios != null){
+                if (usuarios.size() > 0){
+                    user = usuarios.get(0);
+                    if (user.getNombrescompletos() != null){
+                        recaudadorString = ""+user.getNombrescompletos();
+                    }
+                }
+            }
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         
 
         impresora.setVisibility(View.GONE);
@@ -190,7 +224,6 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
             }
         }
 
-        String recaudadorString = "";
         try {
             List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
             if (usuarios != null){
@@ -220,6 +253,9 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(DetalleCobroActivity.this, FormaPagoActivity.class);
+                intent.putExtra("detalle_factura",detalleFactura);
+                intent.putExtra("id_vaje",id_vaje);
+                intent.putExtra("cuenta_id",cuenta_id);
                 startActivity(intent);
             }
         });
@@ -848,11 +884,30 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
 
     }
 
+    private void showFormaPago(){
+
+
+        if (detalleFactura != null){
+            try {
+                List<DetalleFormaPago> detalleFormaPagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFactura_id());
+
+                if (detalleFormaPagos != null){
+                    if (detalleFormaPagos.size() > 0){
+                        listview.setAdapter(new FormaCobrosAdapter(this, true, detalleFormaPagos, ""+detalleFactura.getFactura_id()));
+                    }
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+
+    }
+
 
     @Override
     protected void onResume() {
         super.onResume();
-        listview.setAdapter(new FormaCobrosAdapter(this, true));
+        showFormaPago();
     }
 
 

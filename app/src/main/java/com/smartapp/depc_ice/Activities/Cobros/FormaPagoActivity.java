@@ -2,6 +2,7 @@ package com.smartapp.depc_ice.Activities.Cobros;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -30,7 +32,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
+import com.github.gcacace.signaturepad.views.SignaturePad;
 import com.google.gson.Gson;
+import com.smartapp.depc_ice.Activities.Despachos.DetalleDespachosPlanificacionActivity;
 import com.smartapp.depc_ice.Activities.DetalleCliente.MantDireccionActivity;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
@@ -38,7 +42,10 @@ import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Bancos;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.CuentaBancos;
+import com.smartapp.depc_ice.Entities.DetalleFacturas;
+import com.smartapp.depc_ice.Entities.DetalleFormaPago;
 import com.smartapp.depc_ice.Entities.FormaPago;
+import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Entities.Zonas;
 import com.smartapp.depc_ice.Interface.IBancos;
 import com.smartapp.depc_ice.Interface.ICuentasBancos;
@@ -95,6 +102,13 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
     private LinearLayout linear_nro_voucher;
     private String idPago = "";
 
+    private DetalleFacturas detalleFactura;
+    private String id_vaje = "";
+    private Usuario user;
+
+    private float total = 0;
+    private float saldo = 0;
+
 
 
     //EDITTEXT
@@ -115,8 +129,9 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
     private EditText edt_numero_deposito;
     private Button btn_fecha_vigencia;
     private EditText edt_referencia;
+    private EditText pagado_por;
+    private EditText comentario;
     private Button btn_agregar;
-    private double saldo = 0;
     private int positionForma = 0;
 
     private String subrubro = "";
@@ -131,7 +146,8 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
     private String numeroCuentaBancaria = "";
     private String nombreBanciCuentaBancaria = "";
     private String cuentaContable = "";
-    private Clientes cliente;
+    private String cuenta_id = "";
+
     private TextView agregar,ver_foto;
     private final int PICK_IMAGE_CAMERA = 1, PICK_IMAGE_GALLERY = 2;
     private static final int MY_CAMERA_REQUEST_CODE = 100;
@@ -142,9 +158,12 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
     private List<Bancos> bancos;
     private List<CuentaBancos> cuentaBancos;
     private int indexBanco = -1;
-
+    private int indexCuentas = -1;
+    private Bitmap bitmapFirma;
     private Call<ICuentasBancos.dataBodega> callCuentasBanco;
     private ICuentasBancos.dataBodega dataCuentaBanco;
+    private int id_forma_pago = -1;
+    private String nombreFormaPago = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +173,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
         Utils.SetStyleActionBarTitle(this);
         layoutInflater = LayoutInflater.from(this);
 
-        cliente = DepcApplication.getApplication().getCliente();
+        //cliente = DepcApplication.getApplication().getCliente();
 
         spinner_forma = (Spinner) layout.findViewById(R.id.spinner_forma);
         spinner_banco = (Spinner) layout.findViewById(R.id.spinner_banco);
@@ -193,12 +212,47 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
         edt_monto_pagar = (EditText) layout.findViewById(R.id.edt_monto_pagar);
         btn_vencimiento = (Button) layout.findViewById(R.id.btn_vencimiento);
         edt_autorizacion = (EditText) layout.findViewById(R.id.edt_autorizacion);
+        pagado_por = (EditText) layout.findViewById(R.id.pagado_por);
+        comentario = (EditText) layout.findViewById(R.id.comentario);
         edt_numero_cuenta = (EditText) layout.findViewById(R.id.edt_numero_cuenta);
         edt_numero_cheque = (EditText) layout.findViewById(R.id.edt_numero_cheque);
         edt_numero_deposito = (EditText) layout.findViewById(R.id.edt_numero_deposito);
         btn_fecha_vigencia = (Button) layout.findViewById(R.id.btn_fecha_vigencia);
         edt_referencia = (EditText) layout.findViewById(R.id.edt_referencia);
         btn_agregar = (Button) layout.findViewById(R.id.btn_agregar);
+
+        if (getIntent() != null){
+            detalleFactura = (DetalleFacturas) getIntent().getSerializableExtra("detalle_factura");
+            id_vaje = getIntent().getStringExtra("id_vaje");
+            cuenta_id = getIntent().getStringExtra("cuenta_id");
+
+            edit_saldo.setText("$ 0.00");
+            if (detalleFactura != null){
+                if (detalleFactura.getSaldo() != null){
+                    total = Float.parseFloat(detalleFactura.getSaldo());
+                    edt_monto.setText(String.format("$ %.2f",total));
+                }
+            }
+        }
+
+
+        String recaudadorString = "";
+        try {
+            List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
+            if (usuarios != null){
+                if (usuarios.size() > 0){
+                    user = usuarios.get(0);
+                    if (user.getNombrescompletos() != null){
+                        recaudadorString = ""+user.getNombrescompletos();
+                    }
+                }
+            }
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
 
         calculateValor();
 
@@ -302,11 +356,33 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
             @Override
             public void onClick(View v) {
 
-                try {
-                    validateTable();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                final Dialog MyDialog = new Dialog(FormaPagoActivity.this);
+                MyDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                MyDialog.setContentView(R.layout.firma_layout);
+                MyDialog.setCancelable(true);
+                Button limpiar = (Button) MyDialog.findViewById(R.id.limpiar);
+                Button aceptar = (Button) MyDialog.findViewById(R.id.aceptar);
+                SignaturePad signature_pad = (SignaturePad) MyDialog.findViewById(R.id.signature_pad);
+
+                limpiar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        signature_pad.clear();
+                    }
+                });
+
+                aceptar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bitmapFirma = signature_pad.getSignatureBitmap();
+                        crearFormaPago();
+                        MyDialog.dismiss();
+                    }
+                });
+
+
+                MyDialog.show();
+
             }
         });
 
@@ -405,13 +481,28 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
 
     private void calculateValor() {
 
-        double valorTotal = 146.30;
+        if (detalleFactura != null){
+            try {
+                List<DetalleFormaPago> detalleFormaPagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFactura_id());
 
-        edt_monto.setText(""+ String.format("%.2f", Utils.roundFloat(valorTotal, 2)));
+                if (detalleFormaPagos != null){
+                    if (detalleFormaPagos.size() > 0){
+                        float acumulador = 0;
+                        for (DetalleFormaPago df : detalleFormaPagos){
+                            if (df.getValor() != null){
+                                acumulador = acumulador + Float.parseFloat(df.getValor());
+                            }
+                        }
 
-        saldo = valorTotal;
-        edit_saldo.setText(""+ String.format("%.2f", saldo));
-        saldo = Double.parseDouble(String.format("%.2f", saldo));
+                        saldo = total - acumulador;
+                        edit_saldo.setText(String.format("$ %.2f",saldo));
+                    }
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+
     }
 
     private void showList(){
@@ -436,7 +527,8 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                            int id_forma_pago = Integer.parseInt(formaPagos.get(position).getId_forma_pago());
+                            id_forma_pago = Integer.parseInt(formaPagos.get(position).getId_forma_pago());
+                            nombreFormaPago = ""+formaPagos.get(position).getDescripcion();
                             switch (id_forma_pago){
                                 case 9:
                                     showhide(Const.FORMA_TRA);
@@ -751,7 +843,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
                     spinner_cuentas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                                indexCuentas = position;
                         }
 
                         @Override
@@ -800,12 +892,12 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
             linear_n_tarjeta.setVisibility(View.GONE);
             linear_banco.setVisibility(View.VISIBLE);
             linear_cuenta_bancaria.setVisibility(View.GONE);
-            linear_vencimiento.setVisibility(View.VISIBLE);
+            linear_vencimiento.setVisibility(View.GONE);
             linear_autoriazacion.setVisibility(View.GONE);
-            linear_numero_cuenta.setVisibility(View.VISIBLE);
+            linear_numero_cuenta.setVisibility(View.GONE);
             linear_fecha_vigencia.setVisibility(View.GONE);
-            linear_numero_cheque.setVisibility(View.VISIBLE);
-            linear_numero_deposito.setVisibility(View.GONE);
+            linear_numero_cheque.setVisibility(View.GONE);
+            linear_numero_deposito.setVisibility(View.VISIBLE);
             linear_numero_nc.setVisibility(View.GONE);
             linear_nro_letra.setVisibility(View.GONE);
             linear_cuotas.setVisibility(View.GONE);
@@ -844,7 +936,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
             linear_numero_cuenta.setVisibility(View.GONE);
             linear_fecha_vigencia.setVisibility(View.GONE);
             linear_numero_cheque.setVisibility(View.GONE);
-            linear_numero_deposito.setVisibility(View.VISIBLE);
+            linear_numero_deposito.setVisibility(View.GONE);
             linear_numero_nc.setVisibility(View.GONE);
             linear_nro_letra.setVisibility(View.GONE);
             linear_cuotas.setVisibility(View.GONE);
@@ -1050,9 +1142,74 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
 
 
 
-    private void validateTable() throws SQLException {
+    private void crearFormaPago() {
+
+        if (id_forma_pago == -1){
+            showAlert("Seleccione una forma de pago antes de continuar");
+            return;
+        }
+
+        if (edt_monto_pagar.getText().length() == 0){
+            showAlert("Ingrese un monto a pagar por favor");
+            return;
+        }
+
+        float monoPagar = Float.parseFloat(edt_monto_pagar.getText().toString());
+
+        if (monoPagar > saldo){
+            showAlert("Monto a pagar no debe de ser mayor al saldo pendiente");
+            return;
+        }
 
 
+        DetalleFormaPago detalleFormaPago = new DetalleFormaPago();
+
+        detalleFormaPago.setId_viaje(""+id_vaje);
+        detalleFormaPago.setFactura_id(""+detalleFactura.getFactura_id());
+        detalleFormaPago.setCuenta_id(""+cuenta_id);
+        detalleFormaPago.setPrefijo1(""+detalleFactura.getPrefijo1());
+        detalleFormaPago.setPrefijo2(""+detalleFactura.getPrefijo1());
+        detalleFormaPago.setFactura_fiscal(""+detalleFactura.getFactura_fiscal());
+        detalleFormaPago.setNombre_forma_de_pago(""+nombreFormaPago);
+        detalleFormaPago.setValor(""+edt_monto_pagar.getText().toString());
+        detalleFormaPago.setBanco_origen("");
+        if (indexBanco >= 0){
+            if (bancos != null) {
+                detalleFormaPago.setBanco_origen("" + bancos.get(indexBanco).getBanco());
+            }
+        }
+        detalleFormaPago.setNum_cuenta_origen("");
+        if (indexCuentas >= 0){
+            if (cuentaBancos != null) {
+                detalleFormaPago.setNum_cuenta_origen("" + cuentaBancos.get(indexCuentas).getNum_cuenta());
+            }
+        }
+        detalleFormaPago.setNum_documento(""+edt_numero_deposito.getText().toString());
+        detalleFormaPago.setCuenta_bancaria("");
+        if (indexCuentas >= 0){
+            if (cuentaBancos != null) {
+                detalleFormaPago.setCuenta_bancaria("" + cuentaBancos.get(indexCuentas).getCuenta());
+            }
+        }
+        detalleFormaPago.setUsuario_crea(""+user.getUsuario());
+        detalleFormaPago.setCuenta_bancaria(""+pagado_por);
+        detalleFormaPago.setFirma_persona_paga("null");
+        if (bitmapFirma != null){
+            detalleFormaPago.setFirma_persona_paga(""+Utils.convertBase64String(bitmapFirma));
+        }
+        detalleFormaPago.setFoto_cobro("null");
+        if (bitmap != null){
+            detalleFormaPago.setFoto_cobro(""+Utils.convertBase64String(bitmap));
+        }
+
+
+        try {
+            DataBaseHelper.saveDetalleFormaPago(detalleFormaPago, DepcApplication.getApplication().getDetalleFormaPagoDao());
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        finish();
     }
 
     @Override

@@ -54,7 +54,7 @@
             android:textStyle="bold"
             android:textSize="17sp"
             android:textColor="@color/DarkRed"
-            android:text="$ 146.30"/>
+            android:text="$ 0.00"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -69,6 +69,7 @@
             android:layout_height="wrap_content"
             android:focusable="true"
             android:layout_margin="10dp"
+
             android:focusableInTouchMode="true"
             android:orientation="horizontal">
 
@@ -103,6 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:visibility="gone"
             android:orientation="horizontal">
 
 
@@ -133,6 +135,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:visibility="gone"
             android:orientation="horizontal">
 
 
@@ -164,6 +167,7 @@
             android:textColor="@color/White"
             android:background="@color/RoyalBlue"
             android:padding="5dp"
+            android:layout_marginTop="10dp"
             android:gravity="center"
             android:textSize="12sp"/>
 

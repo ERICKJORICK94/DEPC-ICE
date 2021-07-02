@@ -28,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -96,7 +97,7 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
 
     private View layout;
     private LayoutInflater layoutInflater;
-    private NonScrollListView lista;
+    private ListView lista;
     private Button cancela;
     private Button cobro_rapido;
     private ScrollView scroll;
@@ -124,9 +125,12 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
     private EditText edt_referencia;
     private EditText edit_numero_ingreso;
     private String factura_id = "";
+    private String id_vaje = "";
+    private String cuenta_id = "";
     private List<DetalleFacturas> detalleFacturas;
 
     private List<String> listaVentas = new ArrayList<String>();
+    int positionSelectFactura = - 1;
 
     byte FONT_TYPE;
     private static BluetoothSocket btsocket;
@@ -134,6 +138,8 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
 
     private Call<IFormaPago.dataBodega> call;
     private IFormaPago.dataBodega data;
+
+    int indexFactura = -1;
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -198,9 +204,9 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
         layoutInflater = LayoutInflater.from(this);
 
 
-        scroll = (ScrollView) layout.findViewById(R.id.scroll);
+        //scroll = (ScrollView) layout.findViewById(R.id.scroll);
         impresora = (TextView) layout.findViewById(R.id.impresora);
-        lista = (NonScrollListView) layout.findViewById(R.id.lista);
+        lista = (ListView) layout.findViewById(R.id.lista);
         cancela = (Button) layout.findViewById(R.id.cancela);
         cobro_rapido = (Button) layout.findViewById(R.id.cobro_rapido);
         valor_total = (TextView) layout.findViewById(R.id.valor_total);
@@ -213,7 +219,7 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
         nd = (TextView) layout.findViewById(R.id.nd);
         pag = (TextView) layout.findViewById(R.id.pag);
 
-        lista.setFocusable(false);
+        //lista.setFocusable(false);
 
         impresora.setVisibility(View.GONE);
 
@@ -230,7 +236,16 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
         cancela.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (indexFactura == -1){
+                    showAlert("SELECCIONE UNA FACTURA ANTES DE CONTINUAR");
+                    return;
+                }
+
                 Intent intent = new Intent(CobrosActivity.this, DetalleCobroActivity.class);
+                intent.putExtra("detalle_factura",detalleFacturas.get(indexFactura));
+                intent.putExtra("id_vaje",id_vaje);
+                intent.putExtra("cuenta_id",cuenta_id);
                 startActivity(intent);
                 return;
             }
@@ -252,6 +267,8 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
 
         if (getIntent() != null){
             factura_id = getIntent().getStringExtra("factura_id");
+            id_vaje = getIntent().getStringExtra("id_vaje");
+            cuenta_id = getIntent().getStringExtra("cuenta_id");
         }
         showList();
         getFormaPagos();
@@ -635,7 +652,7 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
             if(detalleFacturas != null){
 
                 lista.setAdapter(new ListaCobrosAdapter(CobrosActivity.this, detalleFacturas));
-                scroll.smoothScrollTo(0,0);
+                //scroll.smoothScrollTo(0,0);
 
             }
 
@@ -942,37 +959,10 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
     }
 
 
-    public void calculateValor(List<Integer> indexs){
+    public void calculateValor(int position){
 
-        /*listaEnviar = new ArrayList<Cobro>();
-
-        double valorTotal = 0;
-        for (int index : indexs){
-            Cobro c = cobroList.get(index);
-            listaEnviar.add(c);
-
-            boolean flag = true;
-
-            if(c.getValorUsuario() != null){
-                if( Utils.isNumberDecimal(c.getValorUsuario())){
-                    valorTotal += Double.parseDouble(c.getValorUsuario());
-                    flag = false;
-                }
-            }
-
-            if (flag == true){
-                if(c.getSaldo() != null) {
-                    c.setSaldo(c.getSaldo().replace(",","."));
-                    if( Utils.isNumberDecimal(c.getSaldo())){
-                        valorTotal += Double.parseDouble(c.getSaldo());
-                    }
-
-                }
-            }
-
-        }
-
-        valor_total.setText(""+Utils.roundFloat(valorTotal, 2));*/
+        Log.e(TAG,""+position);
+        indexFactura = position;
     }
 
 

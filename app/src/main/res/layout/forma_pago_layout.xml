@@ -600,7 +600,7 @@
                     android:layout_weight=".45"
                     android:textColor="@color/Black"
                     android:textStyle="bold"
-                    android:text="Nro. Depósito" />
+                    android:text="Nro. Documento" />
 
                 <EditText
                     android:id="@+id/edt_numero_deposito"
@@ -645,6 +645,61 @@
 
 
 
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Comentario" />
+
+                <EditText
+                    android:id="@+id/comentario"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/custom_border"
+                    android:padding="5dp"
+                    android:layout_weight="1"></EditText>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Pagado por" />
+
+                <EditText
+                    android:id="@+id/pagado_por"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/custom_border"
+                    android:padding="5dp"
+                    android:layout_weight="1"></EditText>
+
+            </LinearLayout>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -652,6 +707,7 @@
                 android:layout_marginTop="5dp"
                 android:textColor="@color/DarkGray"
                 android:text="FOTO"/>
+
 
             <LinearLayout
                 android:layout_width="match_parent"

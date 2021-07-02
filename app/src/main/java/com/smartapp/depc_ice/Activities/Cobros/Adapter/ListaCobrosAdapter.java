@@ -30,6 +30,8 @@ public class ListaCobrosAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private List<Integer> positionCheck;
     private List<DetalleFacturas> detalleFacturas;
+    private final int POSITIONCHECK = 6546;
+    private int index = -1;
 
     public ListaCobrosAdapter(CobrosActivity c, List<DetalleFacturas> detalleFacturas) {
         mContext = c;
@@ -90,37 +92,38 @@ public class ListaCobrosAdapter extends BaseAdapter {
             }
         });
 
+        if (index == position){
+            viewHolder.check.setChecked(true);
+        }else{
+            viewHolder.check.setChecked(false);
+        }
 
-        viewHolder.valor_vendido.setOnClickListener(new View.OnClickListener() {
+        viewHolder.check.setId(POSITIONCHECK+position);
+        viewHolder.check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (viewHolder.check.isChecked()) {
-                    //showAlertEditValor(position);
+
+                int pos = v.getId() - POSITIONCHECK;
+                if (pos == index){
+                    mContext.calculateValor(-1);
+                    index = -1;
+                }else{
+                    mContext.calculateValor(pos);
+                    index = pos;
                 }
+                notifyDataSetChanged();
+
             }
         });
+
 
 
         viewHolder.check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
-                    positionCheck.add(position);
-                }else{
-                    if(positionCheck.contains(position)){
-                        int index = 0;
-                        for(int p : positionCheck){
-                            if(p == position){
-                                positionCheck.remove(index);
-                                break;
-                            }
-                            index += 1;
-                        }
-                    }
-                }
 
-                mContext.calculateValor(positionCheck);
+
             }
         });
 

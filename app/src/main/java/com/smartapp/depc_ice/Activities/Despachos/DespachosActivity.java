@@ -341,6 +341,17 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
         super.onResume();
         //initView();
 
+        if (DepcApplication.getApplication().isReload){
+
+            if (sliding_layout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED){
+                sliding_layout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            }
+
+            validateData();
+        }
+
+        DepcApplication.getApplication().isReload = false;
+
     }
 
     private void getEstadoFacturaDespacho(){

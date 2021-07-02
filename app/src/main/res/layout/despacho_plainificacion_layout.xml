@@ -284,7 +284,7 @@
                             android:background="@drawable/custom_border"/>
 
                         <EditText
-                            android:id="@+id/nombre"
+                            android:id="@+id/recibe"
                             android:layout_width="match_parent"
                             android:layout_height="45dp"
                             android:hint="Nombre"

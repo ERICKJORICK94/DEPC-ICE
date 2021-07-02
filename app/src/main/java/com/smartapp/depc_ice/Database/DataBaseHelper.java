@@ -10,6 +10,7 @@ import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.ClientesVisitas;
 import com.smartapp.depc_ice.Entities.CuentaBancos;
 import com.smartapp.depc_ice.Entities.DetalleFacturas;
+import com.smartapp.depc_ice.Entities.DetalleFormaPago;
 import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.DetalleViaje;
 import com.smartapp.depc_ice.Entities.Direcciones;
@@ -52,6 +53,46 @@ public class DataBaseHelper {
         List<Usuario> usuarios = null;
         String query = "SELECT * FROM " + Const.TABLE_USUARIO;
         GenericRawResults<Usuario> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    //HELPER DETALLE FORMA DE PAGO
+    public static void saveDetalleFormaPago(DetalleFormaPago emp, Dao<DetalleFormaPago, Integer> userDao) {
+        try {
+            userDao.create(emp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteDetalleFormaPago(Dao<DetalleFormaPago, Integer> userDao) throws SQLException {
+        DeleteBuilder<DetalleFormaPago, Integer> deleteBuilder = userDao.deleteBuilder();
+        deleteBuilder.delete();
+    }
+
+    public static void deleteDetalleFormaPago(Dao<DetalleFormaPago, Integer> userDao, int id) throws SQLException {
+        DeleteBuilder<DetalleFormaPago, Integer> deleteBuilder = userDao.deleteBuilder();
+        deleteBuilder.where().eq("id",id);
+        deleteBuilder.delete();
+    }
+
+    public static List<DetalleFormaPago> getDetalleFormaPago(Dao<DetalleFormaPago, Integer> userDao) throws SQLException {
+
+        List<DetalleFormaPago> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_DETALLE_FORMA_PAGO;
+        GenericRawResults<DetalleFormaPago> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    public static List<DetalleFormaPago> getDetalleFormaPagoByFactura(Dao<DetalleFormaPago, Integer> userDao, String factura_id) throws SQLException {
+
+        List<DetalleFormaPago> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_DETALLE_FORMA_PAGO+" WHERE factura_id = '"+factura_id+"'";
+        GenericRawResults<DetalleFormaPago> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
         usuarios = rawResults.getResults();
 
         return usuarios;

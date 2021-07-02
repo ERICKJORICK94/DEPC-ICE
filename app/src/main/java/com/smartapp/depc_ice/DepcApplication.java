@@ -11,6 +11,7 @@ import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.ClientesVisitas;
 import com.smartapp.depc_ice.Entities.CuentaBancos;
 import com.smartapp.depc_ice.Entities.DetalleFacturas;
+import com.smartapp.depc_ice.Entities.DetalleFormaPago;
 import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.DetalleViaje;
 import com.smartapp.depc_ice.Entities.Direcciones;
@@ -60,9 +61,11 @@ public class DepcApplication extends Application {
     private Dao<DetalleViaje, Integer> detalleViajes = null;
     private Dao<DetalleFacturas, Integer> detalleFacturas = null;
     private Dao<MotivosNoEntrega, Integer> motivosNoEntregas = null;
+    private Dao<DetalleFormaPago, Integer> detalleFormaPagos = null;
     private static String latitud = "";
     private static String longitud = "";
     private static Clientes cliente = null;
+    public static boolean isReload = false;
 
     @Override
     public void onCreate() {
@@ -244,6 +247,13 @@ public class DepcApplication extends Application {
             motivosNoEntregas = databaseHelper.getDao(MotivosNoEntrega.class);
         }
         return motivosNoEntregas;
+    }
+
+    public Dao<DetalleFormaPago, Integer> getDetalleFormaPagoDao() throws SQLException {
+        if (detalleFormaPagos == null) {
+            detalleFormaPagos = databaseHelper.getDao(DetalleFormaPago.class);
+        }
+        return detalleFormaPagos;
     }
 
     public Clientes getCliente() {
