@@ -20,7 +20,8 @@ public class NovedadesActivity extends BaseActitity implements BaseActitity.Base
         layout = addLayout(R.layout.layout_novedades);
         Utils.SetStyleActionBarTitle(this);
         layoutInflater = LayoutInflater.from(this);
-        setTextLoading(Const.EN_CONSTRUCCION);
+        //setTextLoading(Const.EN_CONSTRUCCION);
+        setTextLoading("");
     }
 
     @Override

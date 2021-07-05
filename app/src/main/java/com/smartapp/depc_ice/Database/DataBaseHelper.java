@@ -67,6 +67,14 @@ public class DataBaseHelper {
         }
     }
 
+    public static void updateDetalleFormaPago(DetalleFormaPago emp, Dao<DetalleFormaPago, Integer> userDao) {
+        try {
+            userDao.update(emp);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void deleteDetalleFormaPago(Dao<DetalleFormaPago, Integer> userDao) throws SQLException {
         DeleteBuilder<DetalleFormaPago, Integer> deleteBuilder = userDao.deleteBuilder();
         deleteBuilder.delete();

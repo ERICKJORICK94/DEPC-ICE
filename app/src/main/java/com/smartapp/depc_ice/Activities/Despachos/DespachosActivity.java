@@ -9,6 +9,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -306,6 +308,7 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
 
                         listaDespachoAdapter = new PlanificadorDespachosAdapter(this, detalleViajes);
                         lista.setAdapter(listaDespachoAdapter);
+
                         lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -316,6 +319,18 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
 
                             }
                         });
+
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (sliding_layout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED){
+                                    sliding_layout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
+                                }
+                            }
+                        }, 1000);
+
+
 
                     }
                 }

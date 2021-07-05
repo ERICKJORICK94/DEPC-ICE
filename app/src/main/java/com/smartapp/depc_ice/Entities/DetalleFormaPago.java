@@ -45,6 +45,10 @@ public class DetalleFormaPago {
     private String metodo;
     @DatabaseField
     private String nombre_forma_de_pago;
+    @DatabaseField
+    private String nombre_corto_forma_de_pago;
+    @DatabaseField
+    private Boolean estado;
 
     public int getId() {
         return id;
@@ -196,5 +200,21 @@ public class DetalleFormaPago {
 
     public void setNombre_forma_de_pago(String nombre_forma_de_pago) {
         this.nombre_forma_de_pago = nombre_forma_de_pago;
+    }
+
+    public Boolean getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Boolean estado) {
+        this.estado = estado;
+    }
+
+    public String getNombre_corto_forma_de_pago() {
+        return nombre_corto_forma_de_pago;
+    }
+
+    public void setNombre_corto_forma_de_pago(String nombre_corto_forma_de_pago) {
+        this.nombre_corto_forma_de_pago = nombre_corto_forma_de_pago;
     }
 }

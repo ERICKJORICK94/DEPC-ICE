@@ -55,6 +55,7 @@ import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.DetalleFacturas;
+import com.smartapp.depc_ice.Entities.DetalleFormaPago;
 import com.smartapp.depc_ice.Entities.DetallePedido;
 import com.smartapp.depc_ice.Entities.DetalleViaje;
 import com.smartapp.depc_ice.Entities.Direcciones;
@@ -103,6 +104,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -264,6 +266,13 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
                         intent.putExtra("factura_id",detalleViaje.getFactura_id());
                         intent.putExtra("id_vaje",detalleViaje.getId_viaje());
                         intent.putExtra("cuenta_id",detalleViaje.getCuenta_id());
+                        String nombreCliente = "";
+                        if (cliente != null){
+                            if (cliente.getNombre_comercial() != null){
+                                nombreCliente =  cliente.getNombre_comercial();
+                            }
+                        }
+                        intent.putExtra("nombreCliente",nombreCliente);
                         startActivity(intent);
                     }
                 }
@@ -535,6 +544,10 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (detalleFacturas != null){
+            generatedZPL();
+        }
 
         switch (item.getItemId()){
 
@@ -848,14 +861,20 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
     private String generatedZPL(){
 
         zpl = "";
+        if (cliente == null){
+            return "";
+        }
 
-        /*try {
 
-            String nombreEmpresa = "";
+        try {
+
+            String nombreEmpresa = "DEPCONSA";
             String rucEmpresa = "";
 
+
             if (Utils.getZebra(getBaseContext())) {
-             zpl = "^XA^CFD^POI^LH0,0 ^LL600 ^FO10,20^ADN,20,20^FD" + nombreEmpresa +
+
+                /*zpl = "^XA^CFD^POI^LH0,0 ^LL600 ^FO10,20^ADN,20,20^FD" + nombreEmpresa +
                     "^FS^FO10,45^ADN,18,12^FDRUC  " + rucEmpresa +
                     "^FS^FO10,80^ADN,18,12^FDRecibo de cobro offline"+
                     "^FS^FO10,100^ADN,26,12^FDComprobante de Cancelacion # " + comprobanteNumero +
@@ -865,28 +884,28 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
                     "^FS^FO10,190^ADN,24,10^FDDoc. FA/Cuota      F.Fvto   Valor" +
                     "^FS^FO10,210^ADN,20,20^FD-----------------------------";
             int coorY = 250;
-                if (dCDeuda != null){
-                    boolean isDebito = false;
-                    float interes = 0;
-                    for (DocumentoDeuda dc : dCDeuda){
-                        //zpl += "^FS^FO10,"+coorY+"^ADN,18,10^FD"+dc.getTipoDocumento()+"  "+dc.getNumeroCuota()+"    "+dc.getFechaVencimiento()+"  "+dc.getMontoAbonado()+"";
-                        if (dc.getTipoDocumento().equals("N/D")){
-                            isDebito = true;
-                            if (Utils.isNumberDecimal(""+dc.getMontoAbonado())){
-                                float decimal = Float.parseFloat(""+dc.getMontoAbonado());
-                                interes = interes + decimal;
-                            }
-                        }else {
-                            zpl += "^FS^FO10," + coorY + "^ADN,18,10^FD" + dc.getTipoDocumento() + "  " + dc.getReferencia() + "  " + dc.getNumeroCuota() + "/" + dc.getNumeroPago() + "    " + dc.getFechaVencimiento() + "  " + dc.getMontoAbonado() + "";
-                            coorY += 20;
+            if (dCDeuda != null){
+                boolean isDebito = false;
+                float interes = 0;
+                for (DocumentoDeuda dc : dCDeuda){
+                    //zpl += "^FS^FO10,"+coorY+"^ADN,18,10^FD"+dc.getTipoDocumento()+"  "+dc.getNumeroCuota()+"    "+dc.getFechaVencimiento()+"  "+dc.getMontoAbonado()+"";
+                    if (dc.getTipoDocumento().equals("N/D")){
+                        isDebito = true;
+                        if (Utils.isNumberDecimal(""+dc.getMontoAbonado())){
+                            float decimal = Float.parseFloat(""+dc.getMontoAbonado());
+                            interes = interes + decimal;
                         }
-                    }
-
-                    if (isDebito){
-                        zpl += "^FS^FO10," + coorY + "^ADN,18,10^FD" + "Interes "+interes;
+                    }else {
+                        zpl += "^FS^FO10," + coorY + "^ADN,18,10^FD" + dc.getTipoDocumento() + "  " + dc.getReferencia() + "  " + dc.getNumeroCuota() + "/" + dc.getNumeroPago() + "    " + dc.getFechaVencimiento() + "  " + dc.getMontoAbonado() + "";
                         coorY += 20;
                     }
                 }
+
+                if (isDebito){
+                    zpl += "^FS^FO10," + coorY + "^ADN,18,10^FD" + "Interes "+interes;
+                    coorY += 20;
+                }
+            }
 
             coorY += 20;
             zpl += "^FS^FO10,"+coorY+"^ADN,20,20^FD-------------------------";
@@ -912,93 +931,72 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
             zpl +=  "^FS ^FO10,"+coorY+"^ADN,18,10^FDCliente^FS ^XZ";
 
                 Log.e("TAG---", "zpl--- " + zpl);
-                return zpl;
+                return zpl;*/
+                return "";
 
             }else {
 
-                    String offline = "Recibo de cobro offline";
-                    if (comprobanteNumero.length() > 2){
-                        offline = "";
-                    }
+                String offline = "";
 
                 zpl = nombreEmpresa + "\n" +
                         "RUC  " + rucEmpresa + "\n" +
-                        "CEL  0982539939 \n" +
-                        offline + "\n" +
-                        "Comprobante de " + "\n" +
-                        "Cancelacion # " + comprobanteNumero + "\n" +
-                        "Cliente : " + cliente.getNOMBRE() + " " + cliente.getAPELLIDO() + "\n" +
+                        "CEL  0999999999 \n" +
+                        //offline + "\n" +
+                        "Factura: " + detalleViaje.getFactura_id()+"\n" +
+                        "Items Despachados " + "\n" +
+                        "Secuencia # " + Calendar.getInstance().getTimeInMillis() + "\n" +
+                        "Cliente : " + cliente.getNombre_comercial() + "\n" +
                         "Fecha : " + Utils.getFecha() + "\n" +
                         "-----------------------------" + "\n" +
-                        "Doc. FA/Cuota     F.Fvto   Valor" + "\n" +
+                        "COD.   DESCRIP.       CANT" + "\n" +
                         "-----------------------------" + "\n";
 
+                try {
 
-                int coorY = 250;
-                if (dCDeuda != null) {
-                    boolean isDebito = false;
-                    float interes = 0;
-                    for (DocumentoDeuda dc : dCDeuda) {
-                        if (dc.getTipoDocumento().equals("N/D")){
-                            isDebito = true;
-                            if (Utils.isNumberDecimal(""+dc.getMontoAbonado())){
-                                float decimal = Float.parseFloat(""+dc.getMontoAbonado());
-                                interes = interes + decimal;
+
+                    if (detalleFacturas != null){
+                        if (detalleFacturas.size() > 0){
+
+                            for (DetalleFacturas df : detalleFacturas){
+                                zpl += "" +truncate( df.getCodigo_item(), 5)+ "  " + truncate(df.getDescripcion(),17) + truncate( ""+ df.getCantidad(),8) + "\n";
                             }
-                        }else {
-
-                            String cuotas = "";
-                            if (dc.getNumeroCuota() != null){
-                                if (!dc.getNumeroCuota().equals("0")){
-                                    cuotas = ""+dc.getNumeroCuota() + "/" + dc.getNumeroPago();
-                                }
-                            }
-
-                            zpl += "" + dc.getTipoDocumento() + "  " + dc.getReferencia() + "  " + cuotas + "    " + dc.getFechaVencimiento() + "  " + dc.getMontoAbonado() + "\n";
-                            coorY += 20;
                         }
                     }
-
-                    if (isDebito){
-                        zpl += "Interes "+interes + "\n";
-                        coorY += 20;
-                    }
+                } catch (Exception throwables) {
+                    throwables.printStackTrace();
                 }
 
-                coorY += 20;
+
+
                 zpl += "-------------------------" + "\n";
-                coorY += 20;
-                //zpl += "Total Pagado : $ " + ingreso + "\n";
-                zpl += "Saldo Anterior : $ " + String.format("%.2f",totalPagarDEbitar ) + "\n";
-
-                coorY += 20;
-                if (formasPago != null) {
-                    for (DetallePago fp : formasPago) {
-                        fp.setMonto(fp.getMonto().replace(",","."));
-                        zpl += "" + fp.getDescripcionFPago() + "     : $ " + String.format("%.2f", Float.parseFloat(fp.getMonto())) + "\n";
-                        coorY += 20;
-                    }
-                }
-
-                coorY += 20;
-                double sal = totalPagarDEbitar - ingreso;
-                zpl += "Saldo Actual : $ " + String.format("%.2f", sal) + "\n";
-                coorY += 40;
-                zpl += "___________________" + "\n";
-                coorY += 20;
+                // zpl += "Saldo Actual : $ " + String.format("%.2f", sal) + "\n";
+                //zpl += "___________________" + "\n";
                 zpl += "Cliente \n";
-
                 Log.e("TAG---", "zpl--- " + zpl);
                 return zpl;
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
+
 
 
         return "";
     }
+
+
+    public static String truncate(String str, int len) {
+        if (str.length() > len) {
+            return str.substring(0, len);
+        } else {
+            int numChar = str.length();
+            for (int x = 0;x  < (len - numChar); x++ ) {
+                str += " ";
+            }
+            return str;
+        }}
+
 
 
 
@@ -1008,18 +1006,17 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
         //zpl = dataPago.getResultado();
         //getCobros();
         zpl = texto;
-        Log.e("TAG---",zpl);
+        //Log.e("TAG---",zpl);
 
-        if (validateStatus()) {
+        new AlertDialog.Builder(DetalleDespachosPlanificacionActivity.this)
+                .setTitle("ATENCIÓN")
+                .setMessage("¿Desea imprimir items de Despacho?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton("SÍ", new DialogInterface.OnClickListener() {
 
-            new AlertDialog.Builder(DetalleDespachosPlanificacionActivity.this)
-                    .setTitle("ATENCIÓN")
-                    .setMessage("¿Desea imprimir?")
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setPositiveButton("SÍ", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
 
-                        public void onClick(DialogInterface dialog, int whichButton) {
-
+                        if (validateStatus()) {
                             try {
 
                                 dialog.dismiss();
@@ -1057,35 +1054,38 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
                             }
 
 
-                        }})
-                    .setNegativeButton("NO", new DialogInterface.OnClickListener() {
 
-                        public void onClick(DialogInterface dialog, int whichButton) {
-
-                            try {
-
-                                dialog.dismiss();
-                                //getCobros();
+                        }
 
 
 
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                    }})
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
 
+                    public void onClick(DialogInterface dialog, int whichButton) {
 
-                        }}).show();
+                        try {
 
-
-
-
-
+                            dialog.dismiss();
+                            //getCobros();
 
 
 
-            return;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
-        }
+
+                    }}).show();
+
+
+
+
+
+
+
+
+        return;
 
         //getCobros();
 

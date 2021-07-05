@@ -164,6 +164,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
     private ICuentasBancos.dataBodega dataCuentaBanco;
     private int id_forma_pago = -1;
     private String nombreFormaPago = "";
+    private String nombrecortpFormaPago = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -485,6 +486,8 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
             try {
                 List<DetalleFormaPago> detalleFormaPagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFactura_id());
 
+                saldo = total;
+                edit_saldo.setText(String.format("$ %.2f",saldo));
                 if (detalleFormaPagos != null){
                     if (detalleFormaPagos.size() > 0){
                         float acumulador = 0;
@@ -494,7 +497,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
                             }
                         }
 
-                        saldo = total - acumulador;
+                        saldo = Float.parseFloat(String.format("%.2f",(total - acumulador)));
                         edit_saldo.setText(String.format("$ %.2f",saldo));
                     }
                 }
@@ -529,6 +532,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
 
                             id_forma_pago = Integer.parseInt(formaPagos.get(position).getId_forma_pago());
                             nombreFormaPago = ""+formaPagos.get(position).getDescripcion();
+                            nombrecortpFormaPago = ""+formaPagos.get(position).getDesc_abrev();
                             switch (id_forma_pago){
                                 case 9:
                                     showhide(Const.FORMA_TRA);
@@ -1171,6 +1175,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
         detalleFormaPago.setPrefijo2(""+detalleFactura.getPrefijo1());
         detalleFormaPago.setFactura_fiscal(""+detalleFactura.getFactura_fiscal());
         detalleFormaPago.setNombre_forma_de_pago(""+nombreFormaPago);
+        detalleFormaPago.setNombre_corto_forma_de_pago(""+nombrecortpFormaPago);
         detalleFormaPago.setValor(""+edt_monto_pagar.getText().toString());
         detalleFormaPago.setBanco_origen("");
         if (indexBanco >= 0){
@@ -1192,8 +1197,9 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
             }
         }
         detalleFormaPago.setUsuario_crea(""+user.getUsuario());
-        detalleFormaPago.setCuenta_bancaria(""+pagado_por);
+        detalleFormaPago.setNombre_persona_paga(""+pagado_por.getText().toString());
         detalleFormaPago.setFirma_persona_paga("null");
+        detalleFormaPago.setEstado(false);
         if (bitmapFirma != null){
             detalleFormaPago.setFirma_persona_paga(""+Utils.convertBase64String(bitmapFirma));
         }
@@ -1202,6 +1208,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
             detalleFormaPago.setFoto_cobro(""+Utils.convertBase64String(bitmap));
         }
 
+        detalleFormaPago.setMetodo("RegistrarCobro");
 
         try {
             DataBaseHelper.saveDetalleFormaPago(detalleFormaPago, DepcApplication.getApplication().getDetalleFormaPagoDao());
