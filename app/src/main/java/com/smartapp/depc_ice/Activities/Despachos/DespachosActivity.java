@@ -637,7 +637,7 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
     private void getListDeaspachosDias() {
 
         showProgressWait();
-
+        
         //JSON SEND
         DespachoDiaModelModel model = new DespachoDiaModelModel();
         model.setFecha_inicio(""+fechaBuscar);
