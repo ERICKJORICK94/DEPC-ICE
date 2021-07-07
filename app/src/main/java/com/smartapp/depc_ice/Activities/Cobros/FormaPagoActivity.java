@@ -1180,8 +1180,8 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
         detalleFormaPago.setNombre_forma_de_pago(""+nombreFormaPago);
         detalleFormaPago.setNombre_corto_forma_de_pago(""+nombrecortpFormaPago);
         detalleFormaPago.setValor(""+edt_monto_pagar.getText().toString());
-        detalleFormaPago.setBanco_origen("");
         detalleFormaPago.setNombreCliente(nombreCliente);
+        detalleFormaPago.setBanco_origen("null");
         if (indexBanco >= 0){
             if (bancos != null) {
                 detalleFormaPago.setBanco_origen("" + bancos.get(indexBanco).getBanco());
@@ -1194,7 +1194,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
             }
         }
         detalleFormaPago.setNum_documento(""+edt_numero_deposito.getText().toString());
-        detalleFormaPago.setCuenta_bancaria("");
+        detalleFormaPago.setCuenta_bancaria("null");
         if (indexCuentas >= 0){
             if (cuentaBancos != null) {
                 detalleFormaPago.setCuenta_bancaria("" + cuentaBancos.get(indexCuentas).getCuenta());
@@ -1202,13 +1202,13 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
         }
         detalleFormaPago.setUsuario_crea(""+user.getUsuario());
         detalleFormaPago.setNombre_persona_paga(""+pagado_por.getText().toString());
-        detalleFormaPago.setFirma_persona_paga("null");
+        detalleFormaPago.setFirma_persona_paga("");
         detalleFormaPago.setEstado(false);
         detalleFormaPago.setFecha(Utils.getFecha());
         if (bitmapFirma != null){
             detalleFormaPago.setFirma_persona_paga(""+Utils.convertBase64String(bitmapFirma));
         }
-        detalleFormaPago.setFoto_cobro("null");
+        detalleFormaPago.setFoto_cobro("");
         if (bitmap != null){
             detalleFormaPago.setFoto_cobro(""+Utils.convertBase64String(bitmap));
         }

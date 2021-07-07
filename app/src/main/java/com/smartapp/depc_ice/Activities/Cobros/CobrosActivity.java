@@ -1090,17 +1090,17 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
                 pago.setNombre_corto_forma_de_pago("EFE");
                 pago.setForma_pago("1");
                 pago.setValor(""+detalleFacturas.get(indexFactura).getSaldo());
-                pago.setBanco_origen("");
+                pago.setBanco_origen("null");
                 pago.setNum_cuenta_origen("");
                 pago.setNum_documento("");
-                pago.setCuenta_bancaria("");
+                pago.setCuenta_bancaria("null");
                 pago.setUsuario_crea(""+user.getUsuario());
                 pago.setNombre_persona_paga(""+pagadoPor);
-                pago.setFirma_persona_paga("null");
+                pago.setFirma_persona_paga("");
                 pago.setEstado(false);
                 pago.setFecha(Utils.getFecha());
                 pago.setNombreCliente(nombreCliente);
-                pago.setFoto_cobro("null");
+                pago.setFoto_cobro("");
                 pago.setMetodo("RegistrarCobro");
 
                 DataBaseHelper.saveDetalleFormaPago(pago, DepcApplication.getApplication().getDetalleFormaPagoDao());
