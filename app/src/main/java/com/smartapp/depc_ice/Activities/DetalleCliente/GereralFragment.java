@@ -27,6 +27,7 @@ import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Entities.EstadoGabinet;
+import com.smartapp.depc_ice.Entities.Usuario;
 import com.smartapp.depc_ice.Entities.Zonas;
 import com.smartapp.depc_ice.Fragments.BaseFragment;
 import com.smartapp.depc_ice.Interface.IEstadoGabinet;
@@ -36,6 +37,7 @@ import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Const;
 import com.smartapp.depc_ice.Utils.Utils;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -59,6 +61,8 @@ public class GereralFragment extends BaseFragment implements BaseFragment.BaseFr
     private View header;
     private Call<IEstadoGabinet.dataBodega> call;
     private IEstadoGabinet.dataBodega data;
+    private Usuario user;
+    String[] opcionesMenu = null;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -72,12 +76,35 @@ public class GereralFragment extends BaseFragment implements BaseFragment.BaseFr
         cliente = ((DetalleClienteActivity) getActivity()).getCliente();
         DepcApplication.getApplication().setCliente(cliente);
 
+        try {
+            List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
+            if (usuarios != null){
+                if (usuarios.size() > 0) {
+                    user = usuarios.get(0);
+                }
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
 
         header = layoutInflater.inflate(R.layout.header_general, null);
         grid = (GridView) layout.findViewById(R.id.lista);
         linear_header = (LinearLayout) layout.findViewById(R.id.linear_header);
         linear_header.addView(header);
-        String[] opcionesMenu = getResources().getStringArray(R.array.menu_cliente_array);
+        //String[] opcionesMenu = getResources().getStringArray(R.array.menu_cliente_array);
+        int id_personal_operaciones = user.getId_personal_operaciones();
+
+        if (id_personal_operaciones > 0) {
+            opcionesMenu = getResources().getStringArray(R.array.menu_cliente_array_despachador);
+        }else {
+            opcionesMenu = getResources().getStringArray(R.array.menu_cliente_array_vendedor);
+        }
+
+
+
         grid.setAdapter(new GridAdapter(getActivity(), opcionesMenu));
 
         showList();

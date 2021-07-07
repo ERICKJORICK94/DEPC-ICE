@@ -21,6 +21,10 @@ public class Usuario {
     private String telefono;
     @DatabaseField
     private String fechanacimiento;
+    @DatabaseField
+    private int id_personal_operaciones;
+    @DatabaseField
+    private int pto_vta_id_operaciones;
 
     public int getId() {
         return id;
@@ -76,5 +80,21 @@ public class Usuario {
 
     public void setFechanacimiento(String fechanacimiento) {
         this.fechanacimiento = fechanacimiento;
+    }
+
+    public int getId_personal_operaciones() {
+        return id_personal_operaciones;
+    }
+
+    public void setId_personal_operaciones(int id_personal_operaciones) {
+        this.id_personal_operaciones = id_personal_operaciones;
+    }
+
+    public int getPto_vta_id_operaciones() {
+        return pto_vta_id_operaciones;
+    }
+
+    public void setPto_vta_id_operaciones(int pto_vta_id_operaciones) {
+        this.pto_vta_id_operaciones = pto_vta_id_operaciones;
     }
 }

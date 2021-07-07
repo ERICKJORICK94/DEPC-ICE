@@ -108,6 +108,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
 
     private float total = 0;
     private float saldo = 0;
+    private String nombreCliente = "";
 
 
 
@@ -226,6 +227,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
             detalleFactura = (DetalleFacturas) getIntent().getSerializableExtra("detalle_factura");
             id_vaje = getIntent().getStringExtra("id_vaje");
             cuenta_id = getIntent().getStringExtra("cuenta_id");
+            nombreCliente = getIntent().getStringExtra("nombreCliente");
 
             edit_saldo.setText("$ 0.00");
             if (detalleFactura != null){
@@ -1171,6 +1173,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
         detalleFormaPago.setId_viaje(""+id_vaje);
         detalleFormaPago.setFactura_id(""+detalleFactura.getFactura_id());
         detalleFormaPago.setCuenta_id(""+cuenta_id);
+        detalleFormaPago.setForma_pago(""+id_forma_pago);
         detalleFormaPago.setPrefijo1(""+detalleFactura.getPrefijo1());
         detalleFormaPago.setPrefijo2(""+detalleFactura.getPrefijo1());
         detalleFormaPago.setFactura_fiscal(""+detalleFactura.getFactura_fiscal());
@@ -1178,6 +1181,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
         detalleFormaPago.setNombre_corto_forma_de_pago(""+nombrecortpFormaPago);
         detalleFormaPago.setValor(""+edt_monto_pagar.getText().toString());
         detalleFormaPago.setBanco_origen("");
+        detalleFormaPago.setNombreCliente(nombreCliente);
         if (indexBanco >= 0){
             if (bancos != null) {
                 detalleFormaPago.setBanco_origen("" + bancos.get(indexBanco).getBanco());
@@ -1200,6 +1204,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
         detalleFormaPago.setNombre_persona_paga(""+pagado_por.getText().toString());
         detalleFormaPago.setFirma_persona_paga("null");
         detalleFormaPago.setEstado(false);
+        detalleFormaPago.setFecha(Utils.getFecha());
         if (bitmapFirma != null){
             detalleFormaPago.setFirma_persona_paga(""+Utils.convertBase64String(bitmapFirma));
         }

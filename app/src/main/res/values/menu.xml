@@ -24,12 +24,51 @@
             <image>@drawable/ic_baseline_pending_actions_24</image>
             <activity>com.smartapp.depc_ice.Activities.Despachos.DespachosActivity</activity>
         </item>
-        <!--<item>
-            <code>5</code>
-            <name>Agenda&#160;Cobros</name>
+        <item>
+            <code>6</code>
+            <name>Productos</name>
+            <image>@drawable/ic_baseline_shopping_basket_24</image>
+            <activity>com.smartapp.depc_ice.Activities.Productos.ProductosActivity</activity>
+        </item>
+        <item>
+            <code>7</code>
+            <name>Gabinets</name>
+            <image>@drawable/gabinet</image>
+            <activity>com.smartapp.depc_ice.Activities.GabinetGeneral.GabinetGeneralActivity</activity>
+        </item>
+        <item>
+            <code>8</code>
+            <name>Resumen&#160;de&#160;cobros</name>
             <image>@drawable/ic_baseline_attach_money_24</image>
-            <activity></activity>
-        </item>-->
+            <activity>com.smartapp.depc_ice.Activities.Cobros.ResumenDeCobrosActivity</activity>
+        </item>
+    </array>
+
+
+
+
+
+
+
+    <array name="menu_array_vendedor">
+        <item>
+            <code>1</code>
+            <name>Clientes</name>
+            <image>@drawable/ic_baseline_person_24</image>
+            <activity>com.smartapp.depc_ice.Activities.Clientes.ClientesActivity</activity>
+        </item>
+        <item>
+            <code>2</code>
+            <name>Crear&#160;Cliente</name>
+            <image>@drawable/ic_baseline_fiber_new_24</image>
+            <activity>com.smartapp.depc_ice.Activities.CrearClientes.CrearClientesActivity</activity>
+        </item>
+        <item>
+            <code>3</code>
+            <name>Agenda&#160;Pedidos</name>
+            <image>@drawable/ic_baseline_perm_contact_calendar_24</image>
+            <activity>com.smartapp.depc_ice.Activities.Agenda.PlanficadorPedidosActivity</activity>
+        </item>
         <item>
             <code>6</code>
             <name>Productos</name>
@@ -43,6 +82,41 @@
             <activity>com.smartapp.depc_ice.Activities.GabinetGeneral.GabinetGeneralActivity</activity>
         </item>
     </array>
+
+
+    <array name="menu_array_despachador">
+        <item>
+            <code>1</code>
+            <name>Clientes</name>
+            <image>@drawable/ic_baseline_person_24</image>
+            <activity>com.smartapp.depc_ice.Activities.Clientes.ClientesActivity</activity>
+        </item>
+        <item>
+            <code>4</code>
+            <name>Despachos</name>
+            <image>@drawable/ic_baseline_pending_actions_24</image>
+            <activity>com.smartapp.depc_ice.Activities.Despachos.DespachosActivity</activity>
+        </item>
+        <item>
+            <code>6</code>
+            <name>Productos</name>
+            <image>@drawable/ic_baseline_shopping_basket_24</image>
+            <activity>com.smartapp.depc_ice.Activities.Productos.ProductosActivity</activity>
+        </item>
+        <item>
+            <code>7</code>
+            <name>Gabinets</name>
+            <image>@drawable/gabinet</image>
+            <activity>com.smartapp.depc_ice.Activities.GabinetGeneral.GabinetGeneralActivity</activity>
+        </item>
+        <item>
+            <code>8</code>
+            <name>Resumen&#160;de&#160;cobros</name>
+            <image>@drawable/ic_baseline_attach_money_24</image>
+            <activity>com.smartapp.depc_ice.Activities.Cobros.ResumenDeCobrosActivity</activity>
+        </item>
+    </array>
+
 
 
     <array name="menu_cliente_array">
@@ -70,18 +144,57 @@
             <image>@drawable/ic_baseline_playlist_add_check_24</image>
             <activity>com.smartapp.depc_ice.Activities.Pedido.ListaPredidosActivity</activity>
         </item>
-       <!-- <item>
-            <code>5</code>
-            <name>Cobros</name>
-            <image>@drawable/ic_baseline_attach_money_24</image>
-            <activity>com.smartapp.depc_ice.Activities.Cobros.CobrosActivity</activity>
+        <item>
+            <code>7</code>
+            <name>Gabinets</name>
+            <image>@drawable/gabinet</image>
+            <activity>com.smartapp.depc_ice.Activities.GabinetClientes.GabinietClientesActivity</activity>
+        </item>
+    </array>
+
+
+
+    <array name="menu_cliente_array_vendedor">
+        <item>
+            <code>1</code>
+            <name>Detalle&#160;Cliente</name>
+            <image>@drawable/ic_baseline_perm_contact_calendar_24</image>
+            <activity>com.smartapp.depc_ice.Activities.DetalleCliente.EditarClientesActivity</activity>
         </item>
         <item>
-            <code>6</code>
-            <name>Historial&#160;de&#160;Cobros</name>
-            <image>@drawable/ic_baseline_post_add_24</image>
-            <activity></activity>
-        </item>-->
+            <code>2</code>
+            <name>Ubicaciones</name>
+            <image>@drawable/ic_baseline_add_location_alt_24</image>
+            <activity>com.smartapp.depc_ice.Activities.DetalleCliente.DetalleUbicacionClienteActivity</activity>
+        </item>
+        <item>
+            <code>3</code>
+            <name>Registro&#160;de&#160;Pedidos</name>
+            <image>@drawable/ic_baseline_shopping_basket_24</image>
+            <activity>com.smartapp.depc_ice.Activities.Pedido.RegistroPedidoActivity</activity>
+        </item>
+        <item>
+            <code>4</code>
+            <name>Listado&#160;de&#160;Pedidos</name>
+            <image>@drawable/ic_baseline_playlist_add_check_24</image>
+            <activity>com.smartapp.depc_ice.Activities.Pedido.ListaPredidosActivity</activity>
+        </item>
+        <item>
+            <code>7</code>
+            <name>Gabinets</name>
+            <image>@drawable/gabinet</image>
+            <activity>com.smartapp.depc_ice.Activities.GabinetClientes.GabinietClientesActivity</activity>
+        </item>
+    </array>
+
+
+    <array name="menu_cliente_array_despachador">
+        <item>
+            <code>1</code>
+            <name>Detalle&#160;Cliente</name>
+            <image>@drawable/ic_baseline_perm_contact_calendar_24</image>
+            <activity>com.smartapp.depc_ice.Activities.DetalleCliente.EditarClientesActivity</activity>
+        </item>
         <item>
             <code>7</code>
             <name>Gabinets</name>

@@ -642,8 +642,8 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
         //JSON SEND
         DespachoDiaModelModel model = new DespachoDiaModelModel();
         model.setFecha_inicio(""+fechaBuscar);
-        //model.setPto_vta_id(""+pto_vt_id);
-        model.setPto_vta_id("1");
+        model.setPto_vta_id(""+pto_vt_id);
+        //model.setPto_vta_id("1");
         model.setUsuario_id(""+user.getUsuario());
         model.setMetodo("ListarViajesDia");
 

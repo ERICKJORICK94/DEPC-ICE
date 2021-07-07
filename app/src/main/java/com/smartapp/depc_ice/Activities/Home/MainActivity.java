@@ -63,6 +63,7 @@ public class MainActivity extends BaseActitity implements BaseActitity.BaseActiv
     int cont=0;
     private LinearLayout linear_ver_datos;
     private Usuario user;
+    String[] opcionesMenu = null;
 
     public void validaSincroPendientes(){
 
@@ -294,7 +295,16 @@ public class MainActivity extends BaseActitity implements BaseActitity.BaseActiv
         if (layout.findViewById(R.id.lista) instanceof GridViewWithHeaderAndFooter) {
             grid = (GridViewWithHeaderAndFooter) layout.findViewById(R.id.lista);
             grid.addHeaderView(header);
-            String[] opcionesMenu = getResources().getStringArray(R.array.menu_array);
+
+
+            int id_personal_operaciones = user.getId_personal_operaciones();
+
+            if (id_personal_operaciones > 0) {
+                opcionesMenu = getResources().getStringArray(R.array.menu_array_despachador);
+            }else {
+                opcionesMenu = getResources().getStringArray(R.array.menu_array_vendedor);
+            }
+
             grid.setAdapter(new GridAdapter(this, opcionesMenu));
 
             grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {

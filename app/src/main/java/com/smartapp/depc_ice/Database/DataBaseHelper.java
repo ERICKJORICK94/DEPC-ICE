@@ -106,6 +106,26 @@ public class DataBaseHelper {
         return usuarios;
     }
 
+    public static List<DetalleFormaPago> getDetalleFormaPagoByFacturaFilter(Dao<DetalleFormaPago, Integer> userDao, String forma_pago, String fecha) throws SQLException {
+
+        List<DetalleFormaPago> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_DETALLE_FORMA_PAGO+" WHERE forma_pago = '"+forma_pago+"' AND fecha = '"+fecha+"' ORDER BY forma_pago";
+        GenericRawResults<DetalleFormaPago> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
+    public static List<DetalleFormaPago> getDetalleFormaPagoByFacturaFilterAll(Dao<DetalleFormaPago, Integer> userDao, String fecha) throws SQLException {
+
+        List<DetalleFormaPago> usuarios = null;
+        String query = "SELECT * FROM " + Const.TABLE_DETALLE_FORMA_PAGO+" WHERE fecha = '"+fecha+"' ORDER BY forma_pago";
+        GenericRawResults<DetalleFormaPago> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
+        usuarios = rawResults.getResults();
+
+        return usuarios;
+    }
+
 
     //HELPER MOTIVO NO ENTREGA
     public static void saveMotivosNoEntrega(MotivosNoEntrega emp, Dao<MotivosNoEntrega, Integer> userDao) {

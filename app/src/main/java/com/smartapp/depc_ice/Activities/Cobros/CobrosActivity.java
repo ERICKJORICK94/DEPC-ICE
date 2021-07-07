@@ -1088,6 +1088,7 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
                 pago.setFactura_fiscal(""+detalleFacturas.get(indexFactura).getFactura_fiscal());
                 pago.setNombre_forma_de_pago("EFECTIVO");
                 pago.setNombre_corto_forma_de_pago("EFE");
+                pago.setForma_pago("1");
                 pago.setValor(""+detalleFacturas.get(indexFactura).getSaldo());
                 pago.setBanco_origen("");
                 pago.setNum_cuenta_origen("");
@@ -1097,8 +1098,12 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
                 pago.setNombre_persona_paga(""+pagadoPor);
                 pago.setFirma_persona_paga("null");
                 pago.setEstado(false);
+                pago.setFecha(Utils.getFecha());
+                pago.setNombreCliente(nombreCliente);
                 pago.setFoto_cobro("null");
                 pago.setMetodo("RegistrarCobro");
+
+                DataBaseHelper.saveDetalleFormaPago(pago, DepcApplication.getApplication().getDetalleFormaPagoDao());
 
                 final Gson gson = new Gson();
                 String json = gson.toJson(pago);
@@ -1108,7 +1113,7 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
                 jsonRespuesta = new JSONObject(respuesta);
                 if (jsonRespuesta.getInt("status") == 200){
                     pago.setEstado(true);
-                    //DataBaseHelper.updateDetalleFormaPago(pago, DepcApplication.getApplication().getDetalleFormaPagoDao());
+                    DataBaseHelper.updateDetalleFormaPago(pago, DepcApplication.getApplication().getDetalleFormaPagoDao());
 
                 } else{
                     mensaje = jsonRespuesta.getString("status_message");

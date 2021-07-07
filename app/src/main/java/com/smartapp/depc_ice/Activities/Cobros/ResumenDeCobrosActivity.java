@@ -2,6 +2,7 @@ package com.smartapp.depc_ice.Activities.Cobros;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -11,45 +12,40 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
-import android.os.StrictMode;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.DatePicker;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.core.content.ContextCompat;
+
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.smartapp.depc_ice.Activities.Cobros.Adapter.FormaCobrosAdapter;
+import com.smartapp.depc_ice.Activities.Cobros.Adapter.ResumenFormaCobrosAdapter;
+import com.smartapp.depc_ice.Activities.Despachos.DespachosActivity;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
 import com.smartapp.depc_ice.Database.DataBaseHelper;
 import com.smartapp.depc_ice.DepcApplication;
-import com.smartapp.depc_ice.Entities.Clientes;
-import com.smartapp.depc_ice.Entities.DetalleFacturas;
 import com.smartapp.depc_ice.Entities.DetalleFormaPago;
+import com.smartapp.depc_ice.Entities.FormaPago;
 import com.smartapp.depc_ice.Entities.Usuario;
+import com.smartapp.depc_ice.Interface.IFormaPago;
 import com.smartapp.depc_ice.Models.Device;
-import com.smartapp.depc_ice.Provider.WebServices;
+import com.smartapp.depc_ice.Models.EstadoGabinetModel;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.BTDeviceList;
 import com.smartapp.depc_ice.Utils.Const;
-import com.smartapp.depc_ice.Utils.NonScrollListView;
 import com.smartapp.depc_ice.Utils.UIHelper;
 import com.smartapp.depc_ice.Utils.Utils;
 import com.zebra.sdk.comm.BluetoothConnection;
@@ -63,20 +59,19 @@ import com.zebra.sdk.printer.ZebraPrinterFactory;
 import com.zebra.sdk.printer.ZebraPrinterLanguageUnknownException;
 import com.zebra.sdk.printer.ZebraPrinterLinkOs;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
-import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.Callable;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -84,43 +79,32 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DetalleCobroActivity extends BaseActitity implements BaseActitity.BaseActivityCallbacks{
+public class ResumenDeCobrosActivity extends BaseActitity implements BaseActitity.BaseActivityCallbacks{
 
     private View layout;
-    private LayoutInflater layoutInflater;
-    private Clientes cliente;
-    private FloatingActionButton fab;
-    private Button enviar;
-    private TextView total_facturas;
-    private EditText recaudador;
-    private String idPago = "";
-    private EditText edt_referencia;
-    private EditText edt_nro_ingreso;
-    private TextView impresora;
-    private String motivo = "";
-    private double valorTotal = 0;
-    private NonScrollListView listview;
+    private Spinner spinner;
+    private Call<IFormaPago.dataBodega> call;
+    private IFormaPago.dataBodega data;
+    private int indexFormaPago = 0;
+    private List<FormaPago> formaPagos;
+    private ListView lista;
 
-    private androidx.appcompat.app.AlertDialog dialog;
+    private TextView impresora;
     private Connection connection = null;
     private UIHelper helper = new UIHelper(this);
     private int selectPrinter = -1;
     private String zpl = "";
     private ArrayList<Device> mDeviceList = new ArrayList<Device>();
     private BluetoothAdapter mBluetoothAdapter;
-    private double ingreso = 0;
-    private double totalPagar = 0;
-    private double totalPagarDEbitar = 0;
-    private DetalleFacturas detalleFactura;
-    private String id_vaje = "";
-    private  Usuario user;
-    private String cuenta_id = "";
     byte FONT_TYPE;
     private static BluetoothSocket btsocket;
     private static OutputStream btoutputstream;
-    private String URL_ENVIO = "https://webserver.depconsa.com/DepWSR/application/libraries/wsapp.php";
-    private String nombreCliente = "";
-
+    int positionSelectFactura = - 1;
+    private Date dateChosee;
+    private String fechaBuscar;
+    private TextView fechaSeleccionada,total;
+    private List<DetalleFormaPago> pagos = null;
+    private androidx.appcompat.app.AlertDialog dialog;
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -171,59 +155,28 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        layout = addLayout(R.layout.detalle_cobro_layout);
+        layout = addLayout(R.layout.resumen_de_cobros_layout);
         Utils.SetStyleActionBarTitle(this);
-        layoutInflater = LayoutInflater.from(this);
 
+        spinner = (Spinner) layout.findViewById(R.id.spinner);
+        lista = (ListView) layout.findViewById(R.id.lista);
         impresora = (TextView) layout.findViewById(R.id.impresora);
-        fab = (FloatingActionButton) layout.findViewById(R.id.fab);
-        enviar = (Button) layout.findViewById(R.id.enviar);
-        total_facturas = (TextView) layout.findViewById(R.id.total_facturas);
-        recaudador = (EditText) layout.findViewById(R.id.recaudador);
-        edt_referencia = (EditText) layout.findViewById(R.id.edt_referencia);
-        edt_nro_ingreso = (EditText) layout.findViewById(R.id.edt_nro_ingreso);
-        listview = (NonScrollListView) layout.findViewById(R.id.listview);
-
-        if (getIntent() != null){
-            detalleFactura = (DetalleFacturas) getIntent().getSerializableExtra("detalle_factura");
-            id_vaje = getIntent().getStringExtra("id_vaje");
-            cuenta_id = getIntent().getStringExtra("cuenta_id");
-            nombreCliente = getIntent().getStringExtra("nombreCliente");
-
-            if (detalleFactura != null){
-                if (detalleFactura.getSaldo() != null){
-                    total_facturas.setText("$ "+detalleFactura.getSaldo());
-                }
-            }
-        }
-
-        String recaudadorString = "";
-        try {
-            List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
-            if (usuarios != null){
-                if (usuarios.size() > 0){
-                    user = usuarios.get(0);
-                    if (user.getNombrescompletos() != null){
-                        recaudadorString = ""+user.getNombrescompletos();
-                    }
-                }
-            }
-
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        
+        fechaSeleccionada = (TextView) layout.findViewById(R.id.fechaSeleccionada);
+        total = (TextView) layout.findViewById(R.id.total);
 
         impresora.setVisibility(View.GONE);
+        total.setVisibility(View.GONE);
+        fechaBuscar = Utils.getFecha();
+        fechaSeleccionada.setText(""+fechaBuscar);
 
-        if (Utils.getDevices(DetalleCobroActivity.this) != null){
-            if (Utils.getDevices(DetalleCobroActivity.this).size() > 0){
-                mDeviceList = Utils.getDevices(DetalleCobroActivity.this);
+        if (Utils.getDevices(ResumenDeCobrosActivity.this) != null){
+            if (Utils.getDevices(ResumenDeCobrosActivity.this).size() > 0){
+                mDeviceList = Utils.getDevices(ResumenDeCobrosActivity.this);
                 selectPrinter = 0;
                 //buscar_impresora.setText(""+mDeviceList.get(0).getName()+" \n "+mDeviceList.get(0).getAddress());
                 impresora.setVisibility(View.VISIBLE);
@@ -231,64 +184,155 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
             }
         }
 
+
+        getFormaPagos();
+
+
+    }
+
+    private void getFormaPagos(){
+
+        showProgressWait();
+
+        //JSON SEND
+        EstadoGabinetModel model = new EstadoGabinetModel();
+        model.setMetodo("ListarFormasPago");
+
+
+        final Gson gson = new Gson();
+        String json = gson.toJson(model);
+        Log.e("TAG---","json: "+json);
+        RequestBody body = RequestBody.create(MediaType.parse(Const.APPLICATION_JSON), json);
+
         try {
-            List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
-            if (usuarios != null){
-                if (usuarios.size() > 0){
-                    Usuario user = usuarios.get(0);
-                    if (user.getNombrescompletos() != null){
-                        recaudadorString = ""+user.getNombrescompletos();
+
+            IFormaPago request = DepcApplication.getApplication().getRestAdapter().create(IFormaPago.class);
+            call = request.getBodegas(body);
+            call.enqueue(new Callback<IFormaPago.dataBodega>() {
+                @Override
+                public void onResponse(Call<IFormaPago.dataBodega> call, Response<IFormaPago.dataBodega> response) {
+                    if (response.isSuccessful()) {
+
+                        data = response.body();
+                        try {
+
+                            hideProgressWait();
+
+                            String mensajeError = Const.ERROR_DEFAULT;
+
+                            if (data != null) {
+                                if (data.getStatus() == Const.COD_ERROR_SUCCESS) {
+                                    if (data.getData() != null){
+                                        if (data.getData().getListarFormasPago() != null) {
+                                            if (data.getData().getListarFormasPago().size() > 0) {
+
+
+                                                final List<FormaPago> bodegas;
+                                                bodegas = data.getData().getListarFormasPago().get(0);
+
+                                                if (bodegas != null) {
+                                                    DataBaseHelper.deleteFormaPago(DepcApplication.getApplication().getFormaPagoDao());
+                                                    DepcApplication.getApplication().getFormaPagoDao().callBatchTasks(new Callable<FormaPago>() {
+                                                        @Override
+                                                        public FormaPago call() throws Exception {
+                                                            for (FormaPago cl : bodegas) {
+                                                                DataBaseHelper.saveFormaPago(cl, DepcApplication.getApplication().getFormaPagoDao());
+                                                            }
+                                                            return null;
+                                                        }
+                                                    });
+
+
+                                                }
+
+                                                showListZonas();
+
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    if (data.getStatus_message() != null){
+                                        mensajeError = data.getStatus_message();
+                                    }
+                                }
+                            }
+
+                            showListZonas();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            hideProgressWait();
+                            showListZonas();
+                        }
+
+                    } else {
+                        hideProgressWait();
+                        //showAlert(Const.ERROR_DEFAULT);
+                        //showListZonas();
                     }
                 }
-            }
 
-            recaudador.setText(""+recaudadorString);
+                @Override
+                public void onFailure(Call<IFormaPago.dataBodega> call, Throwable t) {
+                    hideProgressWait();
+                    //showAlert(Const.ERROR_DEFAULT);
+                    showListZonas();
+                }
+            });
+
+        }catch (Exception e){
+            hideProgressWait();
+            //showAlert(Const.ERROR_DEFAULT);
+            showListZonas();
+
+        }
+    }
+
+    private void showListZonas(){
+
+        try {
+            formaPagos = DataBaseHelper.getFormaPago(DepcApplication.getApplication().getFormaPagoDao());
+
+            if (formaPagos != null){
+                if (formaPagos.size() > 0){
+
+                    List<String> items= new ArrayList<String>();
+                    items.add("TODOS");
+                    for (FormaPago z : formaPagos){
+                        items.add(z.getDescripcion());
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, items);
+
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinner.setAdapter(adapter);
+                    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                indexFormaPago = position;
+                                showformas();
+
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+
+                }
+            }
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
-        enviar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                try {
-                    List<DetalleFormaPago> detalleFormaPagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFactura_id());
-
-                    if (detalleFormaPagos != null){
-                        if (detalleFormaPagos.size() > 0){
-
-                            EnviarFormasPago pt = new EnviarFormasPago();
-                            pt.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                           return;
-                        }
-                    }
-
-                    showAlert("Ingrese al menos una forma de pago antes de continuar");
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
-
-            }
-        });
-
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(DetalleCobroActivity.this, FormaPagoActivity.class);
-                intent.putExtra("detalle_factura",detalleFactura);
-                intent.putExtra("id_vaje",id_vaje);
-                intent.putExtra("cuenta_id",cuenta_id);
-                intent.putExtra("nombreCliente",nombreCliente);
-                startActivity(intent);
-            }
-        });
     }
 
+
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!Utils.getSinImpresora(DetalleCobroActivity.this)){
-            getMenuInflater().inflate(R.menu.impresora, menu);
+        if (!Utils.getSinImpresora(ResumenDeCobrosActivity.this)){
+            getMenuInflater().inflate(R.menu.resumen, menu);
         }
         return true;
     }
@@ -298,7 +342,12 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
 
         switch (item.getItemId()){
 
-            case R.id.action_print:
+            case R.id.action_print:{
+
+                if (pagos == null){
+                    showAlert("NO DISPONE DE DATOS A IMPRIMIR");
+                    return true;
+                }
                 if(impresora != null){
                     if (impresora.getVisibility() == View.VISIBLE){
                         if(zpl != null){
@@ -314,6 +363,7 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                     }
                 }
 
+                generatedZPL();
                 if (validateStatus()){
 
                     if (Utils.getZebra(getBaseContext())) {
@@ -324,7 +374,7 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
                         registerReceiver(mReceiver, filter);
 
-                        progress = ProgressDialog.show(DetalleCobroActivity.this, "",
+                        progress = ProgressDialog.show(ResumenDeCobrosActivity.this, "",
                                 "Buscando Impresora...", true);
                         progress.setCancelable(true);
                         progress.setCanceledOnTouchOutside(false);
@@ -342,6 +392,13 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                 }
 
                 return true;
+            }
+            case R.id.action_calendar: {
+                showCalendar();
+                return true;
+            }
+
+                //return true;
         }
 
         finish();
@@ -349,16 +406,109 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
         return true;
     }
 
+    private void showCalendar(){
+
+        if (dateChosee == null) {
+            dateChosee = new Date();
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateChosee);
+
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        Locale locale = new Locale ( "es" , "ES" );
+        Locale.setDefault(locale);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(ResumenDeCobrosActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                SimpleDateFormat format = new SimpleDateFormat("d/M/yyyy");
+                try {
+                    dateChosee = format.parse(dayOfMonth+"/"+(monthOfYear + 1)+"/"+year);
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(dateChosee);
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    fechaBuscar = sdf.format(cal.getTime());
+                    fechaSeleccionada.setText(""+fechaBuscar);
+                    showformas();
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, year, month, day);
+
+        datePickerDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dialog.dismiss();
+            }
+        });
+        // datePickerDialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
+        datePickerDialog.getDatePicker().setMaxDate(Calendar.getInstance().getTimeInMillis());
+        datePickerDialog.setButton(DatePickerDialog.BUTTON_NEGATIVE, "CANCELAR", datePickerDialog);
+        datePickerDialog.setButton(DatePickerDialog.BUTTON_POSITIVE, "OK", datePickerDialog);
+        datePickerDialog.show();
+
+    }
+
+
+    private void showformas(){
+
+        lista.setAdapter(null);
+        total.setVisibility(View.GONE);
+        if (formaPagos != null){
+            try {
+                 pagos = null;
+                if (indexFormaPago == 0){
+                    pagos = DataBaseHelper.getDetalleFormaPagoByFacturaFilterAll(DepcApplication.getApplication().getDetalleFormaPagoDao(), fechaBuscar);
+                }else {
+                    pagos = DataBaseHelper.getDetalleFormaPagoByFacturaFilter(DepcApplication.getApplication().getDetalleFormaPagoDao(), formaPagos.get(indexFormaPago - 1).getId_forma_pago(), fechaBuscar);
+                }
+
+
+                if (pagos != null){
+                    if (pagos.size() > 0){
+                        lista.setAdapter(new ResumenFormaCobrosAdapter(ResumenDeCobrosActivity.this,pagos));
+
+                        float acum = 0;
+                        for (DetalleFormaPago df : pagos){
+                            if (df.getValor() != null){
+                                float valor = Float.parseFloat(df.getValor());
+                                acum = acum + valor;
+                            }
+                        }
+
+                        total.setVisibility(View.VISIBLE);
+                        total.setText(String.format("TOTAL: $ %.2f",acum));
+                    }
+
+                }
+
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+        }
+
+    }
 
     private boolean validateStatus(){
 
         hideProgressWait();
         if (Build.VERSION.SDK_INT >= 23) {
-            int permissionCheck = ContextCompat.checkSelfPermission(DetalleCobroActivity.this,
+            int permissionCheck = ContextCompat.checkSelfPermission(ResumenDeCobrosActivity.this,
                     Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
                 // ask permissions here using below code
-                ActivityCompat.requestPermissions(DetalleCobroActivity.this,
+                ActivityCompat.requestPermissions(ResumenDeCobrosActivity.this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         10000);
             }
@@ -377,6 +527,92 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
         }
 
     }
+
+
+    protected void connect() {
+        //getCobros();
+        if(btsocket == null){
+            Intent BTIntent = new Intent(getApplicationContext(), BTDeviceList.class);
+            this.startActivityForResult(BTIntent, BTDeviceList.REQUEST_CONNECT_BT);
+        }
+        else{
+
+            OutputStream opstream = null;
+            try {
+                opstream = btsocket.getOutputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            btoutputstream = opstream;
+            print_bt(generatedZPL());
+
+        }
+
+    }
+
+    private void print_bt(String text) {
+        try {
+
+            btoutputstream = btsocket.getOutputStream();
+
+            byte[] printformat = { 0x1B, 0x21, FONT_TYPE };
+            btoutputstream.write(printformat);
+            String msg = text+"\n\n\n";
+            btoutputstream.write(msg.getBytes());
+            btoutputstream.write(0x0D);
+            btoutputstream.write(0x0D);
+            btoutputstream.write(0x0D);
+            btoutputstream.flush();
+
+
+            //zpl = "";
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    //getCobros();
+                }
+            });
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            //getCobros();
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            if(btsocket!= null){
+                btoutputstream.close();
+                btsocket.close();
+                btsocket = null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            btsocket = BTDeviceList.getSocket();
+            if(btsocket != null){
+                print_bt(generatedZPL());
+            }else{
+                //getCobros();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            //getCobros();
+        }
+    }
+
 
 
     private void paintList(){
@@ -419,9 +655,9 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
 
                 ArrayList<Device> auxDevice = new ArrayList<Device>();
                 auxDevice.add(mDeviceList.get(which));
-                Utils.saveDevices(auxDevice, DetalleCobroActivity.this);
+                Utils.saveDevices(auxDevice, ResumenDeCobrosActivity.this);
 
-                androidx.appcompat.app.AlertDialog.Builder builderInner = new androidx.appcompat.app.AlertDialog.Builder(DetalleCobroActivity.this);
+                androidx.appcompat.app.AlertDialog.Builder builderInner = new androidx.appcompat.app.AlertDialog.Builder(ResumenDeCobrosActivity.this);
                 builderInner.setMessage(strName);
                 //buscar_impresora.setText(strName);
                 impresora.setVisibility(View.VISIBLE);
@@ -438,11 +674,13 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                         if (zpl != null){
                             if (zpl.length() > 0){
                                 Log.e("TAG--","plas----- zpl");
+                                //sendPrint();
                                 if (Utils.getZebra(getBaseContext())){
                                     sendPrint();
                                 }else {
                                     connect();
                                 }
+
                             }
                         }
                     }
@@ -457,86 +695,17 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
 
     }
 
-    protected void connect() {
-        enviar.setVisibility(View.GONE);
-        fab.setVisibility(View.GONE);
-        edt_referencia.setEnabled(false);
-        edt_nro_ingreso.setEnabled(false);
-
-        if(btsocket == null){
-            Intent BTIntent = new Intent(getApplicationContext(), BTDeviceList.class);
-            this.startActivityForResult(BTIntent, BTDeviceList.REQUEST_CONNECT_BT);
-        }
-        else{
-
-            OutputStream opstream = null;
-            try {
-                opstream = btsocket.getOutputStream();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            btoutputstream = opstream;
-            print_bt(generatedZPL());
-
-        }
-
-    }
-
-    private void print_bt(String text) {
-        try {
-
-            btoutputstream = btsocket.getOutputStream();
-
-            byte[] printformat = { 0x1B, 0x21, FONT_TYPE };
-            btoutputstream.write(printformat);
-            String msg = text+"\n\n\n";
-            btoutputstream.write(msg.getBytes());
-            btoutputstream.write(0x0D);
-            btoutputstream.write(0x0D);
-            btoutputstream.write(0x0D);
-            btoutputstream.flush();
-
-            //zpl = "";
-            finish();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        try {
-            if(btsocket!= null){
-                btoutputstream.close();
-                btsocket.close();
-                btsocket = null;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        try {
-            btsocket = BTDeviceList.getSocket();
-            if(btsocket != null){
-                print_bt(generatedZPL());
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
     private String generatedZPL(){
 
-       zpl = "";
+        if (formaPagos == null){
+            return "";
+        }
+
+        if (pagos == null){
+            return "";
+        }
+
+        zpl = "";
         try {
 
             String nombreEmpresa = "DEPCONSA";
@@ -606,43 +775,62 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                 return "";
 
             }else {
+                float acum = 0;
+                String recaudadorString = "";
+                Usuario user;
+                try {
+                    List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
+                    if (usuarios != null){
+                        if (usuarios.size() > 0){
+                            user = usuarios.get(0);
+                            if (user.getNombrescompletos() != null){
+                                recaudadorString = ""+user.getNombrescompletos();
+                            }
+                        }
+                    }
 
-                String offline = "Recibo de cobro";
+
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+
+
+                String offline = "Resumen de cobros";
 
                 zpl = nombreEmpresa + "\n" +
                         "RUC  " + rucEmpresa + "\n" +
                         "CEL  0999999999 \n" +
                         offline + "\n" +
-                        "Comprobante de " + "\n" +
-                        "Cancelacion # " + Calendar.getInstance().getTimeInMillis() + "\n" +
-                        "Cliente : " + nombreCliente + "\n" +
+                        "Secuencia # " + Calendar.getInstance().getTimeInMillis() + "\n" +
+                        "Usuario : " + recaudadorString + "\n" +
                         "Fecha : " + Utils.getFecha() + "\n" +
                         "-----------------------------" + "\n" +
                         "Nro. Doc. F.Pago    Valor" + "\n" +
                         "-----------------------------" + "\n";
 
                 try {
-                    List<DetalleFormaPago> detalleFormaPagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFactura_id());
 
-                    if (detalleFormaPagos != null){
-                        if (detalleFormaPagos.size() > 0){
-
-                            for (DetalleFormaPago df : detalleFormaPagos){
-                                zpl += "" +truncate( df.getFactura_id(), 8)+ "  " + truncate(df.getNombre_corto_forma_de_pago(),9) + truncate( " $ "+ df.getValor(),10) + "\n";
-                            }
+                    for (DetalleFormaPago df : pagos) {
+                        zpl += "" + truncate(df.getFactura_id(), 8) + "  " + truncate(df.getNombre_corto_forma_de_pago(), 9) + truncate(" $ " + df.getValor(), 10) + "\n";
+                        if (df.getValor() != null){
+                            float valor = Float.parseFloat(df.getValor());
+                            acum = acum + valor;
                         }
                     }
-                } catch (SQLException throwables) {
+                } catch (Exception throwables) {
                     throwables.printStackTrace();
                 }
 
 
 
-                zpl += "-------------------------" + "\n";
-               // zpl += "Saldo Actual : $ " + String.format("%.2f", sal) + "\n";
+                zpl +=  "-----------------------------" + "\n";
+                zpl += "TOTAL: " +String.format("$ %.2f",acum)+ "\n";
+                // zpl += "Saldo Actual : $ " + String.format("%.2f", sal) + "\n";
                 //zpl += "___________________" + "\n";
                 zpl += "Cliente \n";
                 Log.e("TAG---", "zpl--- " + zpl);
+
+
                 return zpl;
             }
 
@@ -669,20 +857,16 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
 
 
 
+
+
     private void imprimir(String texto){
 
         //zpl = dataPago.getResultado();
-
+        //getCobros();
         zpl = texto;
         //Log.e("TAG---",zpl);
 
-        enviar.setVisibility(View.INVISIBLE);
-        fab.setVisibility(View.INVISIBLE);
-        edt_referencia.setEnabled(false);
-        edt_nro_ingreso.setEnabled(false);
-        //listview.setAdapter(new FormaCobrosAdapter(this, idPago, false));
-
-        new AlertDialog.Builder(DetalleCobroActivity.this)
+        new AlertDialog.Builder(ResumenDeCobrosActivity.this)
                 .setTitle("ATENCIÓN")
                 .setMessage("Pago realizado con éxito ¿Desea imprimir?")
                 .setIcon(android.R.drawable.ic_dialog_alert)
@@ -691,11 +875,11 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                     public void onClick(DialogInterface dialog, int whichButton) {
 
                         if (validateStatus()) {
+
                             try {
 
                                 dialog.dismiss();
-                                // sendPrint();
-
+                                //sendPrint();
                                 if (Utils.getZebra(getBaseContext())){
                                     if (selectPrinter >= 0) {
                                         sendPrint();
@@ -706,24 +890,17 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                                         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
                                         registerReceiver(mReceiver, filter);
 
-                                        //mDeviceList.clear();
-                                        //selectPrinter = -1;
-                                        //selectFileIndex = -1;
-                                        //zpl = "";
-
-
-                                        progress = ProgressDialog.show(DetalleCobroActivity.this, "",
+                                        progress = ProgressDialog.show(ResumenDeCobrosActivity.this, "",
                                                 "Buscando Impresora...", true);
                                         progress.setCancelable(true);
                                         progress.setCanceledOnTouchOutside(false);
-                                        progress.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                        progress.setOnCancelListener(new DialogInterface.OnCancelListener(){
                                             @Override
-                                            public void onCancel(DialogInterface dialog) {
+                                            public void onCancel(DialogInterface dialog){
                                                 if (mReceiver != null) {
                                                     unregisterReceiver(mReceiver);
                                                 }
-                                            }
-                                        });
+                                            }});
                                     }
                                 }else {
                                     connect();
@@ -735,10 +912,7 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                                 e.printStackTrace();
                             }
 
-
-
                         }
-
 
 
                     }})
@@ -749,7 +923,7 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                         try {
 
                             dialog.dismiss();
-                            finish();
+                            //getCobros();
 
 
 
@@ -769,14 +943,12 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
 
         return;
 
+        //getCobros();
+
 
     }
 
     private void sendPrint(){
-
-        enviar.setVisibility(View.GONE);
-        fab.setVisibility(View.GONE);
-        listview.setVisibility(View.GONE);
         new Thread(new Runnable() {
             public void run() {
                 Looper.prepare();
@@ -804,44 +976,74 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                 testSendFile(printer);
             } else if (printerStatus.isHeadOpen) {
                 helper.showErrorDialogOnGuiThread("Head Open \nPlease Close Printer Head to Print.");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //getCobros();
+                    }
+                });
             } else if (printerStatus.isPaused) {
                 helper.showErrorDialogOnGuiThread("Printer Paused.");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //getCobros();
+                    }
+                });
             } else if (printerStatus.isPaperOut) {
                 helper.showErrorDialogOnGuiThread("Media Out \nPlease Load Media to Print.");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //getCobros();
+                    }
+                });
             }
             connection.close();
-            saveSettings();
         } catch (ConnectionException e) {
             helper.showErrorDialogOnGuiThread(e.getMessage());
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    //getCobros();
+                }
+            });
         } catch (ZebraPrinterLanguageUnknownException e) {
             helper.showErrorDialogOnGuiThread(e.getMessage());
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    //getCobros();
+                }
+            });
         } finally {
             helper.dismissLoadingDialog();
-            finish();
         }
     }
+
 
 
     private void testSendFile(ZebraPrinter printer) {
         try {
             File filepath = getFileStreamPath("TEST.LBL");
             createDemoFile(printer, "TEST.LBL");
-            //printer.getConnection().sendAndWaitForResponse();
             printer.sendFileContents(filepath.getAbsolutePath());
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    //getCobros();
+                }
+            });
 
         } catch (ConnectionException e1) {
             helper.showErrorDialogOnGuiThread("Error sending file to printer");
+            //getCobros();
         } catch (IOException e) {
             helper.showErrorDialogOnGuiThread("Error creating file");
+            //getCobros();
         }
     }
-
-    /**
-     * This method includes the creation of test file in ZPL and CPCL formats.
-     * @param printer
-     * @param fileName
-     * @throws IOException
-     */
 
     private void createDemoFile(ZebraPrinter printer, String fileName) throws IOException {
 
@@ -861,10 +1063,6 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
         os.close();
     }
 
-    private void saveSettings() {
-        //SettingsHelper.saveBluetoothAddress(InicialActivity.this, getMacAddressFieldText());
-    }
-
 
     private void getPrinterStatus() throws ConnectionException {
 
@@ -874,150 +1072,17 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
 
         SGD.SET("device.languages", "hybrid_xml_zpl", connection);
 
-        DetalleCobroActivity.this.runOnUiThread(new Runnable() {
+        ResumenDeCobrosActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
 
-                //Toast.makeText(DetalleCobroActivity.this, displayPrinterLanguage + "\n" + "Language set to ZPL", Toast.LENGTH_LONG).show();
+                //Toast.makeText(CobrosActivity.this, displayPrinterLanguage + "\n" + "Language set to ZPL", Toast.LENGTH_LONG).show();
 
             }
         });
 
-
     }
 
-    private void showFormaPago(){
-
-
-        if (detalleFactura != null){
-
-            fab.setVisibility(View.VISIBLE);
-            enviar.setVisibility(View.VISIBLE);
-            try {
-                List<DetalleFormaPago> detalleFormaPagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFactura_id());
-
-                if (detalleFormaPagos != null){
-                    if (detalleFormaPagos.size() > 0){
-
-                        Boolean flag = false;
-                        for (DetalleFormaPago df : detalleFormaPagos){
-                            if (!df.getEstado()){
-                                flag = true;
-                                break;
-                            }
-                        }
-
-                        if (!flag){
-                            fab.setVisibility(View.GONE);
-                            enviar.setVisibility(View.GONE);
-                        }
-
-                        listview.setAdapter(new FormaCobrosAdapter(this,flag, detalleFormaPagos, ""+detalleFactura.getFactura_id()));
-                    }
-                }
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        }
-
-    }
-
-
-    private class EnviarFormasPago extends AsyncTask<Void, Integer, Boolean> {
-        String mensaje;
-        boolean isError = false;
-
-        @Override
-        protected void onPreExecute() {
-            hideProgressWait();
-            showProgressWait("Enviando forma Pago...");
-            //
-            mensaje = "Envío exitoso";
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-            WebServices ws = new WebServices();
-
-
-            List<DetalleFormaPago> pagos;
-
-            try {
-                pagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFactura_id());
-            } catch (SQLException e) {
-                pagos = null;
-            }
-
-            if (pagos.size() != 0){
-                for (DetalleFormaPago pago : pagos){
-
-                    try {
-
-                        JSONObject jsonRespuesta = null;
-                        final Gson gson = new Gson();
-                        String json = gson.toJson(pago);
-                        Log.e("TAG---","json: "+json);
-
-                        String respuesta = ws.makeServiceCall(URL_ENVIO,0, json);
-                        jsonRespuesta = new JSONObject(respuesta);
-                        if (jsonRespuesta.getInt("status") == 200){
-                            pago.setEstado(true);
-                            DataBaseHelper.updateDetalleFormaPago(pago, DepcApplication.getApplication().getDetalleFormaPagoDao());
-
-                        } else{
-                            mensaje = jsonRespuesta.getString("status_message");
-                            isError = true;
-
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        isError = true;
-
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        mensaje = "No se pudo realizar la sincronizacion de cobros pendientes";
-                        isError = true;
-                    }
-
-                }
-            }
-            else {
-                mensaje = "No existen cobros pendientes por sincronizar";
-                isError = true;
-            }
-            return true;
-
-        }
-
-        protected void onProgressUpdate(Integer... values){
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            hideProgressWait();
-            if (isError) {
-                showAlert("" + mensaje);
-            }else {
-                imprimir(generatedZPL());
-            }
-            showFormaPago();
-        }
-
-        @Override
-        protected void onCancelled() {
-
-        }
-    }
-
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        showFormaPago();
-    }
 
 
     @Override
