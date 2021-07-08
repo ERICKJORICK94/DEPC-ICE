@@ -644,13 +644,9 @@ public class DespachosActivity extends BaseActitity implements OnMapReadyCallbac
         model.setPto_vta_id(""+pto_vt_id);
         model.setUsuario_id(""+user.getUsuario());
 
-
-        model.setFecha_inicio("2021-06-15");
+        /*model.setFecha_inicio("2021-06-15");
         model.setPto_vta_id("1");
-        model.setUsuario_id("3");
-
-
-
+        model.setUsuario_id("3");*/
 
         model.setMetodo("ListarViajesDia");
 

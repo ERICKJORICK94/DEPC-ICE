@@ -1003,6 +1003,7 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
     private void showAlertPagoRapido() throws SQLException {
 
 
+        float saldo = Float.parseFloat(detalleFacturas.get(indexFactura).getSaldo());
         List<DetalleFormaPago> pagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(),""+detalleFacturas.get(indexFactura).getFct_det_id());
         if (pagos != null){
             if (pagos.size() > 0){
@@ -1014,10 +1015,12 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
                 }
 
                 if (detalleFacturas.get(indexFactura).getSaldo() != null){
-                    float saldo = Float.parseFloat(detalleFacturas.get(indexFactura).getSaldo());
+
                     if (acum == saldo){
                         showAlert("Factura ya cancelada");
                         return;
+                    }else {
+                        saldo = saldo - acum;
                     }
                 }
             }
@@ -1060,7 +1063,7 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
         edit_numero_ingreso = (EditText) detailProduct.findViewById(R.id.edit_numero_ingreso);
         Button enviar = (Button) detailProduct.findViewById(R.id.enviar);
 
-        total_facturas.setText(""+Utils.foramatearMiles(""+Utils.roundFloat(totalPagar, 2)));
+        total_facturas.setText(""+Utils.foramatearMiles(""+Utils.roundFloat(saldo, 2)));
         recaudador.setText(""+recaudadorString);
         enviar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1101,6 +1104,22 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
 
                 JSONObject jsonRespuesta = null;
 
+
+                float saldo = Float.parseFloat(detalleFacturas.get(indexFactura).getSaldo());
+                List<DetalleFormaPago> pagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(),""+detalleFacturas.get(indexFactura).getFct_det_id());
+                if (pagos != null){
+                    if (pagos.size() > 0){
+                        float acum = 0;
+                        for (DetalleFormaPago df : pagos){
+                            if (df.getValor() != null){
+                                acum = acum + Float.parseFloat(df.getValor());
+                            }
+                        }
+
+                        saldo = saldo - acum;
+                    }
+                }
+
                 pago = new DetalleFormaPago();
 
                 pago.setId_viaje(""+id_vaje);
@@ -1113,7 +1132,8 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
                 pago.setNombre_forma_de_pago("EFECTIVO");
                 pago.setNombre_corto_forma_de_pago("EFE");
                 pago.setForma_pago("1");
-                pago.setValor(""+detalleFacturas.get(indexFactura).getSaldo());
+                //pago.setValor(""+detalleFacturas.get(indexFactura).getSaldo());
+                pago.setValor(""+String.format("%.2f",saldo));
                 pago.setBanco_origen("null");
                 pago.setNum_cuenta_origen("");
                 pago.setNum_documento("");
