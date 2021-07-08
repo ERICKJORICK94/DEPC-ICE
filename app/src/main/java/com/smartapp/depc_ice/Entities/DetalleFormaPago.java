@@ -53,6 +53,8 @@ public class DetalleFormaPago {
     private Boolean estado;
     @DatabaseField
     private String fecha;
+    @DatabaseField
+    private String fct_det_id;
 
     public int getId() {
         return id;
@@ -236,5 +238,13 @@ public class DetalleFormaPago {
 
     public void setFecha(String fecha) {
         this.fecha = fecha;
+    }
+
+    public String getFct_det_id() {
+        return fct_det_id;
+    }
+
+    public void setFct_det_id(String fct_det_id) {
+        this.fct_det_id = fct_det_id;
     }
 }

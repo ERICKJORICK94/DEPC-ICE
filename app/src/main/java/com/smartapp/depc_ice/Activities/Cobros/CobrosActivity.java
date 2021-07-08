@@ -1002,6 +1002,29 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
 
     private void showAlertPagoRapido() throws SQLException {
 
+
+        List<DetalleFormaPago> pagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(),""+detalleFacturas.get(indexFactura).getFct_det_id());
+        if (pagos != null){
+            if (pagos.size() > 0){
+                float acum = 0;
+                for (DetalleFormaPago df : pagos){
+                    if (df.getValor() != null){
+                        acum = acum + Float.parseFloat(df.getValor());
+                    }
+                }
+
+                if (detalleFacturas.get(indexFactura).getSaldo() != null){
+                    float saldo = Float.parseFloat(detalleFacturas.get(indexFactura).getSaldo());
+                    if (acum == saldo){
+                        showAlert("Factura ya cancelada");
+                        return;
+                    }
+                }
+            }
+        }
+
+
+
         String recaudadorString = "";
         try {
             List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
@@ -1082,6 +1105,7 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
 
                 pago.setId_viaje(""+id_vaje);
                 pago.setFactura_id(""+detalleFacturas.get(indexFactura).getFactura_id());
+                pago.setFct_det_id(""+detalleFacturas.get(indexFactura).getFct_det_id());
                 pago.setCuenta_id(""+cuenta_id);
                 pago.setPrefijo1(""+detalleFacturas.get(indexFactura).getPrefijo1());
                 pago.setPrefijo2(""+detalleFacturas.get(indexFactura).getPrefijo1());

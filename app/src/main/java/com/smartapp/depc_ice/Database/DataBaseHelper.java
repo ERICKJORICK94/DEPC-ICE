@@ -99,7 +99,7 @@ public class DataBaseHelper {
     public static List<DetalleFormaPago> getDetalleFormaPagoByFactura(Dao<DetalleFormaPago, Integer> userDao, String factura_id) throws SQLException {
 
         List<DetalleFormaPago> usuarios = null;
-        String query = "SELECT * FROM " + Const.TABLE_DETALLE_FORMA_PAGO+" WHERE factura_id = '"+factura_id+"'";
+        String query = "SELECT * FROM " + Const.TABLE_DETALLE_FORMA_PAGO+" WHERE fct_det_id = '"+factura_id+"'";
         GenericRawResults<DetalleFormaPago> rawResults = userDao.queryRaw(query, userDao.getRawRowMapper());
         usuarios = rawResults.getResults();
 

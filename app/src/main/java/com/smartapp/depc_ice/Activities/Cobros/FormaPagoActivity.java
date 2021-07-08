@@ -486,7 +486,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
 
         if (detalleFactura != null){
             try {
-                List<DetalleFormaPago> detalleFormaPagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFactura_id());
+                List<DetalleFormaPago> detalleFormaPagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFct_det_id());
 
                 saldo = total;
                 edit_saldo.setText(String.format("$ %.2f",saldo));
@@ -1172,6 +1172,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
 
         detalleFormaPago.setId_viaje(""+id_vaje);
         detalleFormaPago.setFactura_id(""+detalleFactura.getFactura_id());
+        detalleFormaPago.setFct_det_id(""+detalleFactura.getFct_det_id());
         detalleFormaPago.setCuenta_id(""+cuenta_id);
         detalleFormaPago.setForma_pago(""+id_forma_pago);
         detalleFormaPago.setPrefijo1(""+detalleFactura.getPrefijo1());

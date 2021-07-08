@@ -253,7 +253,7 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
             public void onClick(View v) {
 
                 try {
-                    List<DetalleFormaPago> detalleFormaPagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFactura_id());
+                    List<DetalleFormaPago> detalleFormaPagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFct_det_id());
 
                     if (detalleFormaPagos != null){
                         if (detalleFormaPagos.size() > 0){
@@ -622,7 +622,7 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                         "-----------------------------" + "\n";
 
                 try {
-                    List<DetalleFormaPago> detalleFormaPagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFactura_id());
+                    List<DetalleFormaPago> detalleFormaPagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFct_det_id());
 
                     if (detalleFormaPagos != null){
                         if (detalleFormaPagos.size() > 0){
@@ -894,7 +894,7 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
             fab.setVisibility(View.VISIBLE);
             enviar.setVisibility(View.VISIBLE);
             try {
-                List<DetalleFormaPago> detalleFormaPagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFactura_id());
+                List<DetalleFormaPago> detalleFormaPagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFct_det_id());
 
                 if (detalleFormaPagos != null){
                     if (detalleFormaPagos.size() > 0){
@@ -945,7 +945,7 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
             List<DetalleFormaPago> pagos;
 
             try {
-                pagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFactura_id());
+                pagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFct_det_id());
             } catch (SQLException e) {
                 pagos = null;
             }
