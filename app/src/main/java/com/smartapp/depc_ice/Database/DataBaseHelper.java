@@ -630,6 +630,10 @@ public class DataBaseHelper {
                         gab.setFoto("" + cl.getFoto());
                     }
 
+                    if (cl.getEstado_descripcion() != null) {
+                        gab.setEstado_descripcion("" + cl.getEstado_descripcion());
+                    }
+
                     userDao.update(gab);
                     return;
                 }

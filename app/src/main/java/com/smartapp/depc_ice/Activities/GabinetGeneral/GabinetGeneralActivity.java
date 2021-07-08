@@ -99,6 +99,7 @@ public class GabinetGeneralActivity extends BaseActitity implements BaseActitity
     private final static int MY_PERMISSIONS_REQUEST_CAMARA = 9991;
     private String selectEstados = "0";
     private int selectedPosition = 0;
+    private boolean flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,6 +170,11 @@ public class GabinetGeneralActivity extends BaseActitity implements BaseActitity
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (flag){
+            flag = false;
+            return;
+        }
 
 
         try {
@@ -657,10 +663,12 @@ public class GabinetGeneralActivity extends BaseActitity implements BaseActitity
                     Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
                     intent.addCategory("android.intent.category.DEFAULT");
                     intent.setData(Uri.parse(String.format("package:%s",getApplicationContext().getPackageName())));
+                    flag = true;
                     startActivityForResult(intent, 2299);
                 } catch (Exception e) {
                     Intent intent = new Intent();
                     intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                    flag = true;
                     startActivityForResult(intent, 2299);
                 }
 
@@ -686,6 +694,7 @@ public class GabinetGeneralActivity extends BaseActitity implements BaseActitity
                     // sees the explanation, try again to request the permission.
                 } else {
                     // No se necesita dar una explicación al usuario, sólo pedimos el permiso.
+                    flag = true;
                     ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_CAMARA );
                     // MY_PERMISSIONS_REQUEST_CAMARA es una constante definida en la app. El método callback obtiene el resultado de la petición.
                 }

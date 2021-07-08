@@ -473,6 +473,7 @@ public class DetalleGabinetGeneralActivity extends BaseActitity implements BaseA
 
         showProgressWait();
         String estado = ""+estadosGabinets.get(indexEstados).getNum_estado();
+        String Nombreestado = ""+estadosGabinets.get(indexEstados).getDescripcion();
 
         //JSON SEND
         RegistrarEmergenciaModel model = new RegistrarEmergenciaModel();
@@ -520,6 +521,7 @@ public class DetalleGabinetGeneralActivity extends BaseActitity implements BaseA
                                     gabinetGeneral.setEstado(""+model.getEstado());
                                     gabinetGeneral.setObservacion(""+model.getObservacion());
                                     gabinetGeneral.setFoto(""+model.getFoto());
+                                    gabinetGeneral.setEstado_descripcion(""+Nombreestado);
 
                                     DataBaseHelper.updateGabinetGeneral(gabinetGeneral, DepcApplication.getApplication().getGabinetGeneralDao());
 
