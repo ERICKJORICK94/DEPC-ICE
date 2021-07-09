@@ -2012,7 +2012,7 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
 
     private void registrarDespacho(){
 
-        if (indexMotivoNoEntrega == -1){
+        /*if (indexMotivoNoEntrega == -1){
             showAlert("Seleccione motivo de no entrega");
             return;
         }
@@ -2020,7 +2020,7 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
         if (motivosNoEntrega.size() == indexMotivoNoEntrega){
             showAlert("Seleccione motivo de no entrega");
             return;
-        }
+        }*/
 
         if (indexEstadoFacturaDespachos == -1){
             showAlert("Seleccione estado de factura");
@@ -2037,7 +2037,16 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
         if (bitmap != null){
             model.setFoto_entrega(""+Utils.convertBase64String(bitmap));
         }
-        model.setId_motivo_noentrega(""+motivosNoEntrega.get(indexMotivoNoEntrega).getNum_motivo());
+        model.setId_motivo_noentrega("null");
+        if (motivosNoEntrega != null) {
+            if (indexMotivoNoEntrega != -1) {
+                if (motivosNoEntrega.size() != indexMotivoNoEntrega){
+                    model.setId_motivo_noentrega("" + motivosNoEntrega.get(indexMotivoNoEntrega).getNum_motivo());
+                }
+            }
+        }
+
+
         model.setFirma_persona_recibe("null");
         if (bitmapFirma != null){
             model.setFirma_persona_recibe(""+Utils.convertBase64String(bitmapFirma));

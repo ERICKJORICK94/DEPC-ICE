@@ -397,15 +397,11 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:nextFocusDown="@id/nombre"
                                 android:hint="Comentario"
                                 android:minHeight="45dp"
                                 android:paddingLeft="8dp"
                                 android:paddingRight="8dp"
                                 android:textSize="15sp"
-                                android:focusableInTouchMode="false"
-                                android:editable="false"
-                                android:clickable="false"
                                 android:background="@drawable/custom_border"/>
 
                             <TextView
