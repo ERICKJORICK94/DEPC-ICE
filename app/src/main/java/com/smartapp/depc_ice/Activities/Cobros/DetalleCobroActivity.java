@@ -607,6 +607,23 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
 
             }else {
 
+                String recaudadorString = "";
+                try {
+                    List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
+                    if (usuarios != null){
+                        if (usuarios.size() > 0){
+                            Usuario user = usuarios.get(0);
+                            if (user.getNombrescompletos() != null){
+                                recaudadorString = ""+user.getNombrescompletos();
+                            }
+                        }
+                    }
+
+
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+
                 String offline = "Recibo de cobro";
 
                 zpl = nombreEmpresa + "\n" +
@@ -615,6 +632,7 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                         offline + "\n" +
                         "Comprobante de " + "\n" +
                         "Cancelacion # " + Calendar.getInstance().getTimeInMillis() + "\n" +
+                        "Usuario : " + recaudadorString + "\n" +
                         "Cliente : " + nombreCliente + "\n" +
                         "Fecha : " + Utils.getFecha() + "\n" +
                         "-----------------------------" + "\n" +

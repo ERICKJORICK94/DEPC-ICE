@@ -1280,9 +1280,28 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
 
                 String offline = "Recibo de cobro";
 
+
+                String recaudadorString = "";
+                try {
+                    List<Usuario> usuarios = DataBaseHelper.getUsuario(DepcApplication.getApplication().getUsuarioDao());
+                    if (usuarios != null){
+                        if (usuarios.size() > 0){
+                            Usuario user = usuarios.get(0);
+                            if (user.getNombrescompletos() != null){
+                                recaudadorString = ""+user.getNombrescompletos();
+                            }
+                        }
+                    }
+
+
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+
                 zpl = nombreEmpresa + "\n" +
                         "RUC  " + rucEmpresa + "\n" +
                         "CEL  0999999999 \n" +
+                        "Usuario : " + recaudadorString + "\n" +
                         offline + "\n" +
                         "Comprobante de " + "\n" +
                         "Cancelacion # " + Calendar.getInstance().getTimeInMillis() + "\n" +

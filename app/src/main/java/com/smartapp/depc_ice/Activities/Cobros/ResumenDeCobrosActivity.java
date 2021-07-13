@@ -712,6 +712,7 @@ public class ResumenDeCobrosActivity extends BaseActitity implements BaseActitit
             String rucEmpresa = "";
 
 
+
             if (Utils.getZebra(getBaseContext())) {
 
                 /*zpl = "^XA^CFD^POI^LH0,0 ^LL600 ^FO10,20^ADN,20,20^FD" + nombreEmpresa +
