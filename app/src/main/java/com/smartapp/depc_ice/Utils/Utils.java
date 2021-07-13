@@ -368,6 +368,12 @@ public class Utils {
 
     }
 
+    public static String getFechaFormaPago(){
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(c.getTime());
+    }
+
     public static String getFecha(){
         Calendar c = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");

@@ -362,6 +362,42 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/linear_cuenta_bancaria"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".45"
+                    android:textColor="@color/Black"
+                    android:textStyle="bold"
+                    android:text="Cuenta Bancaria DEPC-ICE: " />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_border">
+
+                    <Spinner
+                        android:id="@+id/spinner_cuentas"
+                        android:layout_width="match_parent"
+                        android:spinnerMode="dialog"
+                        android:layout_height="match_parent"
+                        android:elevation="4dp"></Spinner>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/linear_banco"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -377,7 +413,7 @@
                     android:layout_weight=".45"
                     android:textColor="@color/Black"
                     android:textStyle="bold"
-                    android:text="Banco: " />
+                    android:text="Banco origen: " />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -397,9 +433,8 @@
 
             </LinearLayout>
 
-
             <LinearLayout
-                android:id="@+id/linear_cuenta_bancaria"
+                android:id="@+id/linear_numero_cuenta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="true"
@@ -414,25 +449,19 @@
                     android:layout_weight=".45"
                     android:textColor="@color/Black"
                     android:textStyle="bold"
-                    android:text="Cuenta Bancaria: " />
+                    android:text="Nro. Cuenta origen" />
 
-                <LinearLayout
+                <EditText
+                    android:id="@+id/edt_numero_cuenta"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/custom_border">
-
-                    <Spinner
-                        android:id="@+id/spinner_cuentas"
-                        android:layout_width="match_parent"
-                        android:spinnerMode="dialog"
-                        android:layout_height="match_parent"
-                        android:elevation="4dp"></Spinner>
-
-
-                </LinearLayout>
+                    android:background="@drawable/custom_border"
+                    android:padding="5dp"
+                    android:inputType="number"
+                    android:layout_weight="1"></EditText>
 
             </LinearLayout>
+
 
             <LinearLayout
                 android:id="@+id/linear_monto_pago"
@@ -524,35 +553,7 @@
             </LinearLayout>
 
 
-            <LinearLayout
-                android:id="@+id/linear_numero_cuenta"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:layout_marginBottom="10dp"
-                android:orientation="horizontal">
 
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight=".45"
-                    android:textColor="@color/Black"
-                    android:textStyle="bold"
-                    android:text="Nro. Cuenta" />
-
-                <EditText
-                    android:id="@+id/edt_numero_cuenta"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/custom_border"
-                    android:padding="5dp"
-                    
-                    android:inputType="number"
-                    android:layout_weight="1"></EditText>
-
-            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/linear_numero_cheque"

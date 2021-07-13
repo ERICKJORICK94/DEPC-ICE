@@ -28,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -37,6 +38,8 @@ import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import com.akexorcist.googledirection.model.Line;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -1062,9 +1065,15 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
         edt_referencia = (EditText) detailProduct.findViewById(R.id.edt_referencia);
         edit_numero_ingreso = (EditText) detailProduct.findViewById(R.id.edit_numero_ingreso);
         Button enviar = (Button) detailProduct.findViewById(R.id.enviar);
+        LinearLayout linear_recaudador = (LinearLayout) detailProduct.findViewById(R.id.linear_recaudador);
 
+        linear_recaudador.setVisibility(View.GONE);
         total_facturas.setText(""+Utils.foramatearMiles(""+Utils.roundFloat(saldo, 2)));
-        recaudador.setText(""+recaudadorString);
+        if (recaudadorString.trim().length() > 0) {
+            recaudador.setText(""+recaudadorString);
+            linear_recaudador.setVisibility(View.VISIBLE);
+        }
+
         enviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1145,6 +1154,7 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
                 pago.setFecha(Utils.getFecha());
                 pago.setNombreCliente(nombreCliente);
                 pago.setFoto_cobro("");
+                pago.setFecha_vencimiento(Utils.getFechaFormaPago());
                 pago.setMetodo("RegistrarCobro");
 
                 DataBaseHelper.saveDetalleFormaPago(pago, DepcApplication.getApplication().getDetalleFormaPagoDao());
@@ -1312,7 +1322,7 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
                         "-----------------------------" + "\n";
 
                 try {
-                    zpl += "" +truncate( pago.getFactura_id(), 8)+ "  " + truncate(pago.getNombre_corto_forma_de_pago(),9) + truncate( " $ "+ pago.getValor(),10) + "\n";
+                    zpl += "" +truncate( pago.getFct_det_id(), 8)+ "  " + truncate(pago.getNombre_corto_forma_de_pago(),9) + truncate( " $ "+ pago.getValor(),10) + "\n";
                 } catch (Exception throwables) {
                     throwables.printStackTrace();
                 }

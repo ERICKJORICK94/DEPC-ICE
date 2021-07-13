@@ -812,7 +812,7 @@ public class ResumenDeCobrosActivity extends BaseActitity implements BaseActitit
                 try {
 
                     for (DetalleFormaPago df : pagos) {
-                        zpl += "" + truncate(df.getFactura_id(), 8) + "  " + truncate(df.getNombre_corto_forma_de_pago(), 9) + truncate(" $ " + df.getValor(), 10) + "\n";
+                        zpl += "" + truncate(df.getFct_det_id(), 8) + "  " + truncate(df.getNombre_corto_forma_de_pago(), 9) + truncate(" $ " + df.getValor(), 10) + "\n";
                         if (df.getValor() != null){
                             float valor = Float.parseFloat(df.getValor());
                             acum = acum + valor;

@@ -27,12 +27,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.core.content.ContextCompat;
+
+import com.akexorcist.googledirection.model.Line;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -120,6 +124,7 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
     private static OutputStream btoutputstream;
     private String URL_ENVIO = "https://webserver.depconsa.com/DepWSR/application/libraries/wsapp.php";
     private String nombreCliente = "";
+    private LinearLayout linear_recaudador;
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -187,6 +192,7 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
         edt_referencia = (EditText) layout.findViewById(R.id.edt_referencia);
         edt_nro_ingreso = (EditText) layout.findViewById(R.id.edt_nro_ingreso);
         listview = (NonScrollListView) layout.findViewById(R.id.listview);
+        linear_recaudador = (LinearLayout) layout.findViewById(R.id.linear_recaudador);
 
         if (getIntent() != null){
             detalleFactura = (DetalleFacturas) getIntent().getSerializableExtra("detalle_factura");
@@ -242,7 +248,12 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                 }
             }
 
-            recaudador.setText(""+recaudadorString);
+            linear_recaudador.setVisibility(View.GONE);
+            if (recaudadorString.trim().length() > 0) {
+                recaudador.setText(""+recaudadorString);
+                linear_recaudador.setVisibility(View.VISIBLE);
+            }
+
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -646,7 +657,7 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                         if (detalleFormaPagos.size() > 0){
 
                             for (DetalleFormaPago df : detalleFormaPagos){
-                                zpl += "" +truncate( df.getFactura_id(), 8)+ "  " + truncate(df.getNombre_corto_forma_de_pago(),9) + truncate( " $ "+ df.getValor(),10) + "\n";
+                                zpl += "" +truncate( df.getFct_det_id(), 8)+ "  " + truncate(df.getNombre_corto_forma_de_pago(),9) + truncate( " $ "+ df.getValor(),10) + "\n";
                             }
                         }
                     }

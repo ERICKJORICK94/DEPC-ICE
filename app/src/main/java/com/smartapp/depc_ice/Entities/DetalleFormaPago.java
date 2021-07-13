@@ -55,6 +55,8 @@ public class DetalleFormaPago {
     private String fecha;
     @DatabaseField
     private String fct_det_id;
+    @DatabaseField
+    private String fecha_vencimiento;
 
     public int getId() {
         return id;
@@ -246,5 +248,13 @@ public class DetalleFormaPago {
 
     public void setFct_det_id(String fct_det_id) {
         this.fct_det_id = fct_det_id;
+    }
+
+    public String getFecha_vencimiento() {
+        return fecha_vencimiento;
+    }
+
+    public void setFecha_vencimiento(String fecha_vencimiento) {
+        this.fecha_vencimiento = fecha_vencimiento;
     }
 }

@@ -256,6 +256,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
             throwables.printStackTrace();
         }
 
+        fechaVencimiento = Utils.getFechaFormaPago();
 
         calculateValor();
 
@@ -307,8 +308,8 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
             }
         });
 
-        btn_vencimiento.setText(""+Utils.getFecha());
-        fechaVencimiento = ""+Utils.getFecha();
+        btn_vencimiento.setText(""+fechaVencimiento);
+        //fechaVencimiento = ""+Utils.getFecha();
         Date date = new Date();
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
@@ -330,9 +331,9 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
                             Date date = format.parse(dayOfMonth+"/"+monthOfYear+"/"+year);
                             Calendar cal = Calendar.getInstance();
                             cal.setTime(date);
-                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                            btn_vencimiento.setText(sdf.format(cal.getTime()));
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                             fechaVencimiento = sdf.format(cal.getTime());
+                            btn_vencimiento.setText(""+fechaVencimiento);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
@@ -703,7 +704,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                             indexBanco = position;
-                            getCuentasBancos(""+bancos.get(indexBanco).getBanco());
+                            //getCuentasBancos(""+bancos.get(indexBanco).getBanco());
                         }
 
                         @Override
@@ -715,6 +716,8 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
 
                 }
             }
+
+            getCuentasBancos("");
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -730,7 +733,8 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
 
         //JSON SEND
         CuentaBancoModel model = new CuentaBancoModel();
-        model.setBanco(""+banco);
+        //model.setBanco(""+banco);
+        model.setBanco("");
         model.setMetodo("ListarCuentasBancos");
 
         final Gson gson = new Gson();
@@ -764,7 +768,8 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
                                                 cuentas = dataCuentaBanco.getData().getListarCuentasBancos().get(0);
 
                                                 if (cuentas != null) {
-                                                    DataBaseHelper.deleteCuentaBancosByBanco(DepcApplication.getApplication().getCuentaBancosDao(), ""+banco);
+                                                    //DataBaseHelper.deleteCuentaBancosByBanco(DepcApplication.getApplication().getCuentaBancosDao(), ""+banco);
+                                                    DataBaseHelper.deleteCuentaBancos(DepcApplication.getApplication().getCuentaBancosDao());
                                                     DepcApplication.getApplication().getCuentaBancosDao().callBatchTasks(new Callable<CuentaBancos>() {
                                                         @Override
                                                         public CuentaBancos call() throws Exception {
@@ -830,7 +835,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
 
         try {
 
-            cuentaBancos = DataBaseHelper.getCuentaBancosByBanco(DepcApplication.getApplication().getCuentaBancosDao(), ""+banco);
+            cuentaBancos = DataBaseHelper.getCuentaBancos(DepcApplication.getApplication().getCuentaBancosDao());
             if (cuentaBancos != null) {
                 if (cuentaBancos.size() > 0) {
 
@@ -838,7 +843,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
                     for (CuentaBancos z : cuentaBancos){
 
                         if (z.getNum_cuenta() != null) {
-                            items.add(z.getNum_cuenta());
+                            items.add(z.getNum_cuenta()+" - "+z.getNombre_entidad());
                         }else{
                             items.add("-");
                         }
@@ -898,9 +903,9 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
             linear_n_tarjeta.setVisibility(View.GONE);
             linear_banco.setVisibility(View.VISIBLE);
             linear_cuenta_bancaria.setVisibility(View.GONE);
-            linear_vencimiento.setVisibility(View.GONE);
+            linear_vencimiento.setVisibility(View.VISIBLE);
             linear_autoriazacion.setVisibility(View.GONE);
-            linear_numero_cuenta.setVisibility(View.GONE);
+            linear_numero_cuenta.setVisibility(View.VISIBLE);
             linear_fecha_vigencia.setVisibility(View.GONE);
             linear_numero_cheque.setVisibility(View.GONE);
             linear_numero_deposito.setVisibility(View.VISIBLE);
@@ -920,7 +925,7 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
             linear_cuenta_bancaria.setVisibility(View.VISIBLE);
             linear_vencimiento.setVisibility(View.GONE);
             linear_autoriazacion.setVisibility(View.GONE);
-            linear_numero_cuenta.setVisibility(View.GONE);
+            linear_numero_cuenta.setVisibility(View.VISIBLE);
             linear_fecha_vigencia.setVisibility(View.GONE);
             linear_numero_cheque.setVisibility(View.GONE);
             linear_numero_deposito.setVisibility(View.VISIBLE);
@@ -939,10 +944,10 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
             linear_cuenta_bancaria.setVisibility(View.VISIBLE);
             linear_vencimiento.setVisibility(View.GONE);
             linear_autoriazacion.setVisibility(View.GONE);
-            linear_numero_cuenta.setVisibility(View.GONE);
+            linear_numero_cuenta.setVisibility(View.VISIBLE);
             linear_fecha_vigencia.setVisibility(View.GONE);
             linear_numero_cheque.setVisibility(View.GONE);
-            linear_numero_deposito.setVisibility(View.GONE);
+            linear_numero_deposito.setVisibility(View.VISIBLE);
             linear_numero_nc.setVisibility(View.GONE);
             linear_nro_letra.setVisibility(View.GONE);
             linear_cuotas.setVisibility(View.GONE);
@@ -1188,12 +1193,6 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
                 detalleFormaPago.setBanco_origen("" + bancos.get(indexBanco).getBanco());
             }
         }
-        detalleFormaPago.setNum_cuenta_origen("");
-        if (indexCuentas >= 0){
-            if (cuentaBancos != null) {
-                detalleFormaPago.setNum_cuenta_origen("" + cuentaBancos.get(indexCuentas).getNum_cuenta());
-            }
-        }
         detalleFormaPago.setNum_documento(""+edt_numero_deposito.getText().toString());
         detalleFormaPago.setCuenta_bancaria("null");
         if (indexCuentas >= 0){
@@ -1205,6 +1204,8 @@ public class FormaPagoActivity extends BaseActitity implements BaseActitity.Base
         detalleFormaPago.setNombre_persona_paga(""+pagado_por.getText().toString());
         detalleFormaPago.setFirma_persona_paga("");
         detalleFormaPago.setEstado(false);
+        detalleFormaPago.setNum_cuenta_origen(""+edt_numero_cuenta.getText().toString());
+        detalleFormaPago.setFecha_vencimiento(fechaVencimiento);
         detalleFormaPago.setFecha(Utils.getFecha());
         if (bitmapFirma != null){
             detalleFormaPago.setFirma_persona_paga(""+Utils.convertBase64String(bitmapFirma));

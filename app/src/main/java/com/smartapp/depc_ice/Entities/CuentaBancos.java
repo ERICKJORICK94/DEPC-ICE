@@ -53,6 +53,8 @@ public class CuentaBancos {
     private String cta_rol;
     @DatabaseField
     private String es_cobro;
+    @DatabaseField
+    private String nombre_entidad;
 
     public int getId() {
         return id;
@@ -236,5 +238,13 @@ public class CuentaBancos {
 
     public void setEs_cobro(String es_cobro) {
         this.es_cobro = es_cobro;
+    }
+
+    public String getNombre_entidad() {
+        return nombre_entidad;
+    }
+
+    public void setNombre_entidad(String nombre_entidad) {
+        this.nombre_entidad = nombre_entidad;
     }
 }
