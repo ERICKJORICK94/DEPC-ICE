@@ -274,6 +274,7 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
         String[] itemsTipoCliente = new String[]{"PRECONTADO", "CONTADO"};
         ArrayAdapter<String> adapterTipoCliente= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, itemsTipoCliente);
         tipo_cliente.setAdapter(adapterTipoCliente);
+        tipo_cliente.setEnabled(false);
         tipo_cliente.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

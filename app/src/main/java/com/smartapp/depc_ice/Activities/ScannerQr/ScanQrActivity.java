@@ -14,6 +14,7 @@ import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.google.zxing.Result;
 import com.smartapp.depc_ice.Activities.General.BaseActitity;
+import com.smartapp.depc_ice.DepcApplication;
 import com.smartapp.depc_ice.R;
 import com.smartapp.depc_ice.Utils.Utils;
 
@@ -29,6 +30,8 @@ public class ScanQrActivity extends BaseActitity implements BaseActitity.BaseAct
         layout = addLayout(R.layout.scan_qr_layout);
         Utils.SetStyleActionBarTitle(this);
 
+        DepcApplication.getApplication().qrText = "";
+
         CodeScannerView scannerView = findViewById(R.id.scanner_view);
         mCodeScanner = new CodeScanner(this, scannerView);
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
@@ -37,7 +40,9 @@ public class ScanQrActivity extends BaseActitity implements BaseActitity.BaseAct
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(ScanQrActivity.this, result.getText(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(ScanQrActivity.this, result.getText(), Toast.LENGTH_SHORT).show();
+                        DepcApplication.getApplication().qrText =  result.getText();
+                        finish();
                     }
                 });
             }

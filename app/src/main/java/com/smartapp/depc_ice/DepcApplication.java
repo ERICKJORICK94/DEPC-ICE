@@ -66,6 +66,7 @@ public class DepcApplication extends Application {
     private static String longitud = "";
     private static Clientes cliente = null;
     public static boolean isReload = false;
+    public static String qrText = "";
 
     @Override
     public void onCreate() {
@@ -88,6 +89,7 @@ public class DepcApplication extends Application {
 
         instance = this;
         databaseHelper = new Database(this);
+        qrText = "";
 
     }
 

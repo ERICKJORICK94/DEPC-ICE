@@ -149,12 +149,20 @@ public class LoginActivity extends BaseActitity implements BaseActitity.BaseActi
                                 if (dataUsuario.getStatus() == Const.COD_ERROR_SUCCESS) {
 
                                     if (dataUsuario.getData() != null){
-                                        DataBaseHelper.deleteUUsuario(DepcApplication.getApplication().getUsuarioDao());
-                                        DataBaseHelper.saveUsuario(dataUsuario.getData(),DepcApplication.getApplication().getUsuarioDao());
-                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                        return;
+
+
+                                        if (dataUsuario.getData().getPerfil() == -1){
+                                            showAlert("USUARIO NO HABILITADO PARA EL USO DE LA APP");
+                                            return;
+
+                                        }else {
+                                            DataBaseHelper.deleteUUsuario(DepcApplication.getApplication().getUsuarioDao());
+                                            DataBaseHelper.saveUsuario(dataUsuario.getData(), DepcApplication.getApplication().getUsuarioDao());
+                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                            return;
+                                        }
                                     }
 
                                 }else{

@@ -381,6 +381,7 @@ public class EditarClientesActivity extends BaseActitity implements BaseActitity
         ArrayAdapter<String> adapterTipoCliente= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, itemsTipoCliente);
         tipo_cliente.setAdapter(adapterTipoCliente);
         tipo_cliente.setSelection(indexpre);
+        tipo_cliente.setEnabled(false);
         indexTipoCliente = indexpre;
         tipo_cliente.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

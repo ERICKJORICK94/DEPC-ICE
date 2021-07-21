@@ -281,7 +281,7 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
                 if (isActualizar){
 
                     if (id_congelador.length() == 0){
-                        Toast.makeText(RegistroPedidoActivity.this, "Seleccione un Gabinet para continuar", Toast.LENGTH_LONG).show();
+                        Toast.makeText(RegistroPedidoActivity.this, "Seleccione un Cabinet para continuar", Toast.LENGTH_LONG).show();
                         return;
                     }
 
@@ -342,7 +342,7 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
 
 
                     if (id_congelador.length() == 0){
-                        Toast.makeText(RegistroPedidoActivity.this, "Seleccione una Gabinet para continuar", Toast.LENGTH_LONG).show();
+                        Toast.makeText(RegistroPedidoActivity.this, "Seleccione una Cabinet para continuar", Toast.LENGTH_LONG).show();
                         return;
                     }
 

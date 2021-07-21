@@ -471,7 +471,7 @@
                     android:textSize="13sp"
                     android:layout_marginTop="15dp"
                     android:textColor="@color/DarkGray"
-                    android:text="LISTA GABINETS"/>
+                    android:text="LISTA CABINETS"/>
 
                 <com.smartapp.depc_ice.Utils.NonScrollListView
                     android:id="@+id/listaGabinet"

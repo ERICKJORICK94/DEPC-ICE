@@ -264,28 +264,28 @@
             android:name=".Activities.GabinetClientes.GabinietClientesActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:icon="@drawable/back"
-            android:label="Gabinet Cliente"
+            android:label="Cabinet Cliente"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".Activities.GabinetClientes.DetalleGabinetActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:icon="@drawable/back"
-            android:label="Detalle Gabinet"
+            android:label="Detalle Cabinet"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".Activities.GabinetGeneral.GabinetGeneralActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:icon="@drawable/back"
-            android:label="Gabinets Generales"
+            android:label="Cabinets Generales"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".Activities.GabinetGeneral.DetalleGabinetGeneralActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:icon="@drawable/back"
-            android:label="Detalle Gabinets Generales"
+            android:label="Detalle Cabinets Generales"
             android:screenOrientation="portrait" />
 
         <activity

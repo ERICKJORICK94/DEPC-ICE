@@ -129,7 +129,7 @@ public class GabinetGeneralActivity extends BaseActitity implements BaseActitity
         }
 
         search.setActivated(true);
-        search.setQueryHint("Buscar Gabinet...");
+        search.setQueryHint("Buscar Cabinet...");
         search.onActionViewExpanded();
         search.setIconified(false);
         search.clearFocus();
@@ -176,6 +176,14 @@ public class GabinetGeneralActivity extends BaseActitity implements BaseActitity
             return;
         }
 
+        if (DepcApplication.getApplication().qrText.length() > 0){
+            buscar = DepcApplication.getApplication().qrText;
+            search.setQuery(buscar, true);
+            DepcApplication.getApplication().qrText = "";
+            return;
+        }
+
+
 
         try {
 
@@ -202,7 +210,7 @@ public class GabinetGeneralActivity extends BaseActitity implements BaseActitity
                 if (flagEstados) {
                     getEstadosGabinet();
                 }else{
-                    getGabinetGeneral("");
+                    getGabinetGeneral(buscar);
                 }
             }
 
@@ -438,7 +446,7 @@ public class GabinetGeneralActivity extends BaseActitity implements BaseActitity
             estadoGabinets = DataBaseHelper.getEstadoGabinet(DepcApplication.getApplication().getEstadoGabinetDao());
             if (estadoGabinets != null) {
                 if (estadoGabinets.size() > 0) {
-                    getGabinetGeneral("");
+                    getGabinetGeneral(buscar);
                 }
             }
 
@@ -642,10 +650,10 @@ public class GabinetGeneralActivity extends BaseActitity implements BaseActitity
                              selectedPosition = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
                             if (selectedPosition == 0){
                                 selectEstados = "0";
-                                getGabinetGeneral("");
+                                getGabinetGeneral(buscar);
                             }else{
                                 selectEstados = estadoGabinets.get(selectedPosition - 1).getNum_estado();
-                                getGabinetGeneral("");
+                                getGabinetGeneral(buscar);
                             }
 
                         }
@@ -764,12 +772,12 @@ public class GabinetGeneralActivity extends BaseActitity implements BaseActitity
                     gabinetList = DataBaseHelper.getGabinetGeneralCondicion(DepcApplication.getApplication().getGabinetGeneralDao(), "" + nuevaCondicion);
                 }else{
 
-                    if (selectEstados == "0"){
+                    /*if (selectEstados == "0"){
                         gabinetList = DataBaseHelper.getGabinetGeneral(DepcApplication.getApplication().getGabinetGeneralDao());
                     }else{
                         String nuevaCondicion = "estado = '"+selectEstados+"'";
                         gabinetList = DataBaseHelper.getGabinetGeneralCondicion(DepcApplication.getApplication().getGabinetGeneralDao(), "" + nuevaCondicion);
-                    }
+                    }*/
 
                 }
 
@@ -788,22 +796,24 @@ public class GabinetGeneralActivity extends BaseActitity implements BaseActitity
 
                         num_cliente.setVisibility(View.VISIBLE);
                         if (gabinetList.size() == 1) {
-                            num_cliente.setText("" + gabinetList.size() + " gabinet encontrado");
+                            num_cliente.setText("" + gabinetList.size() + " cabinet encontrado");
                         } else {
-                            num_cliente.setText("" + gabinetList.size() + " gabinet encontrados");
+                            num_cliente.setText("" + gabinetList.size() + " cabinet encontrados");
                         }
                     }else{
                         String error = Const.ERROR_NO_RESULT;
-                        if (isSearch){ error = Const.ERROR_NO_RESULT; }
-                        showAlert(error);
+                        if (isSearch){ error = Const.ERROR_NO_RESULT;
+                            showAlert(error);}
+
                     }
                 }else{
                     String error = Const.ERROR_NO_RESULT;
-                    if (isSearch){ error = Const.ERROR_NO_RESULT; }
-                    showAlert(error);
+                    if (isSearch){ error = Const.ERROR_NO_RESULT;
+                        showAlert(error);}
+
                 }
 
-            isSearch = false;
+            //isSearch = false;
         } catch (SQLException e) {
             e.printStackTrace();
             showAlert(Const.ERROR_NO_RESULT);

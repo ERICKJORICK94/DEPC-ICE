@@ -32,7 +32,7 @@
         </item>
         <item>
             <code>7</code>
-            <name>Gabinets</name>
+            <name>Cabinets</name>
             <image>@drawable/gabinet</image>
             <activity>com.smartapp.depc_ice.Activities.GabinetGeneral.GabinetGeneralActivity</activity>
         </item>
@@ -75,12 +75,6 @@
             <image>@drawable/ic_baseline_shopping_basket_24</image>
             <activity>com.smartapp.depc_ice.Activities.Productos.ProductosActivity</activity>
         </item>
-        <item>
-            <code>7</code>
-            <name>Gabinets</name>
-            <image>@drawable/gabinet</image>
-            <activity>com.smartapp.depc_ice.Activities.GabinetGeneral.GabinetGeneralActivity</activity>
-        </item>
     </array>
 
 
@@ -104,16 +98,19 @@
             <activity>com.smartapp.depc_ice.Activities.Productos.ProductosActivity</activity>
         </item>
         <item>
-            <code>7</code>
-            <name>Gabinets</name>
-            <image>@drawable/gabinet</image>
-            <activity>com.smartapp.depc_ice.Activities.GabinetGeneral.GabinetGeneralActivity</activity>
-        </item>
-        <item>
             <code>8</code>
             <name>Resumen&#160;de&#160;cobros</name>
             <image>@drawable/ic_baseline_attach_money_24</image>
             <activity>com.smartapp.depc_ice.Activities.Cobros.ResumenDeCobrosActivity</activity>
+        </item>
+    </array>
+
+    <array name="menu_array_tecnico">
+        <item>
+            <code>7</code>
+            <name>Cabinets</name>
+            <image>@drawable/gabinet</image>
+            <activity>com.smartapp.depc_ice.Activities.GabinetGeneral.GabinetGeneralActivity</activity>
         </item>
     </array>
 
@@ -146,7 +143,7 @@
         </item>
         <item>
             <code>7</code>
-            <name>Gabinets</name>
+            <name>Cabinets</name>
             <image>@drawable/gabinet</image>
             <activity>com.smartapp.depc_ice.Activities.GabinetClientes.GabinietClientesActivity</activity>
         </item>
@@ -179,12 +176,12 @@
             <image>@drawable/ic_baseline_playlist_add_check_24</image>
             <activity>com.smartapp.depc_ice.Activities.Pedido.ListaPredidosActivity</activity>
         </item>
-        <item>
+        <!--<item>
             <code>7</code>
-            <name>Gabinets</name>
+            <name>Cabinets</name>
             <image>@drawable/gabinet</image>
             <activity>com.smartapp.depc_ice.Activities.GabinetClientes.GabinietClientesActivity</activity>
-        </item>
+        </item>-->
     </array>
 
 
@@ -197,7 +194,7 @@
         </item>
         <item>
             <code>7</code>
-            <name>Gabinets</name>
+            <name>Cabinets</name>
             <image>@drawable/gabinet</image>
             <activity>com.smartapp.depc_ice.Activities.GabinetClientes.GabinietClientesActivity</activity>
         </item>

@@ -25,6 +25,8 @@ public class Usuario {
     private int id_personal_operaciones;
     @DatabaseField
     private int pto_vta_id_operaciones;
+    @DatabaseField
+    private int perfil;
 
     public int getId() {
         return id;
@@ -96,5 +98,13 @@ public class Usuario {
 
     public void setPto_vta_id_operaciones(int pto_vta_id_operaciones) {
         this.pto_vta_id_operaciones = pto_vta_id_operaciones;
+    }
+
+    public int getPerfil() {
+        return perfil;
+    }
+
+    public void setPerfil(int perfil) {
+        this.perfil = perfil;
     }
 }

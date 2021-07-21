@@ -297,12 +297,16 @@ public class MainActivity extends BaseActitity implements BaseActitity.BaseActiv
             grid.addHeaderView(header);
 
 
-            int id_personal_operaciones = user.getId_personal_operaciones();
+            int id_personal_operaciones = user.getPerfil();
 
-            if (id_personal_operaciones > 0) {
-                opcionesMenu = getResources().getStringArray(R.array.menu_array_despachador);
-            }else {
+            if (id_personal_operaciones == 0) {
                 opcionesMenu = getResources().getStringArray(R.array.menu_array_vendedor);
+            }else if (id_personal_operaciones == 1 || id_personal_operaciones == 2 || id_personal_operaciones == 3) {
+                opcionesMenu = getResources().getStringArray(R.array.menu_array_despachador);
+            }else   if (id_personal_operaciones == 6) {
+                opcionesMenu = getResources().getStringArray(R.array.menu_array_tecnico);
+            }else{
+                opcionesMenu = getResources().getStringArray(R.array.menu_array);
             }
 
             grid.setAdapter(new GridAdapter(this, opcionesMenu));

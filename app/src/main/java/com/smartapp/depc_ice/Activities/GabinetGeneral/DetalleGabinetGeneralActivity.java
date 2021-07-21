@@ -1057,7 +1057,7 @@ public class DetalleGabinetGeneralActivity extends BaseActitity implements BaseA
 
                                     new AlertDialog.Builder(DetalleGabinetGeneralActivity.this)
                                             .setTitle(getResources().getString(R.string.app_name))
-                                            .setMessage("Gabinet asignado con éxito")
+                                            .setMessage("Cabinet asignado con éxito")
                                             .setCancelable(false)
                                             .setPositiveButton("ACEPTAR", new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int id) {
