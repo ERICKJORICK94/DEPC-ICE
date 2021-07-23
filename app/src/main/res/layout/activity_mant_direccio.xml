@@ -243,7 +243,7 @@
 
                     <LinearLayout
                         android:layout_gravity="center_vertical"
-                        android:layout_height="wrap_content"
+                        android:layout_height="45dp"
                         android:layout_width="match_parent"
                         android:background="@drawable/custom_border"
                         android:orientation="horizontal">
@@ -270,7 +270,14 @@
                             android:paddingLeft="8dp"
                             android:paddingRight="8dp"
                             android:textSize="15sp"
+                            android:visibility="gone"
                             android:background="@drawable/custom_border"/>
+
+                        <Spinner
+                            android:id="@+id/spinner_dias"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:spinnerMode="dialog"/>
                     </LinearLayout>
 
                 </LinearLayout>

@@ -112,6 +112,7 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
     private Spinner zona;
     private Call<IZonas.dataBodega> call;
     private IZonas.dataBodega data;
+    String[] semanas = { "LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES","SÁBADO","DOMINGO"};
 
     private Call<IPuntosVentas.dataPuntos> callPuntos;
     private IPuntosVentas.dataPuntos dataPuntos;
@@ -130,6 +131,7 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
     private boolean isActualizar = false;
     private Clientes cliente;
     private TextView qr;
+    private Spinner spinner_dias;
     private final static int MY_PERMISSIONS_REQUEST_CAMARA = 9991;
     private final static int MAP_BUTTON_REQUEST_CODE = 6324;
     private String congeladorID = "null";
@@ -142,6 +144,7 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
     private Call<IClientesGabinet.dataGabinet> callGabinetCliente;
     private IClientesGabinet.dataGabinet dataGabinetCliente;
     private List<ClienteGabinet> gabinetsClientes;
+    private int indexSemana = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,6 +170,7 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
         cliente = DepcApplication.getApplication().getCliente();
 
         ibTomarGPS = layout.findViewById(R.id.ib_tomar_gps);
+        spinner_dias = layout.findViewById(R.id.spinner_dias);
         ibVerMapa = layout.findViewById(R.id.ib_ver_mapa);
         btActualizar = layout.findViewById(R.id.bt_actualizar);
         llLatLon = layout.findViewById(R.id.ll_lat_lon);
@@ -207,6 +211,22 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
         listaGabinet.setVisibility(View.GONE);
         lista_gabinets.setVisibility(View.GONE);
 
+        ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_spinner_item,semanas);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_dias.setAdapter(aa);
+        spinner_dias.setSelection(indexSemana);
+        spinner_dias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                indexSemana = i;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         if(parametro.equals("mant")) {
             direccion = (Direcciones) getIntent().getSerializableExtra(Const.DETALLE_DIRECCION);
             btActualizar.setText("ACTUALIZAR");
@@ -246,6 +266,13 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
 
             if (temp.getDia_visita() != null){
                 dias.setText(""+temp.getDia_visita());
+                if (Utils.isNumber(temp.getDia_visita())){
+                    int in = Integer.parseInt(temp.getDia_visita());
+                    if (in > 0 && in <= 7){
+                        indexSemana = in - 1;
+                        spinner_dias.setSelection(indexSemana);
+                    }
+                }
             }
 
             if (temp.getCodigo() != null){
@@ -275,9 +302,9 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
                     correo.setText(""+cliente.getEmail());
                 }
 
-                if (cliente.getDias_credito() != null){
+                /*if (cliente.getDias_credito() != null){
                     dias.setText(""+cliente.getDias_credito());
-                }
+                }*/
 
             }
 
@@ -1250,7 +1277,8 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
                             }
                             direccion.setCliente_id(""+getIntent().getStringExtra("cliente"));
                             direccion.setCodigo(congeladorID);
-                            direccion.setDia_visita(""+dias.getText().toString());
+                            //direccion.setDia_visita(""+dias.getText().toString());
+                            direccion.setDia_visita(""+(indexSemana + 1 ));
                             direccion.setEmail_contacto(""+correo.getText().toString());
                             direccion.setExtension_contacto("");
                             direccion.setTelefono_contacto(""+celular.getText().toString());
@@ -1275,7 +1303,8 @@ public class MantDireccionActivity extends BaseActitity implements BaseActitity.
                             }
                             direccion.setCliente_id(""+getIntent().getStringExtra("cliente"));
                             direccion.setCodigo(congeladorID);
-                            direccion.setDia_visita(""+dias.getText().toString());
+                            //direccion.setDia_visita(""+dias.getText().toString());
+                            direccion.setDia_visita(""+(indexSemana + 1));
                             direccion.setEmail_contacto(""+correo.getText().toString());
                             direccion.setExtension_contacto("");
                             direccion.setTelefono_contacto(""+celular.getText().toString());
