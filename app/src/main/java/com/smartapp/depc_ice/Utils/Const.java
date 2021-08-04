@@ -9,6 +9,8 @@ public class Const {
     public static final String SHARED_PREFERENCES_NAME = "SHARED_PREFERENCES_NAME";
     public static final String IS_LOGIN = "is_login";
     public static final String IS_IMEI = "is_imei";
+    public static final String WS="DepWSR/application/libraries/wsapp.php";
+
 
 
     public static final int PARAM_MAX_ROW  = 30;

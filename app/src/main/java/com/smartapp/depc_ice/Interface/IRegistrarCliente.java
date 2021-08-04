@@ -3,6 +3,7 @@ package com.smartapp.depc_ice.Interface;
 
 import com.smartapp.depc_ice.Entities.Clientes;
 import com.smartapp.depc_ice.Models.DataZonaModel;
+import com.smartapp.depc_ice.Utils.Const;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -18,7 +19,7 @@ public interface IRegistrarCliente {
 
     //@FormUrlEncoded
     @Headers("Content-Type: application/json")
-    @POST("DepWSR/application/libraries/wsapp.php")
+    @POST(Const.WS)
     Call<dataBodega> getRegistrarCliente(@Body RequestBody json);
 
     public class dataBodega{

@@ -3,6 +3,7 @@ package com.smartapp.depc_ice.Interface;
 
 import com.smartapp.depc_ice.Models.DataDetallePedidosModel;
 import com.smartapp.depc_ice.Models.DataPedidosModel;
+import com.smartapp.depc_ice.Utils.Const;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -18,7 +19,7 @@ public interface IConsultaDetallePedido {
 
     //@FormUrlEncoded
     @Headers("Content-Type: application/json")
-    @POST("DepWSR/application/libraries/wsapp.php")
+    @POST(Const.WS)
     Call<dataPedido> getPedido(@Body RequestBody json);
 
     public class dataPedido{

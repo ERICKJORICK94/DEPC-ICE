@@ -1,6 +1,7 @@
 package com.smartapp.depc_ice.Interface;
 
 import com.smartapp.depc_ice.Entities.Usuario;
+import com.smartapp.depc_ice.Utils.Const;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -13,7 +14,7 @@ import retrofit2.http.POST;
 public interface IUsuario {
 
     @Headers("Content-Type: application/json")
-    @POST("DepWSR/application/libraries/wsapp.php")
+    @POST(Const.WS)
     Call<dataUsuario> getLogin(@Body RequestBody json);
 
     public class dataUsuario{

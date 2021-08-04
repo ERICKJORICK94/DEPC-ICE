@@ -2,6 +2,7 @@ package com.smartapp.depc_ice.Interface;
 
 
 import com.smartapp.depc_ice.Models.DataBodegaModel;
+import com.smartapp.depc_ice.Utils.Const;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -17,7 +18,7 @@ public interface IRegistrarEmergencia {
 
     //@FormUrlEncoded
     @Headers("Content-Type: application/json")
-    @POST("DepWSR/application/libraries/wsapp.php")
+    @POST(Const.WS)
     Call<dataBodega> getBodegas(@Body RequestBody json);
 
     public class dataBodega{
