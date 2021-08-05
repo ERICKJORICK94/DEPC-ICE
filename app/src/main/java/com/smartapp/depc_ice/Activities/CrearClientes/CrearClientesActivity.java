@@ -240,9 +240,10 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
             }
         });
 
-        String[] itemsFormaPago = new String[]{"CONTADO", "CRÉDITO"};
+        String[] itemsFormaPago = new String[]{"CONTADO"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, itemsFormaPago);
         forma_pago.setAdapter(adapter);
+        forma_pago.setEnabled(false);
         forma_pago.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -271,7 +272,7 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
         });
 
 
-        String[] itemsTipoCliente = new String[]{"PRECONTADO", "CONTADO"};
+        String[] itemsTipoCliente = new String[]{"PRECONTACTO"};
         ArrayAdapter<String> adapterTipoCliente= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, itemsTipoCliente);
         tipo_cliente.setAdapter(adapterTipoCliente);
         tipo_cliente.setEnabled(false);
@@ -315,10 +316,10 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
                     Toast.makeText(CrearClientesActivity.this, "Ingrese días de crédito mayor a cero", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if(monto.getText().length()==0){
+                /*if(monto.getText().length()==0){
                     Toast.makeText(CrearClientesActivity.this, "Ingrese monto de crédito", Toast.LENGTH_LONG).show();
                     return;
-                }
+                }*/
                 /*if(celular.getText().length()==0){
                     Toast.makeText(CrearClientesActivity.this, "Ingrese una teléfono válido", Toast.LENGTH_LONG).show();
                     return;

@@ -248,6 +248,7 @@
                     android:maxLength="200"
                     android:nextFocusDown="@id/monto"
                     android:inputType="number"
+                    android:enabled="false"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
                     android:textSize="15sp"
@@ -261,6 +262,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
                 android:layout_marginTop="15dp"
+                android:enabled="false"
                 android:textColor="@color/DarkGray"
                 android:text="MONTO CRÉDITO"/>
 
