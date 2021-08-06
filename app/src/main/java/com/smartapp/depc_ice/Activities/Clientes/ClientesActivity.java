@@ -233,12 +233,14 @@ public class ClientesActivity extends BaseActitity implements BaseActitity.BaseA
                             }
                             showList();
 
-                        } catch (Exception e) {
+                        } catch (Exception e)
+                        {
                             e.printStackTrace();
                             showList();
                         }
 
-                    } else {
+                    } else
+                        {
                         showList();
                     }
                 }

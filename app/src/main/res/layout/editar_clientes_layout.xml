@@ -213,6 +213,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
+                android:enabled="false"
                 android:layout_marginTop="15dp"
                 android:textColor="@color/DarkGray"
                 android:text="DÍAS DE CRÉDITO"/>
@@ -237,6 +238,7 @@
                     android:layout_height="45dp"
                     android:hint="Días de crédito"
                     android:maxLength="200"
+                    android:enabled="false"
                     android:nextFocusDown="@id/monto"
                     android:inputType="number"
                     android:paddingLeft="8dp"
@@ -251,6 +253,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
+                android:enabled="false"
                 android:layout_marginTop="15dp"
                 android:textColor="@color/DarkGray"
                 android:text="MONTO CRÉDITO"/>
@@ -274,6 +277,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:hint="Monto"
+                    android:enabled="false"
                     android:maxLength="50"
                     android:inputType="numberDecimal"
                     android:paddingLeft="8dp"

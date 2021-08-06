@@ -304,7 +304,7 @@ public class EditarClientesActivity extends BaseActitity implements BaseActitity
         });
 
 
-        String[] itemsFormaPago = new String[]{"CONTADO", "CRÉDITO"};
+        String[] itemsFormaPago = new String[]{"CONTADO"};
 
         int index = 0;
         if (cliente != null){
@@ -366,7 +366,7 @@ public class EditarClientesActivity extends BaseActitity implements BaseActitity
         });
 
 
-        String[] itemsTipoCliente = new String[]{"PRECONTADO", "CONTADO"};
+        String[] itemsTipoCliente = new String[]{"PRECONTACTO"};
 
         int indexpre = 0;
         if (cliente != null){
@@ -416,7 +416,7 @@ public class EditarClientesActivity extends BaseActitity implements BaseActitity
                     Toast.makeText(EditarClientesActivity.this, "Ingrese un nombre válido", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if(dias.getText().length()==0){
+                /*if(dias.getText().length()==0){
                     Toast.makeText(EditarClientesActivity.this, "Ingrese días de crédito", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -426,7 +426,7 @@ public class EditarClientesActivity extends BaseActitity implements BaseActitity
                 }if (Integer.parseInt(dias.getText().toString()) == 0){
                     Toast.makeText(EditarClientesActivity.this, "Ingrese días de crédito mayor a cero", Toast.LENGTH_LONG).show();
                     return;
-                }
+                }*/
                 /*if(celular.getText().length()==0){
                     Toast.makeText(EditarClientesActivity.this, "Ingrese una teléfono válido", Toast.LENGTH_LONG).show();
                     return;
