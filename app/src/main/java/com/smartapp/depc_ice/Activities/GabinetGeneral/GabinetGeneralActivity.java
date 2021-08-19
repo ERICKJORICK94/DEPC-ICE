@@ -157,6 +157,13 @@ public class GabinetGeneralActivity extends BaseActitity implements BaseActitity
                 if (newText.length() >= 3) {
                    // condition(newText);
                 }
+                buscar = newText;
+                if (newText.equals("")){
+                    selectedPosition = 0;
+                    selectEstados = "0";
+                    condition(buscar);
+
+                }
                 return false;
             }
         });
@@ -501,11 +508,19 @@ public class GabinetGeneralActivity extends BaseActitity implements BaseActitity
             buscar = buscar+" "+search;
         }
 
+        String pto_venta = "";
+        if (puntosVenta.getPto_vta_id() != null){
+            pto_venta = ""+puntosVenta.getPto_vta_id();
+        }else{
+            pto_venta = ""+user.getPto_vta_id_operaciones();
+        }
+
         //JSON SEND
         GabinetGeneralModel model = new GabinetGeneralModel();
-        model.setPto_vta_id(""+puntosVenta.getPto_vta_id());
+        model.setPto_vta_id(""+pto_venta);
         //model.setFiltro("limit "+Const.PARAM_MAX_ROW+" offset 0");
         model.setCondicion(buscar+" limit "+Const.PARAM_MAX_ROW);
+        //model.setCondicion(buscar);
         model.setMetodo("ListarGabinet");
 
         final Gson gson = new Gson();
@@ -772,12 +787,12 @@ public class GabinetGeneralActivity extends BaseActitity implements BaseActitity
                     gabinetList = DataBaseHelper.getGabinetGeneralCondicion(DepcApplication.getApplication().getGabinetGeneralDao(), "" + nuevaCondicion);
                 }else{
 
-                    /*if (selectEstados == "0"){
+                    if (selectEstados == "0"){
                         gabinetList = DataBaseHelper.getGabinetGeneral(DepcApplication.getApplication().getGabinetGeneralDao());
                     }else{
                         String nuevaCondicion = "estado = '"+selectEstados+"'";
                         gabinetList = DataBaseHelper.getGabinetGeneralCondicion(DepcApplication.getApplication().getGabinetGeneralDao(), "" + nuevaCondicion);
-                    }*/
+                    }
 
                 }
 
