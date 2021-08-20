@@ -366,7 +366,7 @@ public class EditarClientesActivity extends BaseActitity implements BaseActitity
         });
 
 
-        String[] itemsTipoCliente = new String[]{"PRECONTADO", "CONTADO"};
+        String[] itemsTipoCliente = new String[]{"PRECONTACTO", "CONTACTO"};
 
         int indexpre = 0;
         if (cliente != null){
