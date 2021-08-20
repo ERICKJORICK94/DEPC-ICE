@@ -171,6 +171,96 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/DarkGray"
+                android:text="DÍAS DE CRÉDITO"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:padding="10dp"
+                    android:visibility="gone"
+                    android:src="@drawable/ic_baseline_calendar_today_24"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/custom_border"/>
+
+                <EditText
+                    android:id="@+id/dias"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:hint="Días de crédito"
+                    android:maxLength="200"
+                    android:nextFocusDown="@id/monto"
+                    android:inputType="number"
+                    android:enabled="false"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:textColor="@color/Black"
+                    android:textSize="15sp"
+                    android:focusableInTouchMode="false"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:background="@drawable/custom_border_gray_dark"/>
+
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/DarkGray"
+                android:text="MONTO CRÉDITO"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:padding="10dp"
+                    android:visibility="gone"
+                    android:src="@drawable/ic_baseline_attach_money_24"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/custom_border"/>
+
+                <EditText
+                    android:id="@+id/monto"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:hint="Monto"
+                    android:maxLength="50"
+                    android:inputType="numberDecimal"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:textSize="15sp"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:clickable="false"
+                    android:background="@drawable/custom_border_gray_dark"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="FORMA DE PAGO:"
                 android:textColor="@color/Black"
                 android:layout_marginTop="10dp"
@@ -187,7 +277,7 @@
                 android:layout_marginTop="1dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:background="@drawable/custom_border">
+                android:background="@drawable/custom_border_gray_dark">
             <Spinner
                 android:id="@+id/spinner_forma_pago"
                 android:layout_width="match_parent"
@@ -196,6 +286,9 @@
                 android:textSize="12sp"
                 android:elevation="1sp"
                 android:enabled="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:clickable="false"
                 android:spinnerMode="dialog" />
 
             </LinearLayout>

@@ -239,10 +239,15 @@
                     android:maxLength="200"
                     android:nextFocusDown="@id/monto"
                     android:inputType="number"
+                    android:enabled="false"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
+                    android:textColor="@color/Black"
                     android:textSize="15sp"
-                    android:background="@drawable/custom_border"/>
+                    android:focusableInTouchMode="false"
+                    android:focusable="false"
+                    android:clickable="false"
+                    android:background="@drawable/custom_border_gray_dark"/>
 
             </LinearLayout>
 
@@ -279,7 +284,10 @@
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
                     android:textSize="15sp"
-                    android:background="@drawable/custom_border"/>
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:clickable="false"
+                    android:background="@drawable/custom_border_gray_dark"/>
 
             </LinearLayout>
 
@@ -308,12 +316,15 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/custom_border">
+                    android:background="@drawable/custom_border_gray_dark">
 
                     <Spinner
                         android:id="@+id/forma_pago"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
+                        android:focusableInTouchMode="false"
+                        android:focusable="false"
+                        android:clickable="false"
                         android:spinnerMode="dialog" />
 
                 </LinearLayout>
@@ -347,7 +358,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/custom_border">
+                    android:background="@drawable/custom_border_gray">
 
                     <Spinner
                         android:id="@+id/contribuyente"
@@ -459,13 +470,16 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/custom_border">
+                    android:background="@drawable/custom_border_gray_dark">
 
                     <Spinner
                         android:id="@+id/tipo_cliente"
                         android:layout_width="match_parent"
                         android:layout_height="45dp"
-                        android:spinnerMode="dialog" />
+                        android:spinnerMode="dialog"
+                        android:focusableInTouchMode="false"
+                        android:focusable="false"
+                        android:clickable="false"/>
 
                 </LinearLayout>
 
