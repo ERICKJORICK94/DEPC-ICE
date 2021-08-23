@@ -76,6 +76,8 @@
                 android:focusable="false"
                 android:padding="5dp"
                 android:textSize="14sp"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:background="@drawable/custom_border"
                 android:layout_marginLeft="10dp"/>
 

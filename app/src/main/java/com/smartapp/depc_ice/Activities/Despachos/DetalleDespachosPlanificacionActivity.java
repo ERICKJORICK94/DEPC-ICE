@@ -267,12 +267,28 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
                         intent.putExtra("id_vaje",detalleViaje.getId_viaje());
                         intent.putExtra("cuenta_id",detalleViaje.getCuenta_id());
                         String nombreCliente = "";
+                        String ruc_cliente = "";
+                        String direccion_cliente = "";
+                        String telefono_cliente = "";
                         if (cliente != null){
                             if (cliente.getNombre_comercial() != null){
                                 nombreCliente =  cliente.getNombre_comercial();
                             }
+                            if (cliente.getTercero_id() != null){
+                                ruc_cliente =  cliente.getTercero_id();
+                            }
+                            if (cliente.getDireccion() != null){
+                                direccion_cliente =  cliente.getDireccion();
+                            }
+
+                            if (cliente.getTelefono() != null){
+                                telefono_cliente =  cliente.getTelefono();
+                            }
                         }
                         intent.putExtra("nombreCliente",nombreCliente);
+                        intent.putExtra("ruc_cliente",ruc_cliente);
+                        intent.putExtra("direccion_cliente",direccion_cliente);
+                        intent.putExtra("telefono_cliente",telefono_cliente);
                         startActivity(intent);
                     }
                 }

@@ -93,6 +93,8 @@
                 android:focusable="false"
                 android:padding="5dp"
                 android:textSize="15sp"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:focusableInTouchMode="false"
                 android:background="@drawable/custom_border"
                 android:layout_weight="1"></EditText>

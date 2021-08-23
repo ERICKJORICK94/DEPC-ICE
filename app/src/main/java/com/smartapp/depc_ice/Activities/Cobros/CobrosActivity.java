@@ -90,7 +90,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import okhttp3.MediaType;
@@ -150,6 +152,9 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
     private String pagadoPor = "";
     int indexFactura = -1;
     private String nombreCliente = "";
+    private String ruc_cliente = "";
+    private String direccion_cliente = "";
+    private String telefono_cliente = "";
     private String URL_ENVIO = "https://webserver.depconsa.com/DepWSR/application/libraries/wsapp.php";
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -275,6 +280,9 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
                 intent.putExtra("id_vaje",id_vaje);
                 intent.putExtra("cuenta_id",cuenta_id);
                 intent.putExtra("nombreCliente",nombreCliente);
+                intent.putExtra("ruc_cliente",ruc_cliente);
+                intent.putExtra("direccion_cliente",direccion_cliente);
+                intent.putExtra("telefono_cliente",telefono_cliente);
                 startActivity(intent);
                 return;
             }
@@ -305,6 +313,9 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
             id_vaje = getIntent().getStringExtra("id_vaje");
             cuenta_id = getIntent().getStringExtra("cuenta_id");
             nombreCliente = getIntent().getStringExtra("nombreCliente");
+            ruc_cliente = getIntent().getStringExtra("ruc_cliente");
+            direccion_cliente = getIntent().getStringExtra("direccion_cliente");
+            telefono_cliente = getIntent().getStringExtra("telefono_cliente");
 
         }
         showList();
@@ -1220,8 +1231,16 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
         zpl = "";
         try {
 
-            String nombreEmpresa = "DEPCONSA";
+            String nombreEmpresa = "";
             String rucEmpresa = "";
+            String sucursal = "";
+            String paisSucursal = "";
+            String ciudadSucrusal = "";
+            String matriz = "";
+            String cuidadMatriz = "";
+            String paisMatriz = "";
+            String telefonoMatriz = "";
+            String telefonosucursal = "";
 
 
             if (Utils.getZebra(getBaseContext())) {
@@ -1300,6 +1319,47 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
                             if (user.getNombrescompletos() != null){
                                 recaudadorString = ""+user.getNombrescompletos();
                             }
+
+
+                            if (user.getN_comercial() != null){
+                                nombreEmpresa = user.getN_comercial();
+                            }
+
+                            if (user.getRuc() != null){
+                                rucEmpresa = user.getRuc();
+                            }
+
+                            if (user.getDireccion_sucursal() != null){
+                                sucursal = user.getDireccion_sucursal();
+                            }
+                            if (user.getCiudad_sucursal() != null){
+                                ciudadSucrusal = user.getCiudad_sucursal();
+                            }
+
+                            if (user.getProvincia_sucursal() != null){
+                                paisSucursal = user.getProvincia_sucursal();
+                            }
+
+                            if (user.getDireccion_matriz() != null){
+                                matriz = user.getDireccion_matriz();
+                            }
+
+                            if (user.getCiudad_matriz() != null){
+                                cuidadMatriz = user.getCiudad_matriz();
+                            }
+
+                            if (user.getProvincia_matriz() != null){
+                                paisMatriz = user.getProvincia_matriz();
+                            }
+
+                            if (user.getTelefono_matriz() != null){
+                                telefonoMatriz = user.getTelefono_matriz();
+                            }
+                            if (user.getTelefono_sucursal() != null){
+                                telefonosucursal = user.getTelefono_sucursal();
+                            }
+
+
                         }
                     }
 
@@ -1308,18 +1368,26 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
                     throwables.printStackTrace();
                 }
 
-                zpl = nombreEmpresa + "\n" +
-                        "RUC  " + rucEmpresa + "\n" +
-                        "CEL  0999999999 \n" +
-                        "Usuario : " + recaudadorString + "\n" +
-                        offline + "\n" +
-                        "Comprobante de " + "\n" +
-                        "Cancelacion # " + Calendar.getInstance().getTimeInMillis() + "\n" +
-                        "Cliente : " + nombreCliente + "\n" +
-                        "Fecha : " + Utils.getFecha() + "\n" +
-                        "-----------------------------" + "\n" +
-                        "Nro. Doc. F.Pago    Valor" + "\n" +
-                        "-----------------------------" + "\n";
+                zpl =   nombreEmpresa + "\n" +
+                        "RUC: " + rucEmpresa + "\n" +
+                        "TELEFONO: " + telefonoMatriz + "\n" +
+                        "DIRECCION: " + matriz + "\n" +
+                        ""+cuidadMatriz+" - "+paisMatriz+"\n" +
+                        "------------------------------\n" +
+                        "SUCURSAL: " + sucursal + "\n" +
+                        "TELEFONO: " + telefonosucursal + "\n" +
+                        ""+ciudadSucrusal+" - "+paisSucursal+"\n" +
+                        "------------------------------\n" +
+                        "CLIENTE: " + nombreCliente + "\n" +
+                        "CED/RUC: " + ruc_cliente + "\n" +
+                        "DIRECCION: " + direccion_cliente + "\n" +
+                        "TELEFONO: " + telefono_cliente + "\n" +
+                        "FECHA: " + Utils.getFechaHora()+ "\n" +
+                        "RECAUDADOR: " + recaudadorString + "\n\n" +
+
+                        "------------------------------" + "\n" +
+                        "# DOC.    F.PAGO    VALOR" + "\n" +
+                        "------------------------------" + "\n";
 
                 try {
                     zpl += "" +truncate( pago.getFct_det_id(), 8)+ "  " + truncate(pago.getNombre_corto_forma_de_pago(),9) + truncate( " $ "+ pago.getValor(),10) + "\n";
@@ -1328,11 +1396,11 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
                 }
 
 
-
-                zpl += "-------------------------" + "\n";
-                // zpl += "Saldo Actual : $ " + String.format("%.2f", sal) + "\n";
-                //zpl += "___________________" + "\n";
-                zpl += "Cliente \n";
+                zpl +=  "" + "\n\n\n";
+                zpl +=  "------------------------------" + "\n";
+                zpl += "CLIENTE \n";
+                zpl +=  "" + "\n\n";
+                zpl +=  removeAccents(zpl);
                 Log.e("TAG---", "zpl--- " + zpl);
                 return zpl;
             }
@@ -1597,4 +1665,85 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
     public void doRetry() {
 
     }
+
+    private  Map<Character, Character> MAP_NORM;
+    public String removeAccents(String value)
+    {
+        if (MAP_NORM == null || MAP_NORM.size() == 0)
+        {
+            MAP_NORM = new HashMap<Character, Character>();
+            MAP_NORM.put('À', 'A');
+            MAP_NORM.put('Á', 'A');
+            MAP_NORM.put('Â', 'A');
+            MAP_NORM.put('Ã', 'A');
+            MAP_NORM.put('Ä', 'A');
+            MAP_NORM.put('È', 'E');
+            MAP_NORM.put('É', 'E');
+            MAP_NORM.put('Ê', 'E');
+            MAP_NORM.put('Ë', 'E');
+            MAP_NORM.put('Í', 'I');
+            MAP_NORM.put('Ì', 'I');
+            MAP_NORM.put('Î', 'I');
+            MAP_NORM.put('Ï', 'I');
+            MAP_NORM.put('Ù', 'U');
+            MAP_NORM.put('Ú', 'U');
+            MAP_NORM.put('Û', 'U');
+            MAP_NORM.put('Ü', 'U');
+            MAP_NORM.put('Ò', 'O');
+            MAP_NORM.put('Ó', 'O');
+            MAP_NORM.put('Ô', 'O');
+            MAP_NORM.put('Õ', 'O');
+            MAP_NORM.put('Ö', 'O');
+            MAP_NORM.put('Ñ', 'N');
+            MAP_NORM.put('Ç', 'C');
+            MAP_NORM.put('ª', 'A');
+            MAP_NORM.put('º', 'O');
+            MAP_NORM.put('§', 'S');
+            MAP_NORM.put('³', '3');
+            MAP_NORM.put('²', '2');
+            MAP_NORM.put('¹', '1');
+            MAP_NORM.put('à', 'a');
+            MAP_NORM.put('á', 'a');
+            MAP_NORM.put('â', 'a');
+            MAP_NORM.put('ã', 'a');
+            MAP_NORM.put('ä', 'a');
+            MAP_NORM.put('è', 'e');
+            MAP_NORM.put('é', 'e');
+            MAP_NORM.put('ê', 'e');
+            MAP_NORM.put('ë', 'e');
+            MAP_NORM.put('í', 'i');
+            MAP_NORM.put('ì', 'i');
+            MAP_NORM.put('î', 'i');
+            MAP_NORM.put('ï', 'i');
+            MAP_NORM.put('ù', 'u');
+            MAP_NORM.put('ú', 'u');
+            MAP_NORM.put('û', 'u');
+            MAP_NORM.put('ü', 'u');
+            MAP_NORM.put('ò', 'o');
+            MAP_NORM.put('ó', 'o');
+            MAP_NORM.put('ô', 'o');
+            MAP_NORM.put('õ', 'o');
+            MAP_NORM.put('ö', 'o');
+            MAP_NORM.put('ñ', 'n');
+            MAP_NORM.put('ç', 'c');
+        }
+
+        if (value == null) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder(value);
+
+        for(int i = 0; i < value.length(); i++) {
+            Character c = MAP_NORM.get(sb.charAt(i));
+            if(c != null) {
+                sb.setCharAt(i, c.charValue());
+            }
+        }
+
+        return sb.toString();
+
+    }
+
+
 }
