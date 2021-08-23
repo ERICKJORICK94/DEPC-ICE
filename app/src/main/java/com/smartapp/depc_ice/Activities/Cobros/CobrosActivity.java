@@ -1383,6 +1383,7 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
                         "DIRECCION: " + direccion_cliente + "\n" +
                         "TELEFONO: " + telefono_cliente + "\n" +
                         "FECHA: " + Utils.getFechaHora()+ "\n" +
+                        "# FACTURA: "+detalleFacturas.get(indexFactura).getFactura_id()+"\n" +
                         "RECAUDADOR: " + recaudadorString + "\n\n" +
 
                         "------------------------------" + "\n" +
@@ -1395,7 +1396,10 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
                     throwables.printStackTrace();
                 }
 
-
+                zpl +=  "" + "\n";
+                zpl +=  "------------------------------" + "\n" +
+                        "TOTAL: $ "+ pago.getValor() + "\n" +
+                        "------------------------------" + "\n";
                 zpl +=  "" + "\n\n\n";
                 zpl +=  "------------------------------" + "\n";
                 zpl += "CLIENTE \n";

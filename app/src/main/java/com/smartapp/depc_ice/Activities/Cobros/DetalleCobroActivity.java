@@ -568,6 +568,7 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
             String paisMatriz = "";
             String telefonoMatriz = "";
             String telefonosucursal = "";
+            double pagar = 0;
 
             if (Utils.getZebra(getBaseContext())) {
 
@@ -704,12 +705,14 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                         "DIRECCION: " + direccion_cliente + "\n" +
                         "TELEFONO: " + telefono_cliente + "\n" +
                         "FECHA: " + Utils.getFechaHora()+ "\n" +
+                        "# FACTURA: "+detalleFactura.getFactura_id()+"\n" +
                         "RECAUDADOR: " + recaudadorString + "\n\n" +
 
                         "------------------------------" + "\n" +
                         "# DOC.    F.PAGO    VALOR" + "\n" +
                         "------------------------------" + "\n";
 
+                float pagara = 0;
                 try {
                     List<DetalleFormaPago> detalleFormaPagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFct_det_id());
 
@@ -717,6 +720,7 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                         if (detalleFormaPagos.size() > 0){
 
                             for (DetalleFormaPago df : detalleFormaPagos){
+                                pagara += Float.parseFloat(df.getValor());
                                 zpl += "" +truncate( df.getFct_det_id(), 8)+ "  " + truncate(df.getNombre_corto_forma_de_pago(),9) + truncate( " $ "+ df.getValor(),10) + "\n";
                             }
                         }
@@ -725,8 +729,10 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                     throwables.printStackTrace();
                 }
 
-
-
+                zpl +=  "" + "\n";
+                zpl +=  "------------------------------" + "\n" +
+                        "TOTAL: $ "+ String.format("%.2f", pagara) + "\n" +
+                        "------------------------------" + "\n";
                 zpl +=  "" + "\n\n\n";
                 zpl +=  "------------------------------" + "\n";
                 zpl += "CLIENTE \n";

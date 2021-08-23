@@ -1058,6 +1058,7 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
                         "DIRECCION: " + direccion_cliente + "\n" +
                         "TELEFONO: " + telefono_cliente + "\n" +
                         "FECHA: " + Utils.getFechaHora()+ "\n" +
+                        "# FACTURA: "+detalleViaje.getFactura_id()+"\n" +
                         "RECAUDADOR: " + recaudadorString + "\n\n" +
 
                         "------------------------------" + "\n" +
