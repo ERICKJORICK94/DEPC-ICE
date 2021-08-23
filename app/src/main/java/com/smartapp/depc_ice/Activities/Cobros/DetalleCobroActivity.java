@@ -705,14 +705,15 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                         "DIRECCION: " + direccion_cliente + "\n" +
                         "TELEFONO: " + telefono_cliente + "\n" +
                         "FECHA: " + Utils.getFechaHora()+ "\n" +
-                        "# FACTURA: "+detalleFactura.getFactura_id()+"\n" +
+                        "# FACTURA: "+detalleFactura.getPrefijo1()+"-"+detalleFactura.getPrefijo2()+"-"+detalleFactura.getFactura_fiscal()+"\n" +
                         "RECAUDADOR: " + recaudadorString + "\n\n" +
 
                         "------------------------------" + "\n" +
-                        "# DOC.    F.PAGO    VALOR" + "\n" +
+                        "DESCRIP.       CANT   P. UNIT." + "\n" +
                         "------------------------------" + "\n";
 
                 float pagara = 0;
+                String formasPago = "";
                 try {
                     List<DetalleFormaPago> detalleFormaPagos = DataBaseHelper.getDetalleFormaPagoByFactura(DepcApplication.getApplication().getDetalleFormaPagoDao(), ""+detalleFactura.getFct_det_id());
 
@@ -721,17 +722,25 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
 
                             for (DetalleFormaPago df : detalleFormaPagos){
                                 pagara += Float.parseFloat(df.getValor());
-                                zpl += "" +truncate( df.getFct_det_id(), 8)+ "  " + truncate(df.getNombre_corto_forma_de_pago(),9) + truncate( " $ "+ df.getValor(),10) + "\n";
+                                formasPago += ""+ truncate(df.getNombre_corto_forma_de_pago(),9) + truncate( " $ "+ df.getValor(),10) + "\n";
                             }
                         }
                     }
+
+                    zpl += "" +truncate( detalleFactura.getDescripcion(), 14)+ "  " + truncate(detalleFactura.getCantidad(),7) + truncate( ""+ detalleFactura.getPrecio(),8) + "\n";
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
 
                 zpl +=  "" + "\n";
                 zpl +=  "------------------------------" + "\n" +
-                        "TOTAL: $ "+ String.format("%.2f", pagara) + "\n" +
+                        "FORMAS DE PAGO: "+ "\n" +
+                        ""+formasPago+ "\n\n" +
+
+                        "SUBTOTAL:  $ "+ String.format("%.2f", Float.parseFloat(detalleFactura.getSubtotal())) + "\n" +
+                        "DESCUENTO: $ "+ String.format("%.2f", Float.parseFloat(detalleFactura.getDescuento())) + "\n" +
+                        "IVA 12%:   $ "+ String.format("%.2f", Float.parseFloat(detalleFactura.getImpuesto())) + "\n" +
+                        "TOTAL:     $ "+ String.format("%.2f", Float.parseFloat(detalleFactura.getTotal_factura())) + "\n" +
                         "------------------------------" + "\n";
                 zpl +=  "" + "\n\n\n";
                 zpl +=  "------------------------------" + "\n";

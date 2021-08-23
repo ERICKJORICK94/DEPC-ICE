@@ -1383,22 +1383,27 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
                         "DIRECCION: " + direccion_cliente + "\n" +
                         "TELEFONO: " + telefono_cliente + "\n" +
                         "FECHA: " + Utils.getFechaHora()+ "\n" +
-                        "# FACTURA: "+detalleFacturas.get(indexFactura).getFactura_id()+"\n" +
+                        "# FACTURA: "+detalleFacturas.get(indexFactura).getPrefijo1()+"-"+detalleFacturas.get(indexFactura).getPrefijo2()+"-"+detalleFacturas.get(indexFactura).getFactura_fiscal()+"\n" +
                         "RECAUDADOR: " + recaudadorString + "\n\n" +
 
                         "------------------------------" + "\n" +
-                        "# DOC.    F.PAGO    VALOR" + "\n" +
+                        "DESCRIP.       CANT   P. UNIT." + "\n" +
                         "------------------------------" + "\n";
 
                 try {
-                    zpl += "" +truncate( pago.getFct_det_id(), 8)+ "  " + truncate(pago.getNombre_corto_forma_de_pago(),9) + truncate( " $ "+ pago.getValor(),10) + "\n";
+                    zpl += "" +truncate( detalleFacturas.get(indexFactura).getDescripcion(), 14)+ "  " + truncate(detalleFacturas.get(indexFactura).getCantidad(),7) + truncate( ""+ detalleFacturas.get(indexFactura).getPrecio(),8) + "\n";
                 } catch (Exception throwables) {
                     throwables.printStackTrace();
                 }
 
                 zpl +=  "" + "\n";
                 zpl +=  "------------------------------" + "\n" +
-                        "TOTAL: $ "+ pago.getValor() + "\n" +
+                        "FORMA PAGO:  EFEC $ "+ String.format("%.2f", Float.parseFloat(pago.getValor())) + "\n\n\n" +
+
+                        "SUBTOTAL:  $ "+ String.format("%.2f", Float.parseFloat(detalleFacturas.get(indexFactura).getSubtotal())) + "\n" +
+                        "DESCUENTO: $ "+ String.format("%.2f", Float.parseFloat(detalleFacturas.get(indexFactura).getDescuento())) + "\n" +
+                        "IVA 12%:   $ "+ String.format("%.2f", Float.parseFloat(detalleFacturas.get(indexFactura).getImpuesto())) + "\n" +
+                        "TOTAL:     $ "+ String.format("%.2f", Float.parseFloat(detalleFacturas.get(indexFactura).getTotal_factura())) + "\n" +
                         "------------------------------" + "\n";
                 zpl +=  "" + "\n\n\n";
                 zpl +=  "------------------------------" + "\n";

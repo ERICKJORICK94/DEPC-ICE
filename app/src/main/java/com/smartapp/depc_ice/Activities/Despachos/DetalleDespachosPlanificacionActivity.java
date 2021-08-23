@@ -1058,12 +1058,17 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
                         "DIRECCION: " + direccion_cliente + "\n" +
                         "TELEFONO: " + telefono_cliente + "\n" +
                         "FECHA: " + Utils.getFechaHora()+ "\n" +
-                        "# FACTURA: "+detalleViaje.getFactura_id()+"\n" +
+                        "# FACTURA: "+detalleViaje.getPrefijo1()+"-"+detalleViaje.getPrefijo2()+"-"+detalleViaje.getFactura_fiscal()+"\n" +
                         "RECAUDADOR: " + recaudadorString + "\n\n" +
 
                         "------------------------------" + "\n" +
-                        "COD.   DESCRIP.       CANT" + "\n" +
+                        "DESCRIP.       CANT   P. UNIT." + "\n" +
                         "------------------------------" + "\n";
+
+                float sub = 0;
+                float des = 0;
+                float iva = 0;
+                float total = 0;
 
                 try {
 
@@ -1072,7 +1077,11 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
                         if (detalleFacturas.size() > 0){
 
                             for (DetalleFacturas df : detalleFacturas){
-                                zpl += "" +truncate( df.getCodigo_item(), 5)+ "  " + truncate(df.getDescripcion(),17) + truncate( ""+ df.getCantidad(),8) + "\n";
+                                sub += Float.parseFloat(df.getSubtotal());
+                                des += Float.parseFloat(df.getDescuento());
+                                iva += Float.parseFloat(df.getImpuesto());
+                                total += Float.parseFloat(df.getTotal_factura());
+                                zpl += "" +truncate( df.getDescripcion(), 14)+ "  " + truncate(df.getCantidad(),7) + truncate( ""+ df.getPrecio(),8) + "\n";
                             }
                         }
                     }
@@ -1081,7 +1090,13 @@ public class DetalleDespachosPlanificacionActivity extends BaseActitity implemen
                 }
 
 
-
+                zpl +=  "" + "\n";
+                zpl +=  "------------------------------" + "\n" +
+                        "SUBTOTAL:  $ "+ String.format("%.2f", sub) + "\n" +
+                        "DESCUENTO: $ "+ String.format("%.2f", des) + "\n" +
+                        "IVA 12%:   $ "+ String.format("%.2f", iva) + "\n" +
+                        "TOTAL:     $ "+ String.format("%.2f", total) + "\n" +
+                        "------------------------------" + "\n";
                 zpl +=  "" + "\n\n\n";
                 zpl +=  "------------------------------" + "\n";
                 zpl += "CLIENTE \n";
