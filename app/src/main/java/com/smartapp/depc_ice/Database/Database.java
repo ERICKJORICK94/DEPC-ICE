@@ -35,7 +35,7 @@ import java.sql.SQLException;
 public class Database extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = Const.DATABASE_NAME_;
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private SQLiteDatabase db;
 
     public Database(Context context) {

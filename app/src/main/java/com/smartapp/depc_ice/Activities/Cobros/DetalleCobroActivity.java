@@ -731,7 +731,7 @@ public class DetalleCobroActivity extends BaseActitity implements BaseActitity.B
                 zpl +=  "------------------------------" + "\n";
                 zpl += "CLIENTE \n";
                 zpl +=  "" + "\n\n";
-                zpl +=  removeAccents(zpl);
+                zpl =  removeAccents(zpl);
                 Log.e("TAG---", "zpl--- " + zpl);
                 return zpl;
             }

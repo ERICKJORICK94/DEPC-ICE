@@ -1400,7 +1400,7 @@ public class CobrosActivity extends BaseActitity implements BaseActitity.BaseAct
                 zpl +=  "------------------------------" + "\n";
                 zpl += "CLIENTE \n";
                 zpl +=  "" + "\n\n";
-                zpl +=  removeAccents(zpl);
+                zpl =  removeAccents(zpl);
                 Log.e("TAG---", "zpl--- " + zpl);
                 return zpl;
             }
