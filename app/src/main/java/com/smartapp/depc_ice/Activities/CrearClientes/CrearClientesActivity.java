@@ -309,13 +309,13 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
                     Toast.makeText(CrearClientesActivity.this, "Ingrese un nombre válido", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if(dias.getText().length()==0){
+                /*if(dias.getText().length()==0){
                     Toast.makeText(CrearClientesActivity.this, "Ingrese días de crédito", Toast.LENGTH_LONG).show();
                     return;
                 }else if (Integer.parseInt(dias.getText().toString()) == 0){
                     Toast.makeText(CrearClientesActivity.this, "Ingrese días de crédito mayor a cero", Toast.LENGTH_LONG).show();
                     return;
-                }
+                }*/
                 /*if(monto.getText().length()==0){
                     Toast.makeText(CrearClientesActivity.this, "Ingrese monto de crédito", Toast.LENGTH_LONG).show();
                     return;
@@ -334,10 +334,20 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
                     return;
                 }
 
-                /*if(PDFbase64String.length() == 0 ){
+                if(PDFbase64String == null ){
                     Toast.makeText(CrearClientesActivity.this, "Añada pdf antes de continuar", Toast.LENGTH_LONG).show();
                     return;
-                }*/
+                }
+
+                if(PDFbase64String.length() == 0 ){
+                    Toast.makeText(CrearClientesActivity.this, "Añada pdf antes de continuar", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if(PDFbase64String.equals("null") ){
+                    Toast.makeText(CrearClientesActivity.this, "Añada pdf antes de continuar", Toast.LENGTH_LONG).show();
+                    return;
+                }
 
                 String mensaje = "¿Seguro que desea continuar con el registro?";
                 new AlertDialog.Builder(CrearClientesActivity.this)
