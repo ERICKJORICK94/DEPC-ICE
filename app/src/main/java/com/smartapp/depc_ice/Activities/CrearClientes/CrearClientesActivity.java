@@ -190,8 +190,6 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
                 if(isChecked){
                     nacionalidad = true;
                 }
-
-
             }
         });
 
@@ -651,7 +649,8 @@ public class CrearClientesActivity extends BaseActitity implements BaseActitity.
         model.setTipo_id_tercero(""+tipo_id_tercero);
         model.setTercero_id(""+cedula.getText().toString().trim());
         model.setDias_credito(""+dias.getText().toString().trim());
-        model.setMonto_credito(""+monto.getText().toString().trim());
+        //model.setMonto_credito(""+monto.getText().toString().trim());
+        model.setMonto_credito("0");
         model.setForma_pago(""+formaPago);
         model.setContribuyente_especial(""+contribuyenteEspecial);
         model.setClase_cliente(""+claseCliente);

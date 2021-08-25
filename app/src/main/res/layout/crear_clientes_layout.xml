@@ -222,6 +222,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
+                android:visibility="gone"
                 android:layout_marginTop="15dp"
                 android:textColor="@color/DarkGray"
                 android:text="DÍAS DE CRÉDITO"/>
@@ -230,6 +231,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusableInTouchMode="true"
+                android:visibility="gone"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -263,6 +265,7 @@
                 android:textSize="13sp"
                 android:layout_marginTop="15dp"
                 android:enabled="false"
+                android:visibility="gone"
                 android:textColor="@color/DarkGray"
                 android:text="MONTO CRÉDITO"/>
 
@@ -270,6 +273,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusableInTouchMode="true"
+                android:visibility="gone"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -299,6 +303,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
                 android:layout_marginTop="15dp"
+                android:visibility="gone"
                 android:textColor="@color/DarkGray"
                 android:text="FORMA PAGO"/>
 
@@ -306,6 +311,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusableInTouchMode="true"
+                android:visibility="gone"
                 android:orientation="horizontal">
 
                 <ImageView

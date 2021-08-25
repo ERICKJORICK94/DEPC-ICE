@@ -143,6 +143,8 @@ public class Clientes implements Serializable {
     private String cliente_id;
     @DatabaseField
     private String documentopdf;
+    @DatabaseField
+    private String telefono;
 
     public int getId() {
         return id;
@@ -678,5 +680,13 @@ public class Clientes implements Serializable {
 
     public void setDocumentopdf(String documentopdf) {
         this.documentopdf = documentopdf;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 }

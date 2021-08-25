@@ -72,6 +72,8 @@ public class DetalleViaje implements Serializable {
     private String latitud;
     @DatabaseField
     private String longitud;
+    @DatabaseField
+    private String nombre_cliente;
 
     public String getNombre_estado() {
         return nombre_estado;
@@ -329,5 +331,13 @@ public class DetalleViaje implements Serializable {
 
     public void setLongitud(String longitud) {
         this.longitud = longitud;
+    }
+
+    public String getNombre_cliente() {
+        return nombre_cliente;
+    }
+
+    public void setNombre_cliente(String nombre_cliente) {
+        this.nombre_cliente = nombre_cliente;
     }
 }

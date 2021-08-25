@@ -82,14 +82,20 @@ public class PlanificadorDespachosAdapter extends BaseAdapter {
 
         viewHolder.estado.setText("");
         //viewHolder.estado.setVisibility(View.GONE);
-        viewHolder.estado.setBackgroundColor(mContext.getResources().getColor(R.color.Green));
+        viewHolder.estado.setBackgroundColor(mContext.getResources().getColor(R.color.transparent));
         if (item.getNombre_estado() != null){
-            viewHolder.estado.setText(""+item.getNombre_estado());
+            if (item.getNombre_estado().length() > 0) {
+                viewHolder.estado.setText("" + item.getNombre_estado());
+                viewHolder.estado.setBackgroundColor(mContext.getResources().getColor(R.color.Green));
+            }
         }
 
         viewHolder.hora.setText("00:00");
         viewHolder.direccion.setText(""+item.getDireccion_envio());
         viewHolder.nombre.setText("");
+        if (item.getNombre_cliente() != null){
+            viewHolder.nombre.setText(""+item.getNombre_cliente());
+        }
 
         viewHolder.position.setText(""+(position+1));
         return convertView;

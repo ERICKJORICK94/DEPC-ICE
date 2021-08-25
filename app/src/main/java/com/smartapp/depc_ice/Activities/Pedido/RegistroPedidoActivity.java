@@ -121,6 +121,8 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
     private LinearLayout linear_gabinet;
     private String id_congelador = "";
     private String id_pto_vta = "";
+    private EditText dias;
+    private EditText monto;
 
     String FormaPago[] = {"Contado","Credito"};
 
@@ -146,6 +148,8 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
         persona_recibe = (EditText) layout.findViewById(R.id.persona_recibe);
         spinner_bodega = (Spinner) layout.findViewById(R.id.spinner_bodega);
         ruc = (EditText) layout.findViewById(R.id.ruc);
+        dias = (EditText) layout.findViewById(R.id.dias);
+        monto = (EditText) layout.findViewById(R.id.monto);
         crear_pedido = (TextView) layout.findViewById(R.id.crear_pedido);
         direccion = (EditText) layout.findViewById(R.id.direccion);
         linear_fondo = (LinearLayout) layout.findViewById(R.id.linear_fondo);
@@ -240,6 +244,14 @@ public class RegistroPedidoActivity extends BaseActitity implements BaseActitity
 
             if (cliente.getMonto_credito() != null){
                 cupo.setText(""+cliente.getMonto_credito());
+            }
+
+            if (cliente.getDias_credito() != null){
+                dias.setText(""+cliente.getDias_credito());
+            }
+
+            if (cliente.getMonto_credito() != null){
+                monto.setText(""+cliente.getMonto_credito());
             }
 
             if (cliente.getTercero_id() != null){

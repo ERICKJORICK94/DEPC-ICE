@@ -81,6 +81,7 @@ public class BusquedaPedidoActivity extends BaseActitity implements BaseActitity
     private TextView cantidades_pedidos;
     private TextView total_pedido;
     private String search = "";
+    private float stockBodega = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -328,6 +329,7 @@ public class BusquedaPedidoActivity extends BaseActitity implements BaseActitity
         if ( producto.getPvp() == null){
             producto.setPvp("0.0");
         }
+        stockBodega = 0;
 
         precioProducto = Float.parseFloat(producto.getPvp());
 
@@ -443,6 +445,7 @@ public class BusquedaPedidoActivity extends BaseActitity implements BaseActitity
             @Override
             public void onClick(View v) {
 
+
                 float descuento = 0;
                 float cantidad = 0;
                 double subtotal = 0;
@@ -455,7 +458,6 @@ public class BusquedaPedidoActivity extends BaseActitity implements BaseActitity
 
                 if (cantidadEdit.getText().toString().length() > 0) {
 
-
                     if (descuentoEdit.getText().toString().length() > 0) {
                         descuento = Float.parseFloat("" + descuentoEdit.getText().toString());
                     }
@@ -463,6 +465,14 @@ public class BusquedaPedidoActivity extends BaseActitity implements BaseActitity
                     if (cantidadEdit.getText().toString().length() > 0) {
                         cantidad = Float.parseFloat("" + cantidadEdit.getText().toString());
 
+                    }
+
+                    if (stockBodega == 0){
+                        showAlert("Lo sentimos es imposible agregar, producto sin stock!!");
+                        return;
+                    }else if (cantidad > stockBodega){
+                        showAlert("Lo sentimos es imposible agregar, producto no tiene el stock suficiente!!");
+                        return;
                     }
 
                     if (precio.getText().toString().length() > 0) {
@@ -599,10 +609,12 @@ public class BusquedaPedidoActivity extends BaseActitity implements BaseActitity
         if (producto.getExistencia() != null) {
             if (Utils.isNumber(""+producto.getExistencia())){
                 int cantidad = Integer.valueOf(""+producto.getExistencia());
+                stockBodega = cantidad;
                 stock.setText(""+cantidad+"\nCAJAS");
             }else{
                 if (Utils.isNumberDecimal(""+producto.getExistencia())){
                     float cantidad = Float.valueOf(""+producto.getExistencia());
+                    stockBodega = cantidad;
                     stock.setText(""+cantidad+"\nCAJAS");
                 }
             }
